@@ -1,0 +1,42 @@
+name: Build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out vscode-jbang
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          path: vscode-jbang
+
+      - name: Check out jbang-eclipse
+        uses: actions/checkout@v2
+        with:
+          repository: fbricon/jbang-eclipse
+          fetch-depth: 0
+          ref: lsp
+          path: jbang-eclipse
+
+      - name: Set Up NodeJS
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Set Up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build server
+        working-directory: ./vscode-jbang 
+        run: |
+          npm ci
+          npm install -g typescript "vsce"
+          npm run build-ext
+          vsce package
+      
