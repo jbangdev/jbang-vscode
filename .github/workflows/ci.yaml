@@ -32,11 +32,33 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Build server
+      - name: Install requirements
         working-directory: ./vscode-jbang 
         run: |
           npm ci
           npm install -g typescript "vsce"
-          npm run build-ext
-          vsce package
+
+      - name: Build server
+        working-directory: ./vscode-jbang 
+        run: npm run build-ext
+          
+      - name: Build vsix
+        working-directory: ./vscode-jbang 
+        run: vsce package
       
+      - name: Upload vsix
+        uses: actions/upload-artifact@v3
+        with:
+          name: vscode-jbang
+          path: vscode-jbang/*.vsix
+
+      - name: Upload latest vsix
+        if: github.ref == 'refs/heads/main'
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{secrets.GITHUB_TOKEN}}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "Development Build"
+          files: |
+            vscode-jbang/*.vsix
