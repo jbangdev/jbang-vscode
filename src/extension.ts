@@ -1,22 +1,18 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-
-import { ExtensionContext, window } from "vscode";
+import { ExtensionContext, Terminal, window } from "vscode";
+import CodeLensProvider from "./CodeLensProvider";
 import CommandManager from "./CommandManager";
 import EditorListener from "./EditorListener";
+import JBangRunner from "./JBangRunner";
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
 export function activate(context: ExtensionContext) {
-
+	
+	JBangRunner.initialize(context);
 	CommandManager.initialize(context);
 	EditorListener.initialize(context);
-
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "vscode-jbang" is now active!');
+	CodeLensProvider.initialize(context);
+	const packageJson = require('../package.json');
+	console.log(`vscode-jbang ${packageJson.version} is now active!`);
 }
 
 
-// this method is called when your extension is deactivated
 export function deactivate() {}

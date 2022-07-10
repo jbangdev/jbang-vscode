@@ -1,19 +1,23 @@
 import { commands, ExtensionContext, Uri, window } from "vscode";
+import JBangRunner from "./JBangRunner";
 
 export const JAVA_EXECUTE_WORKPACE_COMMAND = 'java.execute.workspaceCommand';
 export const JDTLS_JBANG_SYNCHRONIZE_COMMAND = 'jbang/synchronize';
 export class CommandManager {
     public async initialize(context: ExtensionContext) {
-        console.log("CommandManager.initialize");
+        //console.log("CommandManager.initialize");
         context.subscriptions.push(
             commands.registerCommand('jbang.synchronize', async (uri) => {
                 return this.synchronizeJBangRequest(uri);
+            }),
+            commands.registerCommand('jbang.execute', async (uri) => {
+                return JBangRunner.runJBang(uri);
             })
         );
     }
 
     private async synchronizeJBangRequest(uris?: Uri | Uri[]) {
-        console.log("CommandManager.synchronize "+uris);
+        //console.log("CommandManager.synchronize "+uris);
         let resources:string[] = [];
         if (!uris) {
             const activeFileUri: Uri | undefined = window.activeTextEditor?.document.uri;

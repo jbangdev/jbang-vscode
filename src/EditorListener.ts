@@ -1,8 +1,9 @@
 import { commands, ExtensionContext, TextEditor, window } from "vscode";
+import { isJBangFile } from "./JBangUtils";
 
 export class EditorListener {
     public async initialize(context: ExtensionContext): Promise<void> {
-        console.log("EditorListener.initialize");
+        //console.log("EditorListener.initialize");
         context.subscriptions.push(
             window.onDidChangeActiveTextEditor(editor => {
                 return this.checkJBangFileContext(editor);
@@ -20,18 +21,10 @@ export class EditorListener {
         if (!content) {
             return this.setJBangFileContext(false);
         }
-        const lines = content.split(/\r?\n/);
-        var isJBangFile = false;
-        for (let i = 0; i < lines.length; i++) {
-            const line = lines[i];
-            if (line.startsWith("//DEPS" || line.startsWith("//JAVA") || line.startsWith("///usr/bin/env jbang"))) {
-                console.log(editor.document.uri+" isJBangFile: " + isJBangFile);
-                isJBangFile = true;
-                break;
-            }
-            
-        }
-        return this.setJBangFileContext(isJBangFile);
+        
+        const isJBangScript = isJBangFile(content);
+        //console.log(editor.document.uri+" isJBangFile: " + isJBangScript);
+        return this.setJBangFileContext(isJBangScript);
     }
 
     setJBangFileContext(value:boolean) {
