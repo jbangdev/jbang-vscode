@@ -1,7 +1,9 @@
 # vscode-jbang
-This is a work-in-progress extension for [vscode-java](https://marketplace.visualstudio.com/items?itemName=redhat.java). It aims at providing support for the JBang scripts written in Java.
+This is an early work-in-progress extension for [vscode-java](https://marketplace.visualstudio.com/items?itemName=redhat.java). It aims at providing support for the [JBang](https://www.jbang.dev/) scripts written in Java.
 
-**It is currently not working as intended.**
+**Pre-requisites:**
+- [JBang](https://www.jbang.dev/download/) is installed and available in the PATH.
+- [vscode-java](https://marketplace.visualstudio.com/items?itemName=redhat.java) is installed.
 
 **Outstanding issues**:
 - The validation doesn't work correctly when opening a JBang file the 1st time. One needs to make some dummy changes in the JBang instructions of the file to make it work (eg. change //DEPS or //JAVA version), or just reload VS Code.
@@ -9,8 +11,14 @@ This is a work-in-progress extension for [vscode-java](https://marketplace.visua
 - The Java Runtime for current file is not displayed in the status bar.
 - The JBang Classpath container is not shown in the Java Projects view (contributed by [Project Manager for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-dependency)).
 
-**What you can do**:
-If you open a folder containing JBang scripts, each script will be assigned a specific classpath.
+**What works (more or less)**:
+- If you open a folder containing JBang scripts, each script will be assigned a specific classpath.
+- Modifying JBang directives in a file will update the classpath of the file.
+- JBang scripts can be run from the `Run JBang` codelens, that shows on top of the type declaration or main method, if there is one.
+- If a (.java) script is included in a Maven or Gradle project's hierarchy, right-clicking on the script and selecting `Synchronize JBang` will add the script's parent folder to the project's source path and the JBang dependencies will be added to the project's classpath.
+
+## Installation:
+Continuous Integration builds can be installed from [https://github.com/fbricon/vscode-jbang/releases/tag/latest](https://github.com/fbricon/vscode-jbang/releases/tag/latest). Download the most recent `vscode-jbang-<version>.vsix` file and install it by following the instructions [here](https://code.visualstudio.com/docs/editor/extension-gallery#_install-from-a-vsix).
 
 ## Development Setup
 
