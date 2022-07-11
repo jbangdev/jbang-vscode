@@ -6,10 +6,9 @@ This is an early work-in-progress extension for [vscode-java](https://marketplac
 - [vscode-java](https://marketplace.visualstudio.com/items?itemName=redhat.java) is installed.
 
 **Outstanding issues**:
-- The validation doesn't work correctly when opening a JBang file the 1st time. One needs to make some dummy changes in the JBang instructions of the file to make it work (eg. change //DEPS or //JAVA version), or just reload VS Code.
-- JBang validation errors are not propagated by Eclipse jdt.ls, so you will miss dependency errors (eg. //DEPS wrong:dep:version).
-- The Java Runtime for current file is not displayed in the status bar.
-- The JBang Classpath container is not shown in the Java Projects view (contributed by [Project Manager for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-dependency)).
+- JBang validation errors are not propagated by Eclipse jdt.ls, so you will miss dependency errors (eg. //DEPS wrong:dep:version). See [eclipse.jdt.ls#2154](https://github.com/eclipse/eclipse.jdt.ls/issues/2154).
+- The Java Runtime for current file is not displayed in the status bar. See [vscode-java#2552](https://github.com/redhat-developer/vscode-java/issues/2552)
+- The JBang Classpath container is not shown in the Java Projects view (contributed by [Project Manager for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-dependency)). See [vscode-java-dependency#654](https://github.com/microsoft/vscode-java-dependency/issues/654).
 
 **What works (more or less)**:
 - If you open a folder containing JBang scripts, each script will be assigned a specific classpath.
