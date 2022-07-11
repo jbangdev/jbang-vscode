@@ -2,6 +2,7 @@ import { CodeLens, Command, ExtensionContext, languages, Range, TextDocument } f
 import { isJBangFile } from "./JBangUtils";
 
 const typeRegexp = /^.*(class|interface|enum|record)\s+.*$/;
+const singleCommentRegexp = /^\s*(\/\/).*$/;
 
 export class CodeLensProvider implements CodeLensProvider  {
 
@@ -23,6 +24,9 @@ export class CodeLensProvider implements CodeLensProvider  {
         const codelenses = [];
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i];
+            if (singleCommentRegexp.test(line)) {
+                continue;
+            }
             //Find the type position, i.e. the first line that declares either "class", "interface", "enum" or "record"
             if (typePosition === undefined && typeRegexp.test(line)) {
                 //This is so naive this is ridiculous ;-)
