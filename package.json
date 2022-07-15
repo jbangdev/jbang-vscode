@@ -17,7 +17,8 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onLanguage:java"
+		"onLanguage:java",
+		"onCommand:jbang.script.generate"
 	],
 	"extensionDependencies": [
 		"redhat.java"
@@ -32,6 +33,12 @@
 			{
 				"command": "jbang.synchronize",
 				"title": "Synchronize JBang",
+				"category": "JBang",
+				"icon": "icons/jbang.png"
+			},
+			{
+				"command": "jbang.script.generate",
+				"title": "Create a new script",
 				"category": "JBang",
 				"icon": "icons/jbang.png"
 			}

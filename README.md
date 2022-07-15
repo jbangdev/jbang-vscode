@@ -15,6 +15,7 @@ This is an early work-in-progress extension for [vscode-java](https://marketplac
 - Modifying JBang directives in a file will update the classpath of the file.
 - JBang scripts can be run from the `Run JBang` codelens, that shows on top of the type declaration or main method, if there is one.
 - If a (.java) script is included in a Maven or Gradle project's hierarchy, right-clicking on the script and selecting `Synchronize JBang` will add the script's parent folder to the project's source path and the JBang dependencies will be added to the project's classpath.
+- Create a new JBang script from an existing template with the `JBang: Create a new script` command.
 
 ## Installation:
 Continuous Integration builds can be installed from [https://github.com/fbricon/vscode-jbang/releases/tag/latest](https://github.com/fbricon/vscode-jbang/releases/tag/latest). Download the most recent `vscode-jbang-<version>.vsix` file and install it by following the instructions [here](https://code.visualstudio.com/docs/editor/extension-gallery#_install-from-a-vsix).

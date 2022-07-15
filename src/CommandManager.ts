@@ -1,5 +1,6 @@
 import { commands, ExtensionContext, Uri, window } from "vscode";
 import JBangRunner from "./JBangRunner";
+import JBangScriptWizard from "./wizards/JBangScriptWizard";
 
 export const JAVA_EXECUTE_WORKPACE_COMMAND = 'java.execute.workspaceCommand';
 export const JDTLS_JBANG_SYNCHRONIZE_COMMAND = 'jbang/synchronize';
@@ -12,6 +13,9 @@ export class CommandManager {
             }),
             commands.registerCommand('jbang.execute', async (uri) => {
                 return JBangRunner.runJBang(uri);
+            }),
+            commands.registerCommand('jbang.script.generate', async () => {
+                return JBangScriptWizard.open();
             })
         );
     }
