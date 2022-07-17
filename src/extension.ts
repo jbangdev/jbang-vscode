@@ -1,4 +1,4 @@
-import { ExtensionContext, Terminal, window } from "vscode";
+import { ExtensionContext } from "vscode";
 import CodeLensProvider from "./CodeLensProvider";
 import CommandManager from "./CommandManager";
 import EditorListener from "./EditorListener";
@@ -11,7 +11,7 @@ export function activate(context: ExtensionContext) {
 	EditorListener.initialize(context);
 	CodeLensProvider.initialize(context);
 	const packageJson = require('../package.json');
-	console.log(`vscode-jbang ${packageJson.version} is now active!`);
+	console.log(`${packageJson.name} ${packageJson.version} is now active!`);
 }
 
 

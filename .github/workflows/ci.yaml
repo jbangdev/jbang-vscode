@@ -6,11 +6,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out vscode-jbang
+      - name: Check out jbang-vscode
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          path: vscode-jbang
+          path: jbang-vscode
 
       - name: Check out jbang-eclipse
         uses: actions/checkout@v2
@@ -33,24 +33,24 @@ jobs:
           cache: 'maven'
 
       - name: Install requirements
-        working-directory: ./vscode-jbang 
+        working-directory: ./jbang-vscode 
         run: |
           npm ci
           npm install -g typescript "vsce"
 
       - name: Build server
-        working-directory: ./vscode-jbang 
+        working-directory: ./jbang-vscode 
         run: npm run build-ext
           
       - name: Build vsix
-        working-directory: ./vscode-jbang 
+        working-directory: ./jbang-vscode 
         run: vsce package
       
       - name: Upload vsix
         uses: actions/upload-artifact@v3
         with:
-          name: vscode-jbang
-          path: vscode-jbang/*.vsix
+          name: jbang-vscode
+          path: jbang-vscode/*.vsix
 
       - name: Upload latest vsix
         if: github.ref == 'refs/heads/main'
@@ -61,4 +61,4 @@ jobs:
           prerelease: true
           title: "Development Build"
           files: |
-            vscode-jbang/*.vsix
+            jbang-vscode/*.vsix

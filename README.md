@@ -1,4 +1,4 @@
-# vscode-jbang
+# jbang-vscode
 This is an early work-in-progress extension for [vscode-java](https://marketplace.visualstudio.com/items?itemName=redhat.java). It aims at providing support for the [JBang](https://www.jbang.dev/) scripts written in Java.
 
 **Pre-requisites:**
@@ -18,7 +18,7 @@ This is an early work-in-progress extension for [vscode-java](https://marketplac
 - Create a new JBang script from an existing template with the `JBang: Create a new script` command.
 
 ## Installation:
-Continuous Integration builds can be installed from [https://github.com/fbricon/vscode-jbang/releases/tag/latest](https://github.com/fbricon/vscode-jbang/releases/tag/latest). Download the most recent `vscode-jbang-<version>.vsix` file and install it by following the instructions [here](https://code.visualstudio.com/docs/editor/extension-gallery#_install-from-a-vsix).
+Continuous Integration builds can be installed from [https://github.com/jbangdev/jbang-vscode/releases/tag/latest](https://github.com/jbangdev/jbang-vscode/releases/tag/latest). Download the most recent `jbang-vscode-<version>.vsix` file and install it by following the instructions [here](https://code.visualstudio.com/docs/editor/extension-gallery#_install-from-a-vsix).
 
 ## Development Setup
 
@@ -38,12 +38,12 @@ Continuous Integration builds can be installed from [https://github.com/fbricon/
 
 ```
 YOUR_FOLDER/
-         ├──── vscode-jbang/
+         ├──── jbang-vscode/
          ├──── jbang-eclipse/
 ```  
-**Step 3.** Navigate into `vscode-jbang/`
+**Step 3.** Navigate into `jbang-vscode/`
 ```bash
-$ cd vscode-jbang/
+$ cd jbang-vscode/
 ```  
 **Step 4.** Install npm dependencies
 ```bash
@@ -55,10 +55,10 @@ $ npm ci
 $ npm run build-ext
 ```
 
-This script places the built jars in `vscode-jbang/jars/`.  
+This script places the built jars in `jbang-vscode/jars/`.  
 
 **Step 6.** Build the VS Code extension
 ```bash
 $ npx vsce package
 ```
-This will generate a `vscode-jbang-<version>.vsix` file in the `vscode-jbang/` directory.
+This will generate a `jbang-vscode-<version>.vsix` file in the `jbang-vscode/` directory.
