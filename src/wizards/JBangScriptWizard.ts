@@ -1,5 +1,6 @@
 import * as fs from "fs";
-import { OpenDialogOptions, Uri, window, workspace } from "vscode";
+import { commands, OpenDialogOptions, Uri, window, workspace } from "vscode";
+import { runWithStandardMode } from "../utils/javaExtension";
 import { MultiStepInput } from "./multiStepsUtils";
 import { generateScript, getTemplates } from "./templateExec";
 import { ScriptGenState } from "./wizardState";
@@ -30,7 +31,13 @@ export default class JBangScriptWizard {
             const newFiles = await generateScript(state as ScriptGenState);
             if (newFiles.length > 0) {
                 const scriptPath = path.join(state.targetDir.fsPath, newFiles[0]);
-                window.showTextDocument(Uri.file(scriptPath));
+                const uri = Uri.file(scriptPath);
+                window.showTextDocument(uri);
+                runWithStandardMode(() => {
+                    setTimeout(() => {
+                        commands.executeCommand("jbang.synchronize", uri);
+                    }, 1000);
+                },"Synchronize JBang");
             }
         } catch (e: any) {
             window.showErrorMessage(e.message);
@@ -87,7 +94,17 @@ async function getTargetDirectory(fileName: string) {
 
     const defaultDirectoryUri = workspace.workspaceFolders ? workspace.workspaceFolders[0].uri : undefined;
     
-    let directory = await showOpenFolderDialog({ openLabel: LABEL_CHOOSE_FOLDER, defaultUri: defaultDirectoryUri });
+    let directory: Uri | undefined;
+    if (defaultDirectoryUri) {
+        const defaultDirectory = defaultDirectoryUri.fsPath;
+        const files = fs.readdirSync(defaultDirectory);
+        //Check if defaultDirectoryUri, ask the user where they want to generate the script
+        if (files.length > 0) {
+            directory = await showOpenFolderDialog({ openLabel: LABEL_CHOOSE_FOLDER, defaultUri: defaultDirectoryUri });
+        } else {
+            directory = defaultDirectoryUri;
+        }
+    }
 
     while (directory && fs.existsSync(path.join(directory.fsPath, fileName))) {
         const overrideChoice = await window.showWarningMessage(MESSAGE_EXISTING_FILE, OPTION_OVERWRITE, OPTION_CHOOSE_NEW_DIR);
