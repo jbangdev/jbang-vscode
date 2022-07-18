@@ -19,7 +19,7 @@ const day = date.getDate();
 const hours = date.getHours();
 const minutes = date.getMinutes();
 const seconds = date.getSeconds();
-patch = `${date.getFullYear()}${prependZero(month)}${prependZero(day)}-${prependZero(hours)}${prependZero(minutes)}${prependZero(seconds)}`;
+patch = `${date.getFullYear()}${prependZero(month)}${prependZero(day)}${prependZero(hours)}${prependZero(minutes)}${prependZero(seconds)}`;
 
 const insiderPackageJson = Object.assign(json, {
     version: `${major}.${minor}.${patch}`,
