@@ -43,7 +43,7 @@ export class CodeLensProvider implements CodeLensProvider  {
                 break;
             }
         }
-        if (firstDirectivePosition !== undefined) {
+        if (firstDirectivePosition) {
             codelenses.push(new CodeLens(firstDirectivePosition, {
                 command: "jbang.synchronize",
                 title: "Synchronize JBang",
