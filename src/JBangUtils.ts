@@ -5,11 +5,14 @@ export function isJBangFile(content: string | string[]): boolean {
     } else {
         lines = content as string[]; 
     }
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        if (line.startsWith("//DEPS") || line.startsWith("//JAVA") || line.startsWith("///usr/bin/env jbang")) {
-            return true;
-        }
-    }
-    return false;
+    return lines.find(isJBangDirective) !== undefined; 
+}
+
+const KNOWN_DIRECTIVES = ["///usr/bin/env jbang ", "//DEPS ", "//JAVA ", "//GAV ", "//FILES ", "//SOURCES ", "//DESCRIPTION ", "//REPOS ", "//JAVAC_OPTIONS ", "//JAVA_OPTIONS ", "//JAVAAGENT ", "//CDS ", "//KOTLIN ", "//GROOVY "];
+
+export function isJBangDirective(line: string): boolean {
+    //TODO: detect @Grab/@Grape 
+    return KNOWN_DIRECTIVES.find(directive => {
+        return line.startsWith(directive);
+    }) !== undefined;
 }

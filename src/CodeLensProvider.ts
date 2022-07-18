@@ -1,5 +1,5 @@
 import { CodeLens, Command, ExtensionContext, languages, Range, TextDocument } from "vscode";
-import { isJBangFile } from "./JBangUtils";
+import { isJBangDirective, isJBangFile } from "./JBangUtils";
 
 const typeRegexp = /^.*(class|interface|enum|record)\s+.*$/;
 const singleCommentRegexp = /^\s*(\/\/).*$/;
@@ -20,10 +20,15 @@ export class CodeLensProvider implements CodeLensProvider  {
             return [];
         }
         let typePosition: Range | undefined;
+        let firstDirectivePosition: Range | undefined;
         let mainPosition: Range | undefined;
         const codelenses = [];
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i];
+            if (firstDirectivePosition === undefined && isJBangDirective(line)) {
+                firstDirectivePosition = new Range(i, 0, i, line.length);
+                continue;
+            }
             if (singleCommentRegexp.test(line)) {
                 continue;
             }
@@ -38,19 +43,27 @@ export class CodeLensProvider implements CodeLensProvider  {
                 break;
             }
         }
-
+        if (firstDirectivePosition !== undefined) {
+            codelenses.push(new CodeLens(firstDirectivePosition, {
+                command: "jbang.synchronize",
+                title: "Synchronize JBang",
+                tooltip: "Synchronize the classpath with the JBang directives in this file",
+                arguments: [document.uri]
+            }));
+        }
         if (typePosition || mainPosition) {
             // Define what command we want to trigger when activating the CodeLens
-            let c: Command = {
+            let executeJBang: Command = {
               command: "jbang.execute",
               title: "Run JBang",
+              tooltip: "Run this script with JBang in a new terminal",
               arguments: [document.uri]
             };
             if (typePosition) {
-                codelenses.push(new CodeLens(typePosition, c));
+                codelenses.push(new CodeLens(typePosition, executeJBang));
             }
             if (mainPosition) {
-                codelenses.push(new CodeLens(mainPosition, c));
+                codelenses.push(new CodeLens(mainPosition, executeJBang));
             }    
         } 
         return codelenses;
