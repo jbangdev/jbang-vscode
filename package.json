@@ -16,6 +16,10 @@
 	"categories": [
 		"Other"
 	],
+	"keywords": [
+		"JBang",
+		"Java"
+	],
 	"activationEvents": [
 		"onLanguage:java",
 		"onCommand:jbang.script.generate"
