@@ -64,6 +64,7 @@ jobs:
 
       - name: Publish to VSCode Marketplace
         if: github.ref == 'refs/heads/main'
+        working-directory: ./jbang-vscode
         run: |
           node ./scripts/create-package-insiders-json.js
           mv ./package.insiders.json ./package.json
