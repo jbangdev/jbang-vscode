@@ -1,4 +1,4 @@
-# jbang-vscode
+# JBang for Visual Studio Code
 This is an early work-in-progress extension for [vscode-java](https://marketplace.visualstudio.com/items?itemName=redhat.java). It aims at providing support for the [JBang](https://www.jbang.dev/) scripts written in Java.
 
 **Pre-requisites:**
