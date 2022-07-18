@@ -17,9 +17,9 @@ const date = new Date();
 const month = date.getMonth() + 1;
 const day = date.getDate();
 const hours = date.getHours();
-const minutes = date.getMinutes();
-const seconds = date.getSeconds();
-patch = `${date.getFullYear()}${prependZero(month)}${prependZero(day)}${prependZero(hours)}${prependZero(minutes)}${prependZero(seconds)}`;
+//Can't use minutes and seconds to prevent failures from 2 build running in the same minute
+//because each number must be in the range to 2147483647
+patch = `${date.getFullYear()}${prependZero(month)}${prependZero(day)}${prependZero(hours)}`;
 
 const insiderPackageJson = Object.assign(json, {
     version: `${major}.${minor}.${patch}`,
