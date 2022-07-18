@@ -32,7 +32,7 @@ Continuous Integration builds can be installed from [https://github.com/jbangdev
 ### Setup
 **Step 1.** Fork and clone this repository  
 
-**Step 2.** Fork and clone the [lsp](https://github.com/fbricon/jbang-eclipse/tree/lsp) branch of the [fbricon/jbang-eclipse repository](https://github.com/fbricon/jbang-eclipse), which contains the JBang/Eclipse core plugin and its jdt.ls extension
+**Step 2.** Fork and clone the [jbangdev/jbang-eclipse repository](https://github.com/jbangdev/jbang-eclipse), which contains the JBang/Eclipse core plugin and its jdt.ls extension
 
 **Note:** Ensure that the cloned repositories are under the same parent directory:
 

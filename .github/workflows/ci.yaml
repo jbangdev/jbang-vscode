@@ -15,9 +15,8 @@ jobs:
       - name: Check out jbang-eclipse
         uses: actions/checkout@v3
         with:
-          repository: fbricon/jbang-eclipse
+          repository: jbangdev/jbang-eclipse
           fetch-depth: 0
-          ref: lsp
           path: jbang-eclipse
 
       - name: Set Up NodeJS
