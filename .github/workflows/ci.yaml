@@ -43,7 +43,7 @@ jobs:
           
       - name: Build vsix
         working-directory: ./jbang-vscode 
-        run: vsce package
+        run: vsce --pre-release package
       
       - name: Upload vsix
         uses: actions/upload-artifact@v3
@@ -61,3 +61,12 @@ jobs:
           title: "Development Build"
           files: |
             jbang-vscode/*.vsix
+
+      - name: Publish to VSCode Marketplace
+        if: github.ref == 'refs/heads/main'
+        run: |
+          node ./scripts/create-package-insiders-json.js
+          mv ./package.insiders.json ./package.json
+          vsce --pre-release publish -p $VSCE_TOKEN
+        env:
+          VSCE_TOKEN: ${{ secrets.VSCODE_MARKETPLACE_TOKEN }}
