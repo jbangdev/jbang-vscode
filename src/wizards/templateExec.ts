@@ -1,8 +1,8 @@
-import { JBangTemplate } from "./JBangTemplate";
+import * as fs from "fs";
 import { jbang } from "../JBangExec";
 import { executeCommand } from "../utils/cpUtils";
+import { JBangTemplate } from "./JBangTemplate";
 import { ScriptGenState } from "./wizardState";
-import * as fs from "fs";
 
 export async function getTemplates(): Promise<JBangTemplate[]> {
     const data = await executeCommand(jbang(), ["template", "list"], {
@@ -48,6 +48,7 @@ function generateArgs(scriptGenState: ScriptGenState): string[] {
         args.push("-t");
         args.push(scriptGenState.template);
     }
+    args.push("--force");
     args.push(scriptGenState.scriptName);
     return args
 }
