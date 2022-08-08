@@ -105,6 +105,9 @@ async function getTargetDirectory(fileName: string) {
             directory = defaultDirectoryUri;
         }
     }
+    if (!directory) {
+        directory = await showOpenFolderDialog({ openLabel: LABEL_CHOOSE_FOLDER });
+    }
 
     while (directory && fs.existsSync(path.join(directory.fsPath, fileName))) {
         const overrideChoice = await window.showWarningMessage(MESSAGE_EXISTING_FILE, OPTION_OVERWRITE, OPTION_CHOOSE_NEW_DIR);
