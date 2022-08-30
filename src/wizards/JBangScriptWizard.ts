@@ -1,14 +1,29 @@
 import * as fs from "fs";
-import { commands, OpenDialogOptions, Uri, window, workspace } from "vscode";
+import { commands, OpenDialogOptions, QuickPickItem, Uri, window, workspace } from "vscode";
+import { Assets } from "../Assets";
+import { JBangConfig } from "../JBangConfig";
 import { runWithStandardMode } from "../utils/javaExtension";
-import { MultiStepInput } from "./multiStepsUtils";
-import { generateScript, getTemplates } from "./templateExec";
+import { JBangTemplate } from "./JBangTemplate";
+import { MultiStepInput, QuickInputButtonWithCallback, QuickPickParameters } from "./multiStepsUtils";
+import { generateScript, listTemplates } from "./templateExec";
 import { ScriptGenState } from "./wizardState";
 import path = require("path");
 
+const CUSTOM_TEMPLATE = {
+    label: "$(pencil) Custom template ...",
+    detail: "Manually set a custom template"
+} as QuickPickItem
+
+const DEFAULT_TOTAL_STEPS = 3;
+
 export default class JBangScriptWizard {
 
-    constructor() { }
+    private showDescription: boolean;
+    private templates: JBangTemplate[]|undefined;
+
+    constructor() {
+        this.showDescription = JBangConfig.isShowTemplateDescriptions();
+    }
 
     public static async open() {
         const wizard = new JBangScriptWizard();
@@ -17,7 +32,7 @@ export default class JBangScriptWizard {
 
     private async run() {
         const state: Partial<ScriptGenState> = {
-            totalSteps: 3,
+            totalSteps: DEFAULT_TOTAL_STEPS,
         };
         await MultiStepInput.run(input => this.inputTemplate(input, state));
         if (!state.scriptName) {
@@ -37,7 +52,7 @@ export default class JBangScriptWizard {
                     setTimeout(() => {
                         commands.executeCommand("jbang.synchronize", uri);
                     }, 1000);
-                },"Synchronize JBang");
+                }, "Synchronize JBang");
             }
         } catch (e: any) {
             window.showErrorMessage(e.message);
@@ -45,17 +60,79 @@ export default class JBangScriptWizard {
     }
 
     private async inputTemplate(input: MultiStepInput, state: Partial<ScriptGenState>) {
-        const templates = await getTemplates();
-        const template = await input.showQuickPick({
-            title: "Select a template",
-            step: 1,
-            totalSteps: state.totalSteps,
-            items: templates,
-            placeholder: "Select a template",
-        });
-        if (template) {
-            state.template = template.label;
+        state.totalSteps = DEFAULT_TOTAL_STEPS;
+        
+        let selectedTemplate: QuickPickItem | undefined;
+        do {
+            const templates: QuickPickItem[] = [];
+            templates.push(CUSTOM_TEMPLATE);
+    
+            const jbangTemplates = (await this.getTemplates()).map(t => this.asItem(t));
+            templates.push(...jbangTemplates);
+            selectedTemplate = await input.showQuickPick<QuickPickItem, QuickPickParameters<QuickPickItem>>({
+                title: "Select a template",
+                step: 1,
+                totalSteps: state.totalSteps,
+                items: templates,
+                placeholder: "Select a template",
+                buttons: [this.getInfoButton()],
+                configChanges: [
+                    {
+                        configName: "jbang." + JBangConfig.SHOW_TEMPLATE_DESC,
+                        callback: () => this.showDescription = JBangConfig.isShowTemplateDescriptions()
+                    }
+                ]
+            });
+
+            if (selectedTemplate) {
+                if (selectedTemplate?.label === CUSTOM_TEMPLATE.label) {
+                    return (input: MultiStepInput) => this.inputCustomTemplate(input, state);
+                }
+    
+                state.template = selectedTemplate.label;
+    
+                return (input: MultiStepInput) => this.inputScriptName(input, state);
+            }
+        } while (!selectedTemplate)
+    }
+
+    private asItem(template: JBangTemplate): QuickPickItem {
+        return {
+            label: template.label,
+            description: this.showDescription ? template.description : undefined
         }
+    }
+
+    private async getTemplates(): Promise<JBangTemplate[]> {
+        if (!this.templates) {
+            this.templates = await listTemplates();
+        }
+        return this.templates;
+    }
+
+    private getInfoButton(): QuickInputButtonWithCallback {
+        const darkThemeIcon = Assets.get('buttons/info_dark_theme.svg');
+        const lightThemeIcon = Assets.get('/buttons/info_light_theme.svg');
+        return {
+            iconPath: { light: lightThemeIcon, dark: darkThemeIcon },
+            tooltip: 'Toggle template descriptions',
+            callback: () => {
+                this.showDescription = !this.showDescription;
+                JBangConfig.setShowTemplateDescriptions(this.showDescription);
+            }
+        } as QuickInputButtonWithCallback;
+    }
+
+    private async inputCustomTemplate(input: MultiStepInput, state: Partial<ScriptGenState>) {
+        state.totalSteps = DEFAULT_TOTAL_STEPS + 1;
+        state.template = await input.showInputBox({
+            title: "Custom template",
+            step: 2,
+            totalSteps: state.totalSteps,
+            value: state.template || "",
+            prompt: "Enter a template name",
+            validate: validateTemplateName
+        });
 
         return (input: MultiStepInput) => this.inputScriptName(input, state);
     }
@@ -63,7 +140,7 @@ export default class JBangScriptWizard {
     private async inputScriptName(input: MultiStepInput, state: Partial<ScriptGenState>) {
         state.scriptName = await input.showInputBox({
             title: "Enter a script name",
-            step: 2,
+            step: state.totalSteps! - 1,
             totalSteps: state.totalSteps,
             value: state.scriptName || "",
             prompt: "Enter a script name",
@@ -86,6 +163,16 @@ async function validateName(name: string): Promise<string | undefined> {
     return undefined;
 }
 
+async function validateTemplateName(name: string): Promise<string | undefined> {
+    if (!name) {
+        return "Template name is required";
+    }
+    if (name.includes(" ")) {
+        return "Template name cannot contain spaces";
+    }
+    return undefined;
+}
+
 async function getTargetDirectory(fileName: string) {
     const MESSAGE_EXISTING_FILE = `'${fileName}' already exists in selected directory.`;
     const LABEL_CHOOSE_FOLDER = 'Generate Here';
@@ -93,7 +180,7 @@ async function getTargetDirectory(fileName: string) {
     const OPTION_CHOOSE_NEW_DIR = 'Choose new directory';
 
     const defaultDirectoryUri = workspace.workspaceFolders ? workspace.workspaceFolders[0].uri : undefined;
-    
+
     let directory: Uri | undefined;
     if (defaultDirectoryUri) {
         const defaultDirectory = defaultDirectoryUri.fsPath;
