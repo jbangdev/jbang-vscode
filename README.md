@@ -2,7 +2,7 @@
 This is an early work-in-progress extension for [vscode-java](https://marketplace.visualstudio.com/items?itemName=redhat.java). It aims at providing support for the [JBang](https://www.jbang.dev/) scripts written in Java.
 
 **Pre-requisites:**
-- [JBang](https://www.jbang.dev/download/) is installed and available in the PATH.
+- [JBang](https://www.jbang.dev/download/) is installed and available in the PATH. Alternatively, you can set the `jbang.home` preference to point to a `JBang` installation
 - [vscode-java](https://marketplace.visualstudio.com/items?itemName=redhat.java) is installed.
 
 **Outstanding issues**:
@@ -17,6 +17,10 @@ This is an early work-in-progress extension for [vscode-java](https://marketplac
 - If a (.java) script is included in a Maven or Gradle project's hierarchy, right-clicking on the script and selecting `Synchronize JBang` will add the script's parent folder to the project's source path and the JBang dependencies will be added to the project's classpath.
 - Create a new JBang script from an existing template with the `JBang: Create a new script` command.
 - Annotation processors are automatically detected and configured.
+
+## Preferences
+- `jbang.home`: Specifies the folder path to the JBang directory (not the executable), eg. `~/.sdkman/candidates/jbang/current`. On Windows, backslashes must be escaped, eg `C:\\ProgramData\\chocolatey\\lib\\jbang`. Used by the `JBang: Create a new script` wizard and the `Run JBang` code lens. Useful in case `jbang` is not automatically picked up from the $PATH, for some reason.
+- `jbang.wizard.templates.showDescriptions` : When set to `true` (the default), shows JBang template descriptions in the `JBang: Create a new script` wizard, else hides them.
 
 ## Installation:
 Continuous Integration builds can be installed from [https://github.com/jbangdev/jbang-vscode/releases/tag/latest](https://github.com/jbangdev/jbang-vscode/releases/tag/latest). Download the most recent `jbang-vscode-<version>.vsix` file and install it by following the instructions [here](https://code.visualstudio.com/docs/editor/extension-gallery#_install-from-a-vsix).

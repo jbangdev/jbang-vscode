@@ -4,7 +4,7 @@ import { executeCommand } from "../utils/cpUtils";
 import { JBangTemplate } from "./JBangTemplate";
 import { ScriptGenState } from "./wizardState";
 
-export async function getTemplates(): Promise<JBangTemplate[]> {
+export async function listTemplates(): Promise<JBangTemplate[]> {
     const data = await executeCommand(jbang(), ["template", "list"], {
         shell: true,
         env: {
@@ -16,11 +16,13 @@ export async function getTemplates(): Promise<JBangTemplate[]> {
     const lines = data.toString().split(/\r?\n/);
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
-        const template = line.split('=');
-        templates.push({
-            label: template[0],
-            description: template[1]
-        });
+        if (line.indexOf("=") > 0) {
+            const template = line.split('=');
+            templates.push({
+                label: template[0],
+                description: template[1]
+            });
+        }
     }
     return templates;
 }
