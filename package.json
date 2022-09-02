@@ -45,6 +45,19 @@
 				"title": "Create a new script",
 				"category": "JBang",
 				"icon": "icons/jbang.png"
+			},
+			{
+				"command": "jbang.script.export.native",
+				"title": "Export as native binary",
+				"category": "JBang",
+				"icon": "icons/jbang.png"
+			}
+		],
+		"submenus": [
+			{
+				"id": "jbang",
+				"label": "JBang",
+				"icon": "icons/jbang.png"
 			}
 		],
 		"menus": {
@@ -52,20 +65,36 @@
 				{
 					"command": "jbang.synchronize",
 					"when": "isJBangFile"
+				},
+				{
+					"command": "jbang.script.export.native",
+					"when": "isJBangFile"
 				}
 			],
 			"explorer/context": [
 				{
-					"command": "jbang.synchronize",
+					"submenu": "jbang",
 					"when": "isJBangFile",
-					"group": "1_javaactions"
+					"group": "1_jbangactions"
 				}
 			],
 			"editor/context": [
 				{
+					"submenu": "jbang",
+					"when": "isJBangFile",
+					"group": "1_jbangactions"
+				}
+			],
+			"jbang": [
+				{
 					"command": "jbang.synchronize",
 					"when": "isJBangFile",
-					"group": "1_javaactions"
+					"group": "1_jbangactions@1"
+				},
+				{
+					"command": "jbang.script.export.native",
+					"when": "isJBangFile",
+					"group": "1_jbangactions@2"
 				}
 			]
 		},
