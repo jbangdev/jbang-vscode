@@ -1,11 +1,10 @@
 import { ExtensionContext, Terminal, Uri, window } from "vscode";
 import { jbang } from "./JBangExec";
 import { ITerminalOptions, terminalCommandRunner } from "./terminal/terminalCommandRunner";
-import { ScriptGenState } from "./wizards/wizardState";
 
 export class JBangRunner {
 
-    constructor() {}
+    constructor() { }
 
     public initialize(context: ExtensionContext) {
         context.subscriptions.push(terminalCommandRunner);
@@ -19,6 +18,14 @@ export class JBangRunner {
     public async runJBang(uri: Uri): Promise<Terminal> {
         const exec = jbang();
         const command = `${exec} ${uri.fsPath}`;
+        const name = "JBang - " + uri.fsPath.substring(uri.fsPath.lastIndexOf("/") + 1);
+        let terminalOptions = { name } as ITerminalOptions;
+        return await terminalCommandRunner.runInTerminal(command, terminalOptions);
+    }
+
+    public async exportNative(uri: Uri): Promise<Terminal> {
+        const exec = jbang();
+        const command = `${exec} export native ${uri.fsPath}`;
         const name = "JBang - " + uri.fsPath.substring(uri.fsPath.lastIndexOf("/") + 1);
         let terminalOptions = { name } as ITerminalOptions;
         return await terminalCommandRunner.runInTerminal(command, terminalOptions);

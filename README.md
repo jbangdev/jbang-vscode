@@ -1,3 +1,8 @@
+[![Visual Studio Marketplace](https://img.shields.io/visual-studio-marketplace/v/jbangdev.jbang-vscode?style=for-the-badge&label=VS%20Marketplace&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=jbangdev.jbang-vscode)
+[![Installs](https://img.shields.io/visual-studio-marketplace/i/jbangdev.jbang-vscode?style=for-the-badge)](https://marketplace.visualstudio.com/items?itemName=jbangdev.jbang-vscode)
+[![Build Status](https://img.shields.io/github/workflow/status/jbangdev/jbang-vscode/Build/main?style=for-the-badge)](https://github.com/jbangdev/jbang-vscode/actions?query=branch%3Amain)
+[![License](https://img.shields.io/github/license/jbangdev/jbang-vscode?style=for-the-badge)](https://github.com/jbangdev/jbang-vscode/blob/main/LICENSE)
+
 # JBang for Visual Studio Code
 This is an early work-in-progress extension for [vscode-java](https://marketplace.visualstudio.com/items?itemName=redhat.java). It aims at providing support for the [JBang](https://www.jbang.dev/) scripts written in Java.
 
@@ -6,7 +11,6 @@ This is an early work-in-progress extension for [vscode-java](https://marketplac
 - [vscode-java](https://marketplace.visualstudio.com/items?itemName=redhat.java) is installed.
 
 **Outstanding issues**:
-- JBang validation errors are not propagated by Eclipse jdt.ls, so you will miss dependency errors (eg. //DEPS wrong:dep:version). See ~~[eclipse.jdt.ls#2154](https://github.com/eclipse/eclipse.jdt.ls/issues/2154)~~. This is fixed in the **pre-release** of vscode-java. 
 - The Java Runtime for current file is not displayed in the status bar. See [vscode-java#2552](https://github.com/redhat-developer/vscode-java/issues/2552)
 - The JBang Classpath container is not shown in the Java Projects view (contributed by [Project Manager for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-dependency)). See [vscode-java-dependency#654](https://github.com/microsoft/vscode-java-dependency/issues/654).
 
@@ -14,16 +18,17 @@ This is an early work-in-progress extension for [vscode-java](https://marketplac
 - If you open a folder containing JBang scripts, each script will be assigned a specific classpath.
 - Modifying JBang directives in a file will update the classpath of the file.
 - JBang scripts can be run from the `Run JBang` codelens, that shows on top of the type declaration or main method, if there is one.
-- If a (.java) script is included in a Maven or Gradle project's hierarchy, right-clicking on the script and selecting `Synchronize JBang` will add the script's parent folder to the project's source path and the JBang dependencies will be added to the project's classpath.
+- If a (.java) script is included in a Maven or Gradle project's hierarchy, right-clicking on the script and selecting `JBang > Synchronize JBang` will add the script's parent folder to the project's source path and the JBang dependencies will be added to the project's classpath.
 - Create a new JBang script from an existing template with the `JBang: Create a new script` command.
 - Annotation processors are automatically detected and configured.
+- Export the script as a native binary, by right-clicking on the script and selecting the `JBang > Export as native binary` menu. This requires GraalVM to be installed with the native-image extension. See https://www.jbang.dev/documentation/guide/latest/usage.html#build-and-run-native-image-experimental
 
 ## Preferences
 - `jbang.home`: Specifies the folder path to the JBang directory (not the executable), eg. `~/.sdkman/candidates/jbang/current`. On Windows, backslashes must be escaped, eg `C:\\ProgramData\\chocolatey\\lib\\jbang`. Used by the `JBang: Create a new script` wizard and the `Run JBang` code lens. Useful in case `jbang` is not automatically picked up from the $PATH, for some reason.
 - `jbang.wizard.templates.showDescriptions` : When set to `true` (the default), shows JBang template descriptions in the `JBang: Create a new script` wizard, else hides them.
 
 ## Installation:
-Continuous Integration builds can be installed from [https://github.com/jbangdev/jbang-vscode/releases/tag/latest](https://github.com/jbangdev/jbang-vscode/releases/tag/latest). Download the most recent `jbang-vscode-<version>.vsix` file and install it by following the instructions [here](https://code.visualstudio.com/docs/editor/extension-gallery#_install-from-a-vsix).
+Continuous Integration builds can be installed from the Visual Studio Marketplace, as Pre-release builds. Alternatively, you can head to [https://github.com/jbangdev/jbang-vscode/releases/tag/latest](https://github.com/jbangdev/jbang-vscode/releases/tag/latest), download the most recent `jbang-vscode-<version>.vsix` file and install it by following the instructions [here](https://code.visualstudio.com/docs/editor/extension-gallery#_install-from-a-vsix).
 
 ## Development Setup
 

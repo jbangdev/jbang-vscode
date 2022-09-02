@@ -16,6 +16,9 @@ export class CommandManager {
             }),
             commands.registerCommand('jbang.script.generate', async () => {
                 return JBangScriptWizard.open();
+            }),
+            commands.registerCommand('jbang.script.export.native', async (uri) => {
+                return JBangRunner.exportNative(uri);
             })
         );
     }
