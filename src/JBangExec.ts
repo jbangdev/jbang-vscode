@@ -17,7 +17,8 @@ export function jbang():string {
         dir = path.resolve(home, 'bin');
     }
     const jbangExec = (isWin()?"jbang.cmd":"jbang");
-    const fullPath = path.resolve(dir, jbangExec);
+
+    const fullPath = (dir)?path.resolve(dir, jbangExec):jbangExec;
     console.log("Using JBang from "+fullPath);
     return fullPath;
 }
