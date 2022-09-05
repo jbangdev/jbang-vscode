@@ -11,6 +11,7 @@ This is an early work-in-progress extension for [vscode-java](https://marketplac
 - [vscode-java](https://marketplace.visualstudio.com/items?itemName=redhat.java) is installed.
 
 **Outstanding issues**:
+- Modifications to build.jbang files don't trigger autosynchronization nor do they report diagnostics. See [jbang-eclipse#25](https://github.com/jbangdev/jbang-eclipse/issues/25).
 - The Java Runtime for current file is not displayed in the status bar. See [vscode-java#2552](https://github.com/redhat-developer/vscode-java/issues/2552)
 - The JBang Classpath container is not shown in the Java Projects view (contributed by [Project Manager for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-dependency)). See [vscode-java-dependency#654](https://github.com/microsoft/vscode-java-dependency/issues/654).
 
@@ -21,6 +22,7 @@ This is an early work-in-progress extension for [vscode-java](https://marketplac
 - If a (.java) script is included in a Maven or Gradle project's hierarchy, right-clicking on the script and selecting `JBang > Synchronize JBang` will add the script's parent folder to the project's source path and the JBang dependencies will be added to the project's classpath.
 - Create a new JBang script from an existing template with the `JBang: Create a new script` command.
 - Annotation processors are automatically detected and configured.
+- Partial support for `build.jbang` files: If a folder containing `build.jbang` is opened, it'll be used to configure the Java settings of its //SOURCES. Currently, changes in `build.jbang` require manually triggering the `JBang > Synchronize JBang` command (via codelens or context menu) to take effect.
 - Export the script as a native binary, by right-clicking on the script and selecting the `JBang > Export as native binary` menu. This requires GraalVM to be installed with the native-image extension. See https://www.jbang.dev/documentation/guide/latest/usage.html#build-and-run-native-image-experimental
 
 ## Preferences
