@@ -22,16 +22,39 @@
 	],
 	"activationEvents": [
 		"onLanguage:java",
-		"onCommand:jbang.script.generate"
+		"onCommand:jbang.script.generate",
+		"workspaceContains:build.jbang"
 	],
 	"extensionDependencies": [
 		"redhat.java"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"languages": [
+			{
+			  "id": "jbang",
+			  "extensions": [
+				".jbang"
+			  ],
+			  "aliases": [
+				"JBang"
+			  ],
+			  "configuration": "./language-support/language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "jbang",
+				"scopeName": "source.jbang",
+				"path": "./language-support/jbang.tmLanguage.json"
+			}
+		],
 		"javaExtensions": [
 			"./jars/dev.jbang.eclipse.core.jar",
 			"./jars/dev.jbang.eclipse.ls.jar"
+		],
+		"javaBuildFilePatterns": [
+			"^build\\.jbang$"
 		],
 		"commands": [
 			{

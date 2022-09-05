@@ -11,11 +11,14 @@ export class CodeLensProvider implements CodeLensProvider  {
         context.subscriptions.push(
             languages.registerCodeLensProvider('java', this)
         );
+        context.subscriptions.push(
+            languages.registerCodeLensProvider('jbang', this)
+        );
     }
 
     async provideCodeLenses(document: TextDocument): Promise<CodeLens[]> {
         const lines = document.getText().split(/\r?\n/);
-        const isJBangScript = isJBangFile(lines);
+        const isJBangScript = document.languageId === 'jbang' || isJBangFile(lines);
         if (!isJBangScript) {
             return [];
         }

@@ -1,0 +1,11 @@
+{
+    "name": "JBang",
+    "scopeName": "source.jbang",
+    "patterns": [
+      {
+        "comment": "source.java is defined in https://github.com/microsoft/vscode/blob/main/extensions/java/syntaxes/java.tmLanguage.json",
+        "include": "source.java"
+      }
+    ],
+    "uuid": "b67884ea-cc0a-4f99-b680-7ee7c3bb04d8"
+  }
