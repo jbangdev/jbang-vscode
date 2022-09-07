@@ -17,7 +17,7 @@ export class JBangRunner {
 
     public async runJBang(uri: Uri): Promise<Terminal> {
         const exec = jbang();
-        const command = `${exec} ${uri.fsPath}`;
+        const command = `${exec} "${uri.fsPath}"`;
         const name = "JBang - " + uri.fsPath.substring(uri.fsPath.lastIndexOf("/") + 1);
         let terminalOptions = { name } as ITerminalOptions;
         return await terminalCommandRunner.runInTerminal(command, terminalOptions);
@@ -25,7 +25,7 @@ export class JBangRunner {
 
     public async exportNative(uri: Uri): Promise<Terminal> {
         const exec = jbang();
-        const command = `${exec} export native ${uri.fsPath}`;
+        const command = `${exec} export native "${uri.fsPath}"`;
         const name = "JBang - " + uri.fsPath.substring(uri.fsPath.lastIndexOf("/") + 1);
         let terminalOptions = { name } as ITerminalOptions;
         return await terminalCommandRunner.runInTerminal(command, terminalOptions);
