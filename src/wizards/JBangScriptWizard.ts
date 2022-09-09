@@ -13,6 +13,10 @@ const CUSTOM_TEMPLATE = {
     label: "$(pencil) Custom template ...",
     detail: "Manually set a custom template"
 } as QuickPickItem
+const NO_TEMPLATE = {
+    label: "$(close) No template",
+    detail: "Do not use a template"
+} as QuickPickItem
 
 const DEFAULT_TOTAL_STEPS = 3;
 
@@ -65,6 +69,7 @@ export default class JBangScriptWizard {
         let selectedTemplate: QuickPickItem | undefined;
         do {
             const templates: QuickPickItem[] = [];
+            templates.push(NO_TEMPLATE);
             templates.push(CUSTOM_TEMPLATE);
     
             const jbangTemplates = (await this.getTemplates()).map(t => this.asItem(t));
@@ -88,8 +93,9 @@ export default class JBangScriptWizard {
                 if (selectedTemplate?.label === CUSTOM_TEMPLATE.label) {
                     return (input: MultiStepInput) => this.inputCustomTemplate(input, state);
                 }
-    
-                state.template = selectedTemplate.label;
+                if (selectedTemplate?.label !== NO_TEMPLATE.label) {
+                    state.template = selectedTemplate.label;
+                }
     
                 return (input: MultiStepInput) => this.inputScriptName(input, state);
             }
