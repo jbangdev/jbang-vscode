@@ -12,11 +12,12 @@ This is an early work-in-progress extension for [vscode-java](https://marketplac
 
 **Outstanding issues**:
 - Modifications to build.jbang files don't trigger autosynchronization nor do they report diagnostics. See [jbang-eclipse#25](https://github.com/jbangdev/jbang-eclipse/issues/25).
-- The Java Runtime for current file is not displayed in the status bar. See [vscode-java#2552](https://github.com/redhat-developer/vscode-java/issues/2552)
-- The JBang Classpath container is not shown in the Java Projects view (contributed by [Project Manager for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-dependency)). See [vscode-java-dependency#654](https://github.com/microsoft/vscode-java-dependency/issues/654).
+- The Java Runtime for current file is not displayed in the status bar. See [vscode-java#2552](https://github.com/redhat-developer/vscode-java/issues/2552).
+- `JDT.LS reimports the JBang project every time the folder is opened in the editor, making startup slower than necessary. See [eclipse.jdt.ls#2155](https://github.com/eclipse/eclipse.jdt.ls/issues/2155)
 
 **What works (more or less)**:
 - If you open a folder containing JBang scripts, each script will be assigned a specific classpath.
+- Dumb (as in non-context-aware) snippets are provided for JBang directives.
 - Modifying JBang directives in a file will update the classpath of the file.
 - JBang scripts can be run from the `Run JBang` codelens, that shows on top of the type declaration or main method, if there is one.
 - If a (.java) script is included in a Maven or Gradle project's hierarchy, right-clicking on the script and selecting `JBang > Synchronize JBang` will add the script's parent folder to the project's source path and the JBang dependencies will be added to the project's classpath.
