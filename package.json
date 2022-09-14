@@ -42,6 +42,16 @@
 			  "configuration": "./language-support/language-configuration.json"
 			}
 		],
+		"snippets": [
+			{
+				"language": "java",
+				"path": "./snippets/jbang.json"
+			},
+			{
+				"language": "jbang",
+				"path": "./snippets/jbang.json"
+			}
+		],
 		"grammars": [
 			{
 				"language": "jbang",
