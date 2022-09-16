@@ -8,12 +8,11 @@ export class CodeLensProvider implements CodeLensProvider  {
 
     public initialize(context: ExtensionContext) {
         //console.log("CodeLensProvider.initialize");
-        context.subscriptions.push(
-            languages.registerCodeLensProvider('java', this)
-        );
-        context.subscriptions.push(
-            languages.registerCodeLensProvider('jbang', this)
-        );
+        ["jbang", "java"].forEach(languageId => {
+            context.subscriptions.push(
+                languages.registerCodeLensProvider(languageId, this)
+            );
+        });
     }
 
     async provideCodeLenses(document: TextDocument): Promise<CodeLens[]> {

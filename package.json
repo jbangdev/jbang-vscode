@@ -32,14 +32,14 @@
 	"contributes": {
 		"languages": [
 			{
-			  "id": "jbang",
-			  "extensions": [
-				".jbang"
-			  ],
-			  "aliases": [
-				"JBang"
-			  ],
-			  "configuration": "./language-support/language-configuration.json"
+				"id": "jbang",
+				"extensions": [
+					".jbang"
+				],
+				"aliases": [
+					"JBang"
+				],
+				"configuration": "./language-support/language-configuration.json"
 			}
 		],
 		"snippets": [
@@ -134,23 +134,23 @@
 		"configuration": {
 			"title": "JBang",
 			"properties": {
-			  "jbang.home": {
-				"type": [
-					"string",
-					"null"
-				  ],
-				"default": null,
-				"markdownDescription": "Specifies the folder path to the JBang directory (not the executable), eg. `~/.sdkman/candidates/jbang/current`.\n\nOn Windows, backslashes must be escaped, eg. `C:\\\\ProgramData\\\\chocolatey\\\\lib\\\\jbang`.\n\nUsed by the `JBang: Create a new script` wizard and the `Run JBang` code lens. Useful in case `jbang` is not automatically picked up from the $PATH, for some reason.",
-				"description": "Specifies the folder path to the JBang directory (not the executable), eg. '~/.sdkman/candidates/jbang/current'.\n\nOn Windows, backslashes must be escaped, eg. 'C:\\\\ProgramData\\\\chocolatey\\\\lib\\\\jbang'.\n\nUsed by the 'JBang: Create a new script' wizard and the 'Run JBang' code lens. Useful in case 'jbang' is not automatically picked up from the $PATH, for some reason.",
-				"scope": "machine-overridable"
-			  },
-			  "jbang.wizard.templates.showDescriptions": {
-				"type": "boolean",
-				"default": true,
-				"markdownDescription": "When set to `true` (the default), shows JBang template descriptions in the `JBang: Create a new script` wizard, else hides them.",
-				"description": "When set to 'true' (the default), shows JBang template descriptions in the 'JBang: Create a new script' wizard, else hides them.",
-				"scope": "window"
-			  }
+				"jbang.home": {
+					"type": [
+						"string",
+						"null"
+					],
+					"default": null,
+					"markdownDescription": "Specifies the folder path to the JBang directory (not the executable), eg. `~/.sdkman/candidates/jbang/current`.\n\nOn Windows, backslashes must be escaped, eg. `C:\\\\ProgramData\\\\chocolatey\\\\lib\\\\jbang`.\n\nUsed by the `JBang: Create a new script` wizard and the `Run JBang` code lens. Useful in case `jbang` is not automatically picked up from the $PATH, for some reason.",
+					"description": "Specifies the folder path to the JBang directory (not the executable), eg. '~/.sdkman/candidates/jbang/current'.\n\nOn Windows, backslashes must be escaped, eg. 'C:\\\\ProgramData\\\\chocolatey\\\\lib\\\\jbang'.\n\nUsed by the 'JBang: Create a new script' wizard and the 'Run JBang' code lens. Useful in case 'jbang' is not automatically picked up from the $PATH, for some reason.",
+					"scope": "machine-overridable"
+				},
+				"jbang.wizard.templates.showDescriptions": {
+					"type": "boolean",
+					"default": true,
+					"markdownDescription": "When set to `true` (the default), shows JBang template descriptions in the `JBang: Create a new script` wizard, else hides them.",
+					"description": "When set to 'true' (the default), shows JBang template descriptions in the 'JBang: Create a new script' wizard, else hides them.",
+					"scope": "window"
+				}
 			}
 		}
 	},
@@ -179,6 +179,8 @@
 		"@vscode/test-electron": "2.1.3"
 	},
 	"dependencies": {
+		"axios": "0.27.2",
+		"lru-cache": "^7.14.0",
 		"vscode-languageclient": "^8.0.1"
 	}
 }
