@@ -162,11 +162,11 @@ function toCompletionList(response: any, range: Range, mapper: ((gav:any, index:
 function findCurrentWord(lineText: string, position: Position): [string, Position] {
     let candidate = lineText.substring(DEPS_PREFIX.length, position.character).trim();
     let startPosition = new Position(position.line, DEPS_PREFIX.length);
-    for(let i = lineText.length -1; i> -1; i--) {
+    for(let i = position.character; i> -1; i--) {
         const c = lineText.charAt(i);
         if (isDelimiter(c)) {
             const nonDelimIdx = i+1;
-            candidate = lineText.substring(nonDelimIdx);
+            candidate = lineText.substring(nonDelimIdx, position.character);
             startPosition = new Position(position.line, nonDelimIdx);
             break;
         }
