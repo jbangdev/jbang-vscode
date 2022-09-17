@@ -19,7 +19,8 @@ export class CompletionProvider {
         if (!lineText.startsWith(DEPS_PREFIX)) {
             return [];
         }
-        const [currText, start]= findCurrentWord(lineText, position);
+        const start = findStartPosition(lineText, position);
+        const currText = lineText.substring(start.character, position.character).trim();
         const parts = currText.split(':');
         
         let json:any = QUERY_CACHE.get(currText);
@@ -159,25 +160,18 @@ function toCompletionList(response: any, range: Range, mapper: ((gav:any, index:
     return result;
 }
 
-function findCurrentWord(lineText: string, position: Position): [string, Position] {
-    let candidate = lineText.substring(DEPS_PREFIX.length, position.character).trim();
-    let startPosition = new Position(position.line, DEPS_PREFIX.length);
+function findStartPosition(lineText: string, position: Position): Position {
     for(let i = position.character; i> -1; i--) {
-        const c = lineText.charAt(i);
-        if (isDelimiter(c)) {
-            const nonDelimIdx = i+1;
-            candidate = lineText.substring(nonDelimIdx, position.character);
-            startPosition = new Position(position.line, nonDelimIdx);
-            break;
+        if (isDelimiter(lineText.charAt(i))) {
+            return new Position(position.line, i+1);
         }
     }
-    return [candidate, startPosition];
+    return new Position(position.line, DEPS_PREFIX.length);
 }
 
 function findEndPosition(lineText: string, position: Position): Position {
     for(let i = position.character; i < lineText.length; i++) {
-        const c = lineText.charAt(i);
-        if (isDelimiter(c)) {
+        if (isDelimiter(lineText.charAt(i))) {
             return new Position(position.line, i);
         }
     }
