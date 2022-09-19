@@ -6,15 +6,17 @@ import CompletionProvider from "./CompletionProvider";
 import EditorListener from "./EditorListener";
 import JBangRunner from "./JBangRunner";
 
+export let version = 'Unknown';
+
 export function activate(context: ExtensionContext) {
+	version = context.extension.packageJSON.version;
 	JBangRunner.initialize(context);
 	Assets.initialize(context);
 	CommandManager.initialize(context);
 	EditorListener.initialize(context);
 	CodeLensProvider.initialize(context);
 	CompletionProvider.initialize(context);
-	const packageJson = require('../package.json');
-	console.log(`${packageJson.name} ${packageJson.version} is now active!`);
+	console.log(`${context.extension.packageJSON.name} ${version} is now active!`);
 }
 
 
