@@ -17,9 +17,11 @@ This is an early work-in-progress extension for [vscode-java](https://marketplac
 
 **What works (more or less)**:
 - If you open a folder containing JBang scripts, each script will be assigned a specific classpath.
-- Dumb (as in non-context-aware) snippets are provided for JBang directives.
+- Snippets are provided for JBang directives.
 - Modifying JBang directives in a file will update the classpath of the file.
 - Autocompletion for dependencies in `//DEPS` 
+- Autocompletion for `//SOURCES` 
+- Partial autocompletion for `//JAVA_OPTIONS` and `//JAVAC_OPTIONS` 
 - JBang scripts can be run from the `Run JBang` codelens, that shows on top of the type declaration or main method, if there is one.
 - If a (.java) script is included in a Maven or Gradle project's hierarchy, right-clicking on the script and selecting `JBang > Synchronize JBang` will add the script's parent folder to the project's source path and the JBang dependencies will be added to the project's classpath.
 - Create a new JBang script from an existing template with the `JBang: Create a new script` command.
