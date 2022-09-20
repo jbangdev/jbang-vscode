@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { CancellationToken, CompletionContext, CompletionItem, CompletionItemKind, CompletionList, Position, Range, TextDocument } from "vscode";
 import { version } from "../extension";
+import { compareVersions } from "../utils/version";
 import { CompletionHelper } from "./CompletionHelper";
 import { CompletionParticipant } from "./CompletionParticipant";
 import LRUCache = require("lru-cache");
@@ -102,7 +103,7 @@ function toCompletionItem(gav: any, index: number, range: Range): CompletionItem
 }
 function toVersionCompletionItem(gav: any, index: number, range: Range): CompletionItem {
     const label = gav.v;
-    const sortText = `${new Date().getTime() - gav.timestamp}`;
+    const sortText =  `${index}`.padStart(10, "0") ;//`${new Date().getTime() - gav.timestamp}`;
     return {
         label,
         kind: CompletionItemKind.Value,
@@ -134,8 +135,14 @@ async function searchVersion(groupId: string, artifactId: string, version: strin
     }
     searchQuery += '&core=gav';
     console.log(searchQuery);
-    const response = await axios.get(searchQuery, axiosConfig);
-    return response.data?.response;
+    const response = (await axios.get(searchQuery, axiosConfig))?.data?.response;
+    // Apparently there's no way to ask solrsearch to return versions sorted by version desc, 
+    // so we do it manually
+    if (response?.docs) { //Sort by decreasing version
+        const sortedVersions = response.docs.sort(compareArtifactVersions);
+        response.docs = sortedVersions;
+    }
+    return response;
 }
 
 function toCompletionList(response: any, range: Range, mapper: ((gav: any, index: number, range: Range) => CompletionItem) = toCompletionItem): CompletionList {
@@ -150,3 +157,7 @@ function toCompletionList(response: any, range: Range, mapper: ((gav: any, index
     result.isIncomplete = numFound > result.items.length;
     return result;
 }
+
+const compareArtifactVersions = (a: any, b: any) => {
+    return compareVersions(b.v, a.v);
+};
