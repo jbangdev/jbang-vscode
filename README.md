@@ -31,6 +31,7 @@ This is an early work-in-progress extension for [vscode-java](https://marketplac
 ## Preferences
 - `jbang.home`: Specifies the folder path to the JBang directory (not the executable), eg. `~/.sdkman/candidates/jbang/current`. On Windows, backslashes must be escaped, eg `C:\\ProgramData\\chocolatey\\lib\\jbang`. Used by the `JBang: Create a new script` wizard and the `Run JBang` code lens. Useful in case `jbang` is not automatically picked up from the $PATH, for some reason.
 - `jbang.wizard.templates.showDescriptions` : When set to `true` (the default), shows JBang template descriptions in the `JBang: Create a new script` wizard, else hides them.
+- `java.import.jbang.projectPerScript` : When set to `true`, each script found in the opened folder will be imported as its own project, with its own classpath. `false` by default. Toggling this setting requires calling the `Java: Clean Java Language Server Workspace` command to take effect.
 
 ## Installation:
 Continuous Integration builds can be installed from the Visual Studio Marketplace, as Pre-release builds. Alternatively, you can head to [https://github.com/jbangdev/jbang-vscode/releases/tag/latest](https://github.com/jbangdev/jbang-vscode/releases/tag/latest), download the most recent `jbang-vscode-<version>.vsix` file and install it by following the instructions [here](https://code.visualstudio.com/docs/editor/extension-gallery#_install-from-a-vsix).
