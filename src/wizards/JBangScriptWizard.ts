@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import { commands, OpenDialogOptions, QuickPickItem, Uri, window, workspace } from "vscode";
 import { Assets } from "../Assets";
-import { JBangConfig } from "../JBangConfig";
+import JBangConfig, { JBangSettings } from "../JBangConfig";
 import { runWithStandardMode } from "../utils/javaExtension";
 import { JBangTemplate } from "./JBangTemplate";
 import { MultiStepInput, QuickInputButtonWithCallback, QuickPickParameters } from "./multiStepsUtils";
@@ -83,7 +83,7 @@ export default class JBangScriptWizard {
                 buttons: [this.getInfoButton()],
                 configChanges: [
                     {
-                        configName: "jbang." + JBangConfig.SHOW_TEMPLATE_DESC,
+                        configName: "jbang." + JBangSettings.SHOW_TEMPLATE_DESC,
                         callback: () => this.showDescription = JBangConfig.isShowTemplateDescriptions()
                     }
                 ]

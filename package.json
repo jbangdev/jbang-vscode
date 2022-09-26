@@ -140,6 +140,12 @@
 					"markdownDescription": "When set to `true` (the default), shows JBang template descriptions in the `JBang: Create a new script` wizard, else hides them.",
 					"description": "When set to 'true' (the default), shows JBang template descriptions in the 'JBang: Create a new script' wizard, else hides them.",
 					"scope": "window"
+				},
+				"java.import.jbang.projectPerScript": {
+					"type": "boolean",
+					"default": false,
+					"markdownDescription": "When set to `true`, each script found in the opened folder will be imported as its own project, with its own classpath. `false` by default. Toggling this setting requires calling the `Java: Clean Java Language Server Workspace` command to take effect.",
+					"scope": "window"
 				}
 			}
 		}

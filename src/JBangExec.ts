@@ -1,7 +1,7 @@
 import path = require('path');
 import * as os from 'os';
 import { workspace, WorkspaceConfiguration } from 'vscode';
-import { JBangConfig } from './JBangConfig';
+import JBangConfig from "./JBangConfig";
 
 function isWin():boolean {
     return /^win/.test(process.platform);

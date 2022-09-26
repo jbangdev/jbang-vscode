@@ -16,7 +16,7 @@ This is an early work-in-progress extension for [vscode-java](https://marketplac
 - `JDT.LS reimports the JBang project every time the folder is opened in the editor, making startup slower than necessary. See [eclipse.jdt.ls#2155](https://github.com/eclipse/eclipse.jdt.ls/issues/2155)
 
 **What works (more or less)**:
-- If you open a folder containing JBang scripts, each script will be assigned a specific classpath.
+- If you open a folder containing JBang scripts, the first JBang script found will be used to configure a "Project"'s classpath. When configuring the `java.import.jbang.projectPerScript` setting to `true`, each script in the folder will be assigned a specific classpath. Toggling this setting requires calling the `Java: Clean Java Language Server Workspace` command to take effect.
 - Snippets are provided for JBang directives.
 - Modifying JBang directives in a file will update the classpath of the file.
 - Autocompletion for dependencies in `//DEPS` 
