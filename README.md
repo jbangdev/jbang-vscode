@@ -14,10 +14,10 @@ This is an early work-in-progress extension for [vscode-java](https://marketplac
 - Modifications to build.jbang files don't trigger autosynchronization nor do they report diagnostics. See [jbang-eclipse#25](https://github.com/jbangdev/jbang-eclipse/issues/25).
 - The Java Runtime for current file is not displayed in the status bar. See [vscode-java#2552](https://github.com/redhat-developer/vscode-java/issues/2552).
 
-**What works (more or less)**:
+## Features
 - If you open a folder containing JBang scripts, the first JBang script found will be used to configure a "Project"'s classpath. When configuring the `java.import.jbang.projectPerScript` setting to `true`, each script in the folder will be assigned a specific classpath. Toggling this setting requires calling the `Java: Clean Java Language Server Workspace` command to take effect.
-- Snippets are provided for JBang directives.
 - Modifying JBang directives in a file will update the classpath of the file.
+- Snippets are provided for JBang directives.
 - Autocompletion for dependencies in `//DEPS` 
 - Autocompletion for `//SOURCES` 
 - Partial autocompletion for `//JAVA_OPTIONS` and `//JAVAC_OPTIONS` 
