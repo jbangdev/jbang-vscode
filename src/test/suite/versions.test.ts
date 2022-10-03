@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import { compareVersions } from '../../utils/version';
+import { compareVersions } from '../../models/Version';
 
 
 suite("Version comparator test", () => {

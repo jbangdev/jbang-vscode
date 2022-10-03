@@ -1,10 +1,11 @@
 import axios, { AxiosRequestConfig } from "axios";
+import * as LRUCache from "lru-cache";
 import { CancellationToken, CompletionContext, CompletionItem, CompletionItemKind, CompletionList, Position, Range, TextDocument } from "vscode";
 import { version } from "../extension";
-import { compareVersions } from "../utils/version";
-import { CompletionHelper } from "./CompletionHelper";
-import { CompletionParticipant } from "./CompletionParticipant";
-import LRUCache = require("lru-cache");
+import { Dependency } from "../models/Dependency";
+import { compareVersions } from "../models/Version";
+import { CompletionParticipant, JBangCompletionItem } from "./CompletionParticipant";
+import { TextHelper } from "./TextHelper";
 
 const DEPS_PREFIX = "//DEPS ";
 const MAX_RESULTS = 100;
@@ -33,13 +34,13 @@ export class DependencyCompletion implements CompletionParticipant {
         return lineText.startsWith(DEPS_PREFIX);
     }
 
-    async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): Promise<CompletionList | CompletionItem[]> {
+    async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): Promise<CompletionList | JBangCompletionItem[]> {
         const line = document.lineAt(position);
         const lineText = line.text;
         if (!this.applies(lineText, position)) {
             return [];
         }
-        const start = CompletionHelper.findStartPosition(lineText, position, DEPS_PREFIX);
+        const start = TextHelper.findStartPosition(lineText, position, DEPS_PREFIX);
         const currText = lineText.substring(start.character, position.character).trim();
         const parts = currText.split(':');
 
@@ -69,7 +70,7 @@ export class DependencyCompletion implements CompletionParticipant {
         if (!json?.docs?.length) {
             return [];
         }
-        const end = CompletionHelper.findEndPosition(lineText, position);
+        const end = TextHelper.findEndPosition(lineText, position);
         let result: CompletionList;
         switch (parts.length) {
             case 1://has groupid or searches name
@@ -78,7 +79,7 @@ export class DependencyCompletion implements CompletionParticipant {
                 break;
             case 3://has groupid, artifactId and version
             case 4://has groupid, artifactId, version and classifier
-                const versionStart = CompletionHelper.findVersionPosition(lineText, position);
+                const versionStart = TextHelper.findVersionPosition(lineText, position);
                 result = toCompletionList(json, new Range(versionStart, end), toVersionCompletionItem);
                 break;
             default:
@@ -89,7 +90,7 @@ export class DependencyCompletion implements CompletionParticipant {
 
 }
 
-function toCompletionItem(gav: any, index: number, range: Range): CompletionItem {
+function toCompletionItem(gav: any, index: number, range: Range): JBangCompletionItem {
     const version = gav.v ? gav.v : gav.latestVersion;
     const label = `${gav.g}:${gav.a}:${version}`;
     const insertText = label;
@@ -98,7 +99,8 @@ function toCompletionItem(gav: any, index: number, range: Range): CompletionItem
         kind: CompletionItemKind.Module,
         insertText,
         sortText: `${index}`,
-        range
+        range,
+        dependency: Dependency.getDependency(label)
     };
 }
 function toVersionCompletionItem(gav: any, index: number, range: Range): CompletionItem {

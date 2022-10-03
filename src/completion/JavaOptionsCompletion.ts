@@ -1,7 +1,7 @@
 import { CompletionContext, CompletionItem, CompletionList, Position, Range, SnippetString, TextDocument } from "vscode";
 import { CancellationToken, CompletionItemKind } from "vscode-languageclient";
-import { CompletionHelper } from "./CompletionHelper";
 import { CompletionParticipant } from "./CompletionParticipant";
+import { TextHelper } from "./TextHelper";
 
 const JAVAC_OPTIONS = "//JAVAC_OPTIONS ";
 const JAVA_OPTIONS = "//JAVA_OPTIONS ";
@@ -18,16 +18,16 @@ export class JavaOptionsCompletion implements CompletionParticipant {
         let start: Position;
         const items:CompletionItem[] = [];
         if (lineText.startsWith(JAVA_OPTIONS)) {
-            start = CompletionHelper.findStartPosition(lineText, position, JAVA_OPTIONS);
+            start = TextHelper.findStartPosition(lineText, position, JAVA_OPTIONS);
         } else if (lineText.startsWith(JAVAC_OPTIONS)) {
-            start = CompletionHelper.findStartPosition(lineText, position, JAVAC_OPTIONS);
+            start = TextHelper.findStartPosition(lineText, position, JAVAC_OPTIONS);
         } else if (lineText.startsWith(JAVA)) {
-            start = CompletionHelper.findStartPosition(lineText, position, JAVA);
+            start = TextHelper.findStartPosition(lineText, position, JAVA);
         } else {
             return [];
         }
         //const currText = lineText.substring(start.character, position.character).trim();
-        const end = CompletionHelper.findEndPosition(lineText, position);
+        const end = TextHelper.findEndPosition(lineText, position);
         const javaVersions = getJavaVersions();
         let range: Range;
         if (lineText.startsWith(JAVA)) {
