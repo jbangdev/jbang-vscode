@@ -2,8 +2,8 @@ import * as fs from 'fs/promises';
 import { Command, CompletionContext, CompletionItem, CompletionList, Position, Range, TextDocument } from "vscode";
 import { CancellationToken, CompletionItemKind } from "vscode-languageclient";
 import { existsAsync } from '../utils/fileUtils';
-import { CompletionHelper } from './CompletionHelper';
 import { CompletionParticipant } from "./CompletionParticipant";
+import { TextHelper } from './TextHelper';
 import path = require('path');
 
 const SOURCES_PREFIX = "//SOURCES ";
@@ -20,7 +20,7 @@ export class SourcesCompletion implements CompletionParticipant {
         if (document.uri.scheme !== 'file' || !this.applies(lineText, position)) {
             return [];
         }
-        let start = CompletionHelper.findStartPosition(lineText, position, SOURCES_PREFIX);
+        let start = TextHelper.findStartPosition(lineText, position, SOURCES_PREFIX);
         const currText = lineText.substring(start.character, position.character).trim();
 
         let targetDir = path.dirname(document.fileName);
@@ -32,12 +32,12 @@ export class SourcesCompletion implements CompletionParticipant {
             if (pathDelim < currText.length -1) {
                 lastSegment = currText.substring(pathDelim);
             }
-            start = CompletionHelper.findSegmentPosition(lineText, position);
+            start = TextHelper.findSegmentPosition(lineText, position);
         }
         if (!(await existsAsync(targetDir))) {
             return [];
         }
-        const end = CompletionHelper.findEndPosition(lineText, position);
+        const end = TextHelper.findEndPosition(lineText, position);
         const range = new Range(start, end)
 
         const dirContent = await fs.readdir(targetDir);

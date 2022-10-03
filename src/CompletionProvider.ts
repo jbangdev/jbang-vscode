@@ -1,15 +1,16 @@
-import { CancellationToken, CompletionContext, CompletionItem, CompletionList, ExtensionContext, languages, Position, TextDocument } from "vscode";
-import { CompletionParticipant } from "./completion/CompletionParticipant";
+import { CancellationToken, CompletionContext, CompletionItem, CompletionItemProvider, CompletionList, ExtensionContext, languages, Position, TextDocument } from "vscode";
+import { CompletionParticipant, JBangCompletionItem } from "./completion/CompletionParticipant";
 import { DependencyCompletion } from "./completion/DependencyCompletion";
 import { DirectivesCompletion } from "./completion/DirectivesCompletion";
 import { JavaOptionsCompletion } from "./completion/JavaOptionsCompletion";
 import { SourcesCompletion } from "./completion/SourcesCompletion";
+import DocumentationProvider from "./DocumentationProvider";
 
-export class CompletionProvider {
+export class JBangCompletionProvider implements CompletionItemProvider<CompletionItem> {
 
     private completionParticipants: CompletionParticipant[] = [];
 
-    async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): Promise<CompletionList|CompletionItem[]> {
+    async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): Promise<CompletionList|JBangCompletionItem[]> {
         if (document.languageId !== 'java' && document.languageId !== 'jbang') {
             return [];
         }
@@ -20,6 +21,17 @@ export class CompletionProvider {
             return participant.provideCompletionItems(document, position, token, context);
         }
         return [];
+    }
+
+    async resolveCompletionItem?(ci: CompletionItem, token: CancellationToken): Promise<JBangCompletionItem> {
+        const item = ci as JBangCompletionItem;
+        if (item.dependency) {
+            const doc = await DocumentationProvider.getDocumentation(item.dependency, token);
+            if (doc) {
+                item.documentation = doc;
+            }
+        }
+        return item;
     }
 
     public initialize(context: ExtensionContext) {
@@ -38,4 +50,4 @@ export class CompletionProvider {
     
 }
 
-export default new CompletionProvider();
+export default new JBangCompletionProvider();

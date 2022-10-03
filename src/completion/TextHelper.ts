@@ -1,6 +1,6 @@
 import { Position } from "vscode";
 
-export namespace CompletionHelper {
+export namespace TextHelper {
 
     var DELIMITER = new RegExp(/^[\s,]$/);
 
@@ -44,5 +44,28 @@ export namespace CompletionHelper {
             }
         }
         return position;
+    }
+
+    export function getTextAt(lineText: string, index: number) {
+        if (index < 0 || index > lineText.length - 1 || isDelimiter(lineText.charAt(index))) {
+            return undefined;
+        }
+        let before = '';
+        let after = '';
+        for(let i = index; i> -1; i--) {
+            const c = lineText.charAt(i);
+            if (isDelimiter(c)) {
+                break;
+            }
+            before = c + before;
+        }
+        for(let i = index+1; i < lineText.length; i++) {
+            const c = lineText.charAt(i);
+            if (isDelimiter(c)) {
+                break;
+            }
+            after = after + c ;
+        }
+        return before+after;
     }
 }
