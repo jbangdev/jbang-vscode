@@ -1,0 +1,70 @@
+name: Release
+
+on: 
+  push:
+    tags:
+      - "*.*.*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out jbang-vscode
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          path: jbang-vscode
+
+      - name: Check out jbang-eclipse
+        uses: actions/checkout@v3
+        with:
+          repository: jbangdev/jbang-eclipse
+          fetch-depth: 0
+          path: jbang-eclipse
+
+      - name: Set Up NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+
+      - name: Set Up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Install requirements
+        working-directory: ./jbang-vscode 
+        run: |
+          npm ci
+          npm install -g typescript "vsce"
+
+      - name: Build server
+        working-directory: ./jbang-vscode 
+        run: npm run build-ext
+          
+      - name: Build vsix
+        working-directory: ./jbang-vscode 
+        run: |
+          vsce package
+      
+      - name: Upload to Github Releases
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            jbang-vscode/*.vsix
+
+      - name: Publish to Open VSX Marketplace
+        working-directory: ./jbang-vscode
+        run: |
+          npx ovsx publish -p $OVSX_TOKEN
+        env:
+          OVSX_TOKEN: ${{ secrets.OPENVSX_MARKETPLACE_TOKEN }}
+
+      - name: Publish to VSCode Marketplace
+        working-directory: ./jbang-vscode
+        run: |
+          npx vsce publish -p $VSCE_TOKEN
+        env:
+          VSCE_TOKEN: ${{ secrets.VSCODE_MARKETPLACE_TOKEN }}
