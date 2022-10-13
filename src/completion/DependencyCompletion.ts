@@ -122,7 +122,10 @@ async function searchAll(name: string): Promise<any> {
 }
 
 async function searchArtifactId(groupId: string, artifactId: string): Promise<any> {
-    const queryString = `g:${groupId}*+AND+a:${artifactId}*`;
+    let queryString = `g:${groupId}*`;
+    if (artifactId) {
+        queryString += `+AND+a:${artifactId}*`;
+    }
     const searchQuery = SEARCH_API + queryString;
     console.log(searchQuery);
     const response = await axios.get(searchQuery, axiosConfig);
