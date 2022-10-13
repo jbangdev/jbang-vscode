@@ -22,7 +22,7 @@ This is an early work-in-progress extension for [vscode-java](https://marketplac
 - Autocompletion for `//SOURCES` 
 - Partial autocompletion for `//JAVA_OPTIONS`, `//JAVAC_OPTIONS`, `//RUNTIME_OPTIONS` and `//COMPILE_OPTIONS`
 - Display dependency documentation on completion/hover
-- JBang scripts can be run from the `Run JBang` codelens, that shows on top of the type declaration or main method, if there is one.
+- JBang scripts can be run/debugged from the `Run JBang` or `Debug JBang` codelens, that show on top of the type declaration or main method, if there is one.
 - If a (.java) script is included in a Maven or Gradle project's hierarchy, right-clicking on the script and selecting `JBang > Synchronize JBang` will add the script's parent folder to the project's source path and the JBang dependencies will be added to the project's classpath.
 - Create a new JBang script from an existing template with the `JBang: Create a new script` command.
 - Annotation processors are automatically detected and configured.

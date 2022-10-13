@@ -1,4 +1,5 @@
 import { CodeLens, Command, ExtensionContext, languages, Range, TextDocument } from "vscode";
+import { DEBUG_WITH_JBANG_COMMAND_ID } from "./JBangDebugger";
 import { isJBangDirective, isJBangFile, SUPPORTED_LANGUAGES } from "./JBangUtils";
 
 const typeRegexp = /^.*(class|interface|enum|record)\s+.*$/;
@@ -61,16 +62,24 @@ export class CodeLensProvider implements CodeLensProvider  {
               tooltip: "Run this script with JBang in a new terminal",
               arguments: [document.uri]
             };
+            let debugJBang: Command = {
+                command: DEBUG_WITH_JBANG_COMMAND_ID,
+                title: "Debug JBang",
+                tooltip: "Debug this script with JBang in a new terminal",
+                arguments: [document.uri]
+              };
             if (typePosition) {
                 codelenses.push(new CodeLens(typePosition, executeJBang));
+                codelenses.push(new CodeLens(typePosition, debugJBang));
             }
             if (mainPosition) {
                 codelenses.push(new CodeLens(mainPosition, executeJBang));
+                codelenses.push(new CodeLens(mainPosition, debugJBang));
             }  
             if (codelenses.length === 0 && firstDirectivePosition) {
                 codelenses.push(new CodeLens(firstDirectivePosition, executeJBang));
             }
-        }
+        } 
         return codelenses;
       }
 }

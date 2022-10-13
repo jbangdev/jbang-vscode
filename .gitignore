@@ -5,3 +5,4 @@ node_modules
 *.vsix
 jars/
 package.insiders.json
+.DS_Store

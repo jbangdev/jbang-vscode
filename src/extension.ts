@@ -5,6 +5,7 @@ import CommandManager from "./CommandManager";
 import JBangCompletionProvider from "./CompletionProvider";
 import EditorListener from "./EditorListener";
 import JBangConfig from "./JBangConfig";
+import JBangDebugger from "./JBangDebugger";
 import JBangHoverProvider from "./JBangHoverProvider";
 import JBangRunner from "./JBangRunner";
 
@@ -17,6 +18,7 @@ export function activate(context: ExtensionContext) {
 	Assets.initialize(context);
 	CommandManager.initialize(context);
 	EditorListener.initialize(context);
+	JBangDebugger.initialize(context);
 	CodeLensProvider.initialize(context);
 	JBangCompletionProvider.initialize(context);
 	JBangHoverProvider.initialize(context);
