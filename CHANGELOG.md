@@ -9,6 +9,7 @@ All notable changes to the **JBang** extension will be documented in this file.
 - Configure project according to `--release` or `-source` value
 - Provide dependency completion for Kotlin and Groovy files
 - Display `Run JBang` codelens for Kotlin and Groovy files
+- Display `Debug JBang` codelens for Java files
 - Add new `JBang: install application` command  
 
 ## [0.3.0]  29/10/2022

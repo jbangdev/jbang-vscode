@@ -12,11 +12,11 @@ import path = require("path");
 const CUSTOM_TEMPLATE = {
     label: "$(pencil) Custom template ...",
     detail: "Manually set a custom template"
-} as QuickPickItem
+} as QuickPickItem;
 const NO_TEMPLATE = {
     label: "$(close) No template",
     detail: "Do not use a template"
-} as QuickPickItem
+} as QuickPickItem;
 
 const DEFAULT_TOTAL_STEPS = 3;
 
@@ -99,14 +99,14 @@ export default class JBangScriptWizard {
     
                 return (input: MultiStepInput) => this.inputScriptName(input, state);
             }
-        } while (!selectedTemplate)
+        } while (!selectedTemplate);
     }
 
     private asItem(template: JBangTemplate): QuickPickItem {
         return {
             label: template.label,
             description: this.showDescription ? template.description : undefined
-        }
+        };
     }
 
     private async getTemplates(): Promise<JBangTemplate[]> {

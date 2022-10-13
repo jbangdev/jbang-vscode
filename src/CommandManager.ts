@@ -54,7 +54,7 @@ export class CommandManager {
                 }
             }
         }
-        if (resources.length == 0) {
+        if (resources.length === 0) {
             return;
         }
         return commands.executeCommand(JAVA_EXECUTE_WORKPACE_COMMAND, JDTLS_JBANG_SYNCHRONIZE_COMMAND, resources);

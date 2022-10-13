@@ -28,6 +28,7 @@
 		"onCommand:jbang.script.generate",
 		"onCommand:jbang.script.run",
 		"onCommand:jbang.script.app.install",
+		"onCommand:jbang.script.debug",
 		"workspaceContains:build.jbang"
 	],
 	"extensionDependencies": [
@@ -61,6 +62,22 @@
 		"javaBuildFilePatterns": [
 			"^build\\.jbang$"
 		],
+		"problemMatchers": [
+			{
+				"name": "jbang.debug.problemMatcher",
+				"label": "Problem Matcher to determine when a JBang application is ready to debug.",
+				"owner": "jbang",
+				"pattern": {
+					"regexp": "^.*$"
+				},
+				"severity": "error",
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": "^.*$",
+					"endsPattern": "^Listening for transport dt_socket at address: (.*)$"
+				}
+			}
+		],
 		"commands": [
 			{
 				"command": "jbang.synchronize",
@@ -91,6 +108,12 @@
 				"title": "Run JBang",
 				"category": "JBang",
 				"icon": "icons/jbang.png"
+			},
+			{
+				"command": "jbang.script.debug",
+				"title": "Debug JBang",
+				"category": "JBang",
+				"icon": "icons/jbang.png"
 			}
 		],
 		"submenus": [
@@ -115,7 +138,12 @@
 				{
 					"command": "jbang.script.run",
 					"when": "isJBangFile",
-					"group": "jbang@1"
+					"group": "1_jbangexecute@1"
+				},
+				{
+					"command": "jbang.script.debug",
+					"when": "resourceExtname == .java && isJBangFile",
+					"group": "1_jbangexecute@2"
 				}
 			],
 			"explorer/context": [
@@ -147,6 +175,16 @@
 					"command": "jbang.script.app.install",
 					"when": "isJBangFile",
 					"group": "1_jbangactions@3"
+				},
+				{
+					"command": "jbang.script.run",
+					"when": "isJBangFile",
+					"group": "2_jbangexecute@1"
+				},
+				{
+					"command": "jbang.script.debug",
+					"when": "resourceExtname == .java && isJBangFile",
+					"group": "2_jbangexecute@2"
 				}
 			]
 		},
