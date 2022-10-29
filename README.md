@@ -28,6 +28,7 @@ This is an early work-in-progress extension for [vscode-java](https://marketplac
 - Annotation processors are automatically detected and configured.
 - Partial support for `build.jbang` files: If a folder containing `build.jbang` is opened, it'll be used to configure the Java settings of its //SOURCES. Currently, changes in `build.jbang` require manually triggering the `JBang > Synchronize JBang` command (via codelens or context menu) to take effect.
 - Export the script as a native binary, by right-clicking on the script and selecting the `JBang > Export as native binary` menu. This requires GraalVM to be installed with the native-image extension. See https://www.jbang.dev/documentation/guide/latest/usage.html#build-and-run-native-image-experimental
+- Automagically configures JBang-managed JDKs, i.e. no need to configure `java.configuration.runtimes`.
 
 ## Preferences
 - `jbang.home`: Specifies the folder path to the JBang directory (not the executable), eg. `~/.sdkman/candidates/jbang/current`. On Windows, backslashes must be escaped, eg `C:\\ProgramData\\chocolatey\\lib\\jbang`. Used by the `JBang: Create a new script` wizard and the `Run JBang` code lens. Useful in case `jbang` is not automatically picked up from the $PATH, for some reason.
@@ -41,10 +42,10 @@ Continuous Integration builds can be installed from the Visual Studio Marketplac
 
 ### Prerequisites
 
-  * [Visual Studio Code](https://code.visualstudio.com/)
+  * [Visual Studio Code](https://code.visualstudio.com/) or compatible editors
   * [Language Support for Java](https://marketplace.visualstudio.com/items?itemName=redhat.java)
   * [Node.js 14+](https://nodejs.org/en/)
-  * [JDK 11+](https://adoptopenjdk.net/)
+  * [JDK 17+](https://adoptium.net/en-GB/temurin/releases/)
 
 ### Setup
 **Step 1.** Fork and clone this repository  
