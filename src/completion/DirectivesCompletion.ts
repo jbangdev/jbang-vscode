@@ -6,6 +6,9 @@ import { CompletionParticipant } from "./CompletionParticipant";
 const JAVA = "//JAVA ";
 const JAVAC_OPTIONS = "//JAVAC_OPTIONS ";
 const JAVA_OPTIONS = "//JAVA_OPTIONS ";
+const COMPILE_OPTIONS = "//COMPILE_OPTIONS ";
+const RUNTIME_OPTIONS = "//RUNTIME_OPTIONS ";
+const NATIVE_OPTIONS = "//NATIVE_OPTIONS ";
 const MANIFEST = "//MANIFEST ";
 const CDS = "//CDS ";
 const GAV = "//GAV ";
@@ -53,17 +56,26 @@ export class DirectivesCompletion implements CompletionParticipant {
         if (!scanner.found(DESCRIPTION)) {
             items.push(getCompletion(DESCRIPTION, "Markdown description for the JBang application/script", range));
         }
-        if (!scanner.found(JAVAC_OPTIONS)) {
+        if (!scanner.found(JAVAC_OPTIONS) && !scanner.found(COMPILE_OPTIONS)) {
             items.push(getCompletion(JAVAC_OPTIONS, "Options passed to the Java compiler", range, retriggerCompletion));
         }
-        if (!scanner.found(JAVA_OPTIONS)) {
+        if (!scanner.found(JAVA_OPTIONS) && !scanner.found(RUNTIME_OPTIONS)) {
             items.push(getCompletion(JAVA_OPTIONS, "Options passed to the Java runtime", range, retriggerCompletion));
+        }
+        if (!scanner.found(COMPILE_OPTIONS) && !scanner.found(JAVAC_OPTIONS)) {
+            items.push(getCompletion(COMPILE_OPTIONS, "Options passed to the compiler", range, retriggerCompletion));
+        }
+        if (!scanner.found(RUNTIME_OPTIONS) && !scanner.found(JAVA_OPTIONS)) {
+            items.push(getCompletion(RUNTIME_OPTIONS, "Options passed to the JVM runtime", range, retriggerCompletion));
         }
         if (!scanner.found(JAVAAGENT)) {
             items.push(getCompletion(JAVAAGENT, "Activate agent packaging", range));
         }
         if (!scanner.found(CDS)) {
             items.push(getCompletion(CDS, "Activate Class Data Sharing", range));
+        }
+        if (!scanner.found(NATIVE_OPTIONS)) {
+            items.push(getCompletion(NATIVE_OPTIONS, "Options passed to the native image builder", range));
         }
         return items;
     }
@@ -80,7 +92,7 @@ class DirectiveScanner {
 
     scan(document: TextDocument) {
         const checkedDirectives = [
-            JAVA, JAVAC_OPTIONS, DESCRIPTION, CDS, GAV, JAVAAGENT, MANIFEST, JAVA_OPTIONS
+            JAVA, JAVAC_OPTIONS, COMPILE_OPTIONS, DESCRIPTION, CDS, GAV, JAVAAGENT, MANIFEST, JAVA_OPTIONS, RUNTIME_OPTIONS, NATIVE_OPTIONS
         ]
         const lines = document.getText().split(/\r?\n/);
         for (let i = 0; i < lines.length && checkedDirectives.length > 0; i++) {
