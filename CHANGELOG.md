@@ -2,8 +2,13 @@
 
 All notable changes to the **JBang** extension will be documented in this file.
 
-## [0.3.0]
+## [0.4.0]  TBD
+- Add completion for `//NATIVE_OPTIONS`, `//COMPILE_OPTIONS`, `//RUNTIME_OPTIONS`
+- Report invalid `//JAVA` version at the proper location
+
+## [0.3.0]  29/10/2022
 - Automagically configures JBang-managed JDKs, i.e. no need to configure `java.configuration.runtimes`.
+- fix: completion after groupid:| didn't work
 
 ## [0.2.0]
 
