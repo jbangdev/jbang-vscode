@@ -45,6 +45,10 @@ export class Version {
     }
 }
 
+export function compareVersionsDesc(v1: string, v2:string) {
+    return compareVersions(v2, v1);
+}
+
 export function compareVersions(v1: string, v2:string) {
     if (v1 === v2) {
         return 0;

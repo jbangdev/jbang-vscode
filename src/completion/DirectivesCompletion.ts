@@ -42,7 +42,7 @@ export class DirectivesCompletion implements CompletionParticipant {
         items.push(getCompletion("//DEPS", "Add JBang dependencies", range));
         
         if (document.languageId === 'groovy' && !scanner.found(GROOVY)) {
-            items.push(getCompletion(GROOVY, "Groovy version to use", range));
+            items.push(getCompletion(GROOVY, "Groovy version to use", range, retriggerCompletion));
         }
         if (document.languageId === 'kotlin' && !scanner.found(KOTLIN)) {
             items.push(getCompletion(KOTLIN, "Kotlin version to use", range, retriggerCompletion));

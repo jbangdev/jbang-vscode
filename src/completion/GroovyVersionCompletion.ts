@@ -5,8 +5,8 @@ import { compareVersionsDesc } from "../models/Version";
 import { CompletionParticipant, JBangCompletionItem } from "./CompletionParticipant";
 import { TextHelper } from "./TextHelper";
 
-const KOTLIN_PREFIX = "//KOTLIN ";
-const SEARCH_API = `https://api.github.com/repos/JetBrains/kotlin/releases`;
+const GROOVY_PREFIX = "//GROOVY ";
+const SEARCH_API = `https://api.sdkman.io/2/candidates/groovy/linux/versions/list`;
 const UPDATE_PERIOD = 60 * 60 * 1000; // 1h
 const axiosConfig: AxiosRequestConfig<any> = {
     httpsAgent: 'jbang-vscode v' + version
@@ -15,10 +15,10 @@ const axiosConfig: AxiosRequestConfig<any> = {
 let VERSIONS: string[];
 let lastUpdate = 0;
 
-export class KotlinVersionCompletion implements CompletionParticipant {
+export class GroovyVersionCompletion implements CompletionParticipant {
 
     applies(lineText: string, _position: Position): boolean {
-        return lineText.startsWith(KOTLIN_PREFIX);
+        return lineText.startsWith(GROOVY_PREFIX);
     }
 
     async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): Promise<CompletionList | JBangCompletionItem[]> {
@@ -34,7 +34,7 @@ export class KotlinVersionCompletion implements CompletionParticipant {
         if (!VERSIONS.length) {
             return [];
         }
-        const start = TextHelper.findStartPosition(lineText, position, KOTLIN_PREFIX);
+        const start = TextHelper.findStartPosition(lineText, position, GROOVY_PREFIX);
         const end = TextHelper.findEndPosition(lineText, position);
         let result = toCompletionList(new Range(start, end));
         return result;
@@ -43,17 +43,19 @@ export class KotlinVersionCompletion implements CompletionParticipant {
 }
 
 async function searchVersions(): Promise<string[]> {
-    console.log("Fetching Kotlin versions");
+    console.log("Fetching Groovy versions");
     const response = await axios.get(SEARCH_API, axiosConfig);
-    const releases = response?.data;
-    if (releases) { //Already sorted by decreasing versions
-        const versions = releases.map((r:any) => {
-            const version = r?.tag_name?.replace('v', '') as string;
-            return version;
-        }) as string[];
-        return versions.sort(compareVersionsDesc);
+    const text = response?.data as string;
+    const versions:string[] = [];
+    if (text) { //Already sorted by decreasing versions
+        const lines = text.split(/\r?\n/);
+        lines.forEach(line => {
+            if (line.startsWith(' ')){
+                versions.push(...line.split(' '));
+            }
+        });
     }
-    return [];
+    return versions.sort(compareVersionsDesc);
 }
 
 function toCompletionList(range: Range): CompletionList {

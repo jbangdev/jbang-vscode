@@ -2,6 +2,7 @@ import { CancellationToken, CompletionContext, CompletionItem, CompletionItemPro
 import { CompletionParticipant, JBangCompletionItem } from "./completion/CompletionParticipant";
 import { DependencyCompletion } from "./completion/DependencyCompletion";
 import { DirectivesCompletion } from "./completion/DirectivesCompletion";
+import { GroovyVersionCompletion } from "./completion/GroovyVersionCompletion";
 import { JavaOptionsCompletion } from "./completion/JavaOptionsCompletion";
 import { KotlinVersionCompletion } from "./completion/KotlinVersionCompletion";
 import { SourcesCompletion } from "./completion/SourcesCompletion";
@@ -42,6 +43,7 @@ export class JBangCompletionProvider implements CompletionItemProvider<Completio
             new SourcesCompletion(),
             new JavaOptionsCompletion(),
             new KotlinVersionCompletion(),
+            new GroovyVersionCompletion(),
             new DirectivesCompletion(),//Must be last
         ];
         SUPPORTED_LANGUAGES.forEach(languageId => {
