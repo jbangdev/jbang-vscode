@@ -3,6 +3,7 @@ import { CompletionParticipant, JBangCompletionItem } from "./completion/Complet
 import { DependencyCompletion } from "./completion/DependencyCompletion";
 import { DirectivesCompletion } from "./completion/DirectivesCompletion";
 import { JavaOptionsCompletion } from "./completion/JavaOptionsCompletion";
+import { KotlinVersionCompletion } from "./completion/KotlinVersionCompletion";
 import { SourcesCompletion } from "./completion/SourcesCompletion";
 import DocumentationProvider from "./DocumentationProvider";
 import { SUPPORTED_LANGUAGES } from "./JBangUtils";
@@ -40,7 +41,8 @@ export class JBangCompletionProvider implements CompletionItemProvider<Completio
             new DependencyCompletion(),
             new SourcesCompletion(),
             new JavaOptionsCompletion(),
-            new DirectivesCompletion()
+            new KotlinVersionCompletion(),
+            new DirectivesCompletion(),//Must be last
         ];
         SUPPORTED_LANGUAGES.forEach(languageId => {
             context.subscriptions.push(

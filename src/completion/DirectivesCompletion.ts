@@ -45,7 +45,7 @@ export class DirectivesCompletion implements CompletionParticipant {
             items.push(getCompletion(GROOVY, "Groovy version to use", range));
         }
         if (document.languageId === 'kotlin' && !scanner.found(KOTLIN)) {
-            items.push(getCompletion(KOTLIN, "Kotlin version to use", range));
+            items.push(getCompletion(KOTLIN, "Kotlin version to use", range, retriggerCompletion));
         }
 
         if (!scanner.found(GAV)) {
