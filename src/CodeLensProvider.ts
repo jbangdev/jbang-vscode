@@ -1,5 +1,5 @@
 import { CodeLens, Command, ExtensionContext, languages, Range, TextDocument } from "vscode";
-import { isJBangDirective, isJBangFile } from "./JBangUtils";
+import { isJBangDirective, isJBangFile, SUPPORTED_LANGUAGES } from "./JBangUtils";
 
 const typeRegexp = /^.*(class|interface|enum|record)\s+.*$/;
 const singleCommentRegexp = /^\s*(\/\/).*$/;
@@ -8,7 +8,7 @@ export class CodeLensProvider implements CodeLensProvider  {
 
     public initialize(context: ExtensionContext) {
         //console.log("CodeLensProvider.initialize");
-        ["jbang", "java"].forEach(languageId => {
+        SUPPORTED_LANGUAGES.forEach(languageId => {
             context.subscriptions.push(
                 languages.registerCodeLensProvider(languageId, this)
             );
@@ -45,7 +45,7 @@ export class CodeLensProvider implements CodeLensProvider  {
                 break;
             }
         }
-        if (firstDirectivePosition) {
+        if (firstDirectivePosition && ["java", "jbang"].includes(document.languageId)) {
             codelenses.push(new CodeLens(firstDirectivePosition, {
                 command: "jbang.synchronize",
                 title: "Synchronize JBang",
@@ -53,7 +53,7 @@ export class CodeLensProvider implements CodeLensProvider  {
                 arguments: [document.uri]
             }));
         }
-        if (typePosition || mainPosition) {
+        if (typePosition || mainPosition || firstDirectivePosition) {
             // Define what command we want to trigger when activating the CodeLens
             let executeJBang: Command = {
               command: "jbang.execute",
@@ -66,8 +66,11 @@ export class CodeLensProvider implements CodeLensProvider  {
             }
             if (mainPosition) {
                 codelenses.push(new CodeLens(mainPosition, executeJBang));
-            }    
-        } 
+            }  
+            if (codelenses.length === 0 && firstDirectivePosition) {
+                codelenses.push(new CodeLens(firstDirectivePosition, executeJBang));
+            }
+        }
         return codelenses;
       }
 }

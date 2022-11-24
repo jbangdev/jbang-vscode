@@ -14,6 +14,8 @@ const CDS = "//CDS ";
 const GAV = "//GAV ";
 const DESCRIPTION = "//DESCRIPTION ";
 const JAVAAGENT = "//JAVAAGENT "; 
+const GROOVY = "//GROOVY ";
+const KOTLIN = "//KOTLIN ";
 
 export class DirectivesCompletion implements CompletionParticipant {
 
@@ -39,6 +41,13 @@ export class DirectivesCompletion implements CompletionParticipant {
         }
         items.push(getCompletion("//DEPS", "Add JBang dependencies", range));
         
+        if (document.languageId === 'groovy' && !scanner.found(GROOVY)) {
+            items.push(getCompletion(GROOVY, "Groovy version to use", range));
+        }
+        if (document.languageId === 'kotlin' && !scanner.found(KOTLIN)) {
+            items.push(getCompletion(KOTLIN, "Kotlin version to use", range));
+        }
+
         if (!scanner.found(GAV)) {
             items.push(getCompletion(GAV, "Set Group, Artifact and Version", range));
         }
@@ -92,7 +101,7 @@ class DirectiveScanner {
 
     scan(document: TextDocument) {
         const checkedDirectives = [
-            JAVA, JAVAC_OPTIONS, COMPILE_OPTIONS, DESCRIPTION, CDS, GAV, JAVAAGENT, MANIFEST, JAVA_OPTIONS, RUNTIME_OPTIONS, NATIVE_OPTIONS
+            JAVA, JAVAC_OPTIONS, COMPILE_OPTIONS, DESCRIPTION, CDS, GAV, JAVAAGENT, MANIFEST, JAVA_OPTIONS, RUNTIME_OPTIONS, NATIVE_OPTIONS, KOTLIN, GROOVY
         ]
         const lines = document.getText().split(/\r?\n/);
         for (let i = 0; i < lines.length && checkedDirectives.length > 0; i++) {
@@ -120,6 +129,7 @@ function getCompletion(directive: string, detail: string, range?: Range, command
     item.insertText = new SnippetString(directive.trim() + " ${0}");
     item.range = range;
     item.command = command;
+    item.detail = detail;
     return item;
 }
 

@@ -1,6 +1,7 @@
 import { CancellationToken, ExtensionContext, Hover, HoverProvider, languages, Position, TextDocument } from "vscode";
 import { TextHelper } from "./completion/TextHelper";
 import DocumentationProvider from "./DocumentationProvider";
+import { SUPPORTED_LANGUAGES } from "./JBangUtils";
 import { Dependency } from "./models/Dependency";
 
 const DEPS = "//DEPS "
@@ -9,7 +10,7 @@ export class JBangHoverProvider implements HoverProvider {
 
     async provideHover(document: TextDocument, position: Position, token: CancellationToken): Promise<Hover|undefined> {
         
-        if (document.languageId !== 'java' && document.languageId !== 'jbang') {
+        if (SUPPORTED_LANGUAGES.includes(document.languageId)) {
             return undefined;
         }
         const line = document.lineAt(position);
@@ -26,7 +27,7 @@ export class JBangHoverProvider implements HoverProvider {
     }
 
     public initialize(context: ExtensionContext) {
-        ["jbang", "java"].forEach(languageId => {
+        SUPPORTED_LANGUAGES.forEach(languageId => {
             context.subscriptions.push(
                 languages.registerHoverProvider(languageId, this)
             );
