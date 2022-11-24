@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/github/license/jbangdev/jbang-vscode?style=for-the-badge)](https://github.com/jbangdev/jbang-vscode/blob/main/LICENSE)
 
 # JBang for Visual Studio Code
-This is an early work-in-progress extension for [vscode-java](https://marketplace.visualstudio.com/items?itemName=redhat.java). It aims at providing support for the [JBang](https://www.jbang.dev/) scripts written in Java.
+This is an early work-in-progress extension for [vscode-java](https://marketplace.visualstudio.com/items?itemName=redhat.java). It aims at providing support for the [JBang](https://www.jbang.dev/) scripts written in Java (and partial support for Kotlin and Groovy).
 
 **Pre-requisites:**
 - [JBang](https://www.jbang.dev/download/) is installed and available in the PATH. Alternatively, you can set the `jbang.home` preference to point to a `JBang` installation
@@ -29,6 +29,7 @@ This is an early work-in-progress extension for [vscode-java](https://marketplac
 - Partial support for `build.jbang` files: If a folder containing `build.jbang` is opened, it'll be used to configure the Java settings of its //SOURCES. Currently, changes in `build.jbang` require manually triggering the `JBang > Synchronize JBang` command (via codelens or context menu) to take effect.
 - Export the script as a native binary, by right-clicking on the script and selecting the `JBang > Export as native binary` menu. This requires GraalVM to be installed with the native-image extension. See https://www.jbang.dev/documentation/guide/latest/usage.html#build-and-run-native-image-experimental
 - Automagically configures JBang-managed JDKs, i.e. no need to configure `java.configuration.runtimes`.
+- Partial support for Kotlin and Groovy scripts: completion for directive and run command are available, but no classpath management when editing the files.
 
 ## Preferences
 - `jbang.home`: Specifies the folder path to the JBang directory (not the executable), eg. `~/.sdkman/candidates/jbang/current`. On Windows, backslashes must be escaped, eg `C:\\ProgramData\\chocolatey\\lib\\jbang`. Used by the `JBang: Create a new script` wizard and the `Run JBang` code lens. Useful in case `jbang` is not automatically picked up from the $PATH, for some reason.

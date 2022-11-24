@@ -22,6 +22,9 @@
 	],
 	"activationEvents": [
 		"onLanguage:java",
+		"onLanguage:jbang",
+		"onLanguage:groovy",
+		"onLanguage:kotlin",
 		"onCommand:jbang.script.generate",
 		"workspaceContains:build.jbang"
 	],

@@ -5,13 +5,14 @@ import { DirectivesCompletion } from "./completion/DirectivesCompletion";
 import { JavaOptionsCompletion } from "./completion/JavaOptionsCompletion";
 import { SourcesCompletion } from "./completion/SourcesCompletion";
 import DocumentationProvider from "./DocumentationProvider";
+import { SUPPORTED_LANGUAGES } from "./JBangUtils";
 
 export class JBangCompletionProvider implements CompletionItemProvider<CompletionItem> {
 
     private completionParticipants: CompletionParticipant[] = [];
 
     async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): Promise<CompletionList|JBangCompletionItem[]> {
-        if (document.languageId !== 'java' && document.languageId !== 'jbang') {
+        if (!SUPPORTED_LANGUAGES.includes(document.languageId)) {
             return [];
         }
         const line = document.lineAt(position);
@@ -41,7 +42,7 @@ export class JBangCompletionProvider implements CompletionItemProvider<Completio
             new JavaOptionsCompletion(),
             new DirectivesCompletion()
         ];
-        ["jbang", "java"].forEach(languageId => {
+        SUPPORTED_LANGUAGES.forEach(languageId => {
             context.subscriptions.push(
                 languages.registerCompletionItemProvider(languageId, this, ":", "/", "-")
             );
