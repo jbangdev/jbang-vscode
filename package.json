@@ -26,6 +26,7 @@
 		"onLanguage:groovy",
 		"onLanguage:kotlin",
 		"onCommand:jbang.script.generate",
+		"onCommand:jbang.script.run",
 		"workspaceContains:build.jbang"
 	],
 	"extensionDependencies": [
@@ -77,6 +78,12 @@
 				"title": "Export as native binary",
 				"category": "JBang",
 				"icon": "icons/jbang.png"
+			},
+			{
+				"command": "jbang.script.run",
+				"title": "Run JBang",
+				"category": "JBang",
+				"icon": "icons/jbang.png"
 			}
 		],
 		"submenus": [
@@ -95,6 +102,13 @@
 				{
 					"command": "jbang.script.export.native",
 					"when": "isJBangFile"
+				}
+			],
+			"editor/title/run": [
+				{
+					"command": "jbang.script.run",
+					"when": "isJBangFile",
+					"group": "jbang@1"
 				}
 			],
 			"explorer/context": [

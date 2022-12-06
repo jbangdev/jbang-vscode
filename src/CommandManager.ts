@@ -11,7 +11,7 @@ export class CommandManager {
             commands.registerCommand('jbang.synchronize', async (uri) => {
                 return this.synchronizeJBangRequest(uri);
             }),
-            commands.registerCommand('jbang.execute', async (uri) => {
+            commands.registerCommand('jbang.script.run', async (uri) => {
                 return JBangRunner.runJBang(uri);
             }),
             commands.registerCommand('jbang.script.generate', async () => {

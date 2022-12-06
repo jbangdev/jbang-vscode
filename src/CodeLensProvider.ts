@@ -56,7 +56,7 @@ export class CodeLensProvider implements CodeLensProvider  {
         if (typePosition || mainPosition || firstDirectivePosition) {
             // Define what command we want to trigger when activating the CodeLens
             let executeJBang: Command = {
-              command: "jbang.execute",
+              command: "jbang.script.run",
               title: "Run JBang",
               tooltip: "Run this script with JBang in a new terminal",
               arguments: [document.uri]
