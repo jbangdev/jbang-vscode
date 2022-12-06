@@ -4,6 +4,7 @@ All notable changes to the **JBang** extension will be documented in this file.
 
 ## [0.4.0]  TBD
 - Add completion for `//NATIVE_OPTIONS`, `//COMPILE_OPTIONS`, `//RUNTIME_OPTIONS`, `//GROOVY`, `//KOTLIN`
+- Display `Run JBang` command in quick run menu
 - Report invalid `//JAVA` version at the proper location
 - Configure project according to `--release` or `-source` value
 - Provide dependency completion for Kotlin and Groovy files
