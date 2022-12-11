@@ -27,6 +27,7 @@
 		"onLanguage:kotlin",
 		"onCommand:jbang.script.generate",
 		"onCommand:jbang.script.run",
+		"onCommand:jbang.script.app.install",
 		"workspaceContains:build.jbang"
 	],
 	"extensionDependencies": [
@@ -76,6 +77,12 @@
 			{
 				"command": "jbang.script.export.native",
 				"title": "Export as native binary",
+				"category": "JBang",
+				"icon": "icons/jbang.png"
+			},
+			{
+				"command": "jbang.script.app.install",
+				"title": "Install application",
 				"category": "JBang",
 				"icon": "icons/jbang.png"
 			},
@@ -135,6 +142,11 @@
 					"command": "jbang.script.export.native",
 					"when": "isJBangFile",
 					"group": "1_jbangactions@2"
+				},
+				{
+					"command": "jbang.script.app.install",
+					"when": "isJBangFile",
+					"group": "1_jbangactions@3"
 				}
 			]
 		},
