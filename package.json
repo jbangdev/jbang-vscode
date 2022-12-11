@@ -135,7 +135,7 @@
 			"jbang": [
 				{
 					"command": "jbang.synchronize",
-					"when": "isJBangFile",
+					"when": "resourceExtname == .java && isJBangFile",
 					"group": "1_jbangactions@1"
 				},
 				{
