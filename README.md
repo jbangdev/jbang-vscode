@@ -28,6 +28,7 @@ This is an early work-in-progress extension for [vscode-java](https://marketplac
 - Annotation processors are automatically detected and configured.
 - Partial support for `build.jbang` files: If a folder containing `build.jbang` is opened, it'll be used to configure the Java settings of its //SOURCES. Currently, changes in `build.jbang` require manually triggering the `JBang > Synchronize JBang` command (via codelens or context menu) to take effect.
 - Export the script as a native binary, by right-clicking on the script and selecting the `JBang > Export as native binary` menu. This requires GraalVM to be installed with the native-image extension. See https://www.jbang.dev/documentation/guide/latest/usage.html#build-and-run-native-image-experimental
+- Install the script as an application available from the path, by right-clicking on the script and selecting the `JBang > install application` menu. Select the application name and whether to generate a native application or not. See https://www.jbang.dev/documentation/guide/latest/install.html
 - Automagically configures JBang-managed JDKs, i.e. no need to configure `java.configuration.runtimes`.
 - Partial support for Kotlin and Groovy scripts: completion for directive and run command are available, but no classpath management when editing the files.
 

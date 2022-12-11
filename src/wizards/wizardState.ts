@@ -25,3 +25,9 @@ export interface ScriptGenState extends State {
     template: string;
     targetDir: Uri;
 }
+
+
+export interface InstallAppState extends State {
+    appName: string;
+    native: boolean;
+}

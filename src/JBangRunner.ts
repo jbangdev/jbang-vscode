@@ -30,6 +30,21 @@ export class JBangRunner {
         let terminalOptions = { name } as ITerminalOptions;
         return await terminalCommandRunner.runInTerminal(command, terminalOptions);
     }
+
+    public async appInstall(uri: Uri,isNative: boolean, appName?: string): Promise<Terminal> {
+        const exec = jbang();
+        let options = '--force ';
+        if (isNative) {
+            options += '--native ';
+        }
+        if (appName) {
+            options += `--name ${appName} `;
+        }
+        const command = `${exec} app install ${options} "${uri.fsPath}"`;
+        const name = "JBang - " + uri.fsPath.substring(uri.fsPath.lastIndexOf("/") + 1);
+        let terminalOptions = { name } as ITerminalOptions;
+        return await terminalCommandRunner.runInTerminal(command, terminalOptions);
+    }
 }
 
 export default new JBangRunner();

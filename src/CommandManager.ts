@@ -1,7 +1,8 @@
-import { commands, ExtensionContext, Uri, window } from "vscode";
+import { commands, ExtensionContext, TextEditor, Uri, window } from "vscode";
 import JBangRunner from "./JBangRunner";
+import { isJBangFile } from "./JBangUtils";
+import JBangInstallAppWizard from "./wizards/JBangInstallAppWizard";
 import JBangScriptWizard from "./wizards/JBangScriptWizard";
-
 export const JAVA_EXECUTE_WORKPACE_COMMAND = 'java.execute.workspaceCommand';
 export const JDTLS_JBANG_SYNCHRONIZE_COMMAND = 'jbang/synchronize';
 export class CommandManager {
@@ -19,6 +20,19 @@ export class CommandManager {
             }),
             commands.registerCommand('jbang.script.export.native', async (uri) => {
                 return JBangRunner.exportNative(uri);
+            }),
+            commands.registerCommand('jbang.script.app.install', async (uri) => {
+                if (!uri) {
+                    const activeEditor: TextEditor | undefined = window.activeTextEditor;
+		            if (activeEditor && isJBangFile(activeEditor.document.getText())) {
+                        uri = activeEditor.document.uri;
+                    }
+                }
+                if (!uri) {
+                    window.showErrorMessage("Not a JBang script!");
+                    return;
+                }
+                return JBangInstallAppWizard.open(uri);
             })
         );
     }
