@@ -2,7 +2,7 @@
 
 All notable changes to the **JBang** extension will be documented in this file.
 
-## [0.4.0]  TBD
+## [0.4.0]  02/01/2023
 - Add completion for `//NATIVE_OPTIONS`, `//COMPILE_OPTIONS`, `//RUNTIME_OPTIONS`, `//GROOVY`, `//KOTLIN`
 - Display `Run JBang` command in quick run menu
 - Report invalid `//JAVA` version at the proper location
@@ -10,7 +10,8 @@ All notable changes to the **JBang** extension will be documented in this file.
 - Provide dependency completion for Kotlin and Groovy files
 - Display `Run JBang` codelens for Kotlin and Groovy files
 - Display `Debug JBang` codelens for Java files
-- Add new `JBang: install application` command  
+- Add new `JBang: install application` command
+- Fixed script detection in nested folders
 
 ## [0.3.0]  29/10/2022
 - Automagically configures JBang-managed JDKs, i.e. no need to configure `java.configuration.runtimes`.
