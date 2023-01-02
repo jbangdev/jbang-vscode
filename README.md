@@ -1,6 +1,6 @@
 [![Visual Studio Marketplace](https://img.shields.io/visual-studio-marketplace/v/jbangdev.jbang-vscode?style=for-the-badge&label=VS%20Marketplace&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=jbangdev.jbang-vscode)
 [![Installs](https://img.shields.io/visual-studio-marketplace/i/jbangdev.jbang-vscode?style=for-the-badge)](https://marketplace.visualstudio.com/items?itemName=jbangdev.jbang-vscode)
-[![Build Status](https://img.shields.io/github/workflow/status/jbangdev/jbang-vscode/Build/main?style=for-the-badge)](https://github.com/jbangdev/jbang-vscode/actions?query=branch%3Amain)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/jbangdev/jbang-vscode/ci.yaml?branch=main&style=for-the-badge)](https://github.com/jbangdev/jbang-vscode/actions?query=branch%3Amain)
 [![License](https://img.shields.io/github/license/jbangdev/jbang-vscode?style=for-the-badge)](https://github.com/jbangdev/jbang-vscode/blob/main/LICENSE)
 
 # JBang for Visual Studio Code
