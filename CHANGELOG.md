@@ -2,6 +2,9 @@
 
 All notable changes to the **JBang** extension will be documented in this file.
 
+## [0.4.1]  03/01/2023
+- Ignore Java's `Picked up JAVA_TOOL_OPTIONS` message that broke Gitpod integration
+
 ## [0.4.0]  03/01/2023
 - Add completion for `//NATIVE_OPTIONS`, `//COMPILE_OPTIONS`, `//RUNTIME_OPTIONS`, `//GROOVY`, `//KOTLIN`
 - Display `Run JBang` command in quick run menu
