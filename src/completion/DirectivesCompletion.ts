@@ -25,14 +25,15 @@ export class DirectivesCompletion implements CompletionParticipant {
 
     async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): Promise<CompletionList | CompletionItem[]> {
         const items: CompletionItem[] = [];
+        const range = new Range(new Position(position.line, 0), position);
         if (position.line === 0) {
             items.push({
                 label: "///usr/bin/env jbang \"$0\" \"$@\" ; exit $?",
                 kind: CompletionItemKind.Text,
-                detail: "JBang header"
+                detail: "JBang header",
+                range
             });
         }
-        const range = new Range(new Position(position.line, 0), position);
         const scanner = new DirectiveScanner();
         const retriggerCompletion = { command: 'editor.action.triggerSuggest', title: 'Re-trigger completions...' };
         scanner.scan(document);
