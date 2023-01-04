@@ -2,7 +2,7 @@
 	"name": "jbang-vscode",
 	"displayName": "JBang",
 	"description": "JBang support for VS Code Java",
-	"version": "0.4.1",
+	"version": "0.4.2",
 	"icon": "icons/jbang.png",
 	"publisher": "jbangdev",
 	"license": "MIT",
@@ -149,7 +149,7 @@
 			"explorer/context": [
 				{
 					"submenu": "jbang",
-					"when": "isJBangFile",
+					"when": "isJBangFile || resourceExtname == .jar",
 					"group": "1_jbangactions"
 				}
 			],
@@ -178,7 +178,7 @@
 				},
 				{
 					"command": "jbang.script.run",
-					"when": "isJBangFile",
+					"when": "isJBangFile || resourceExtname == .jar",
 					"group": "2_jbangexecute@1"
 				},
 				{

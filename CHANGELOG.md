@@ -2,6 +2,9 @@
 
 All notable changes to the **JBang** extension will be documented in this file.
 
+## [0.4.2]  TBD
+- Display `Run JBang` menu on `jar` files
+
 ## [0.4.1]  03/01/2023
 - Ignore Java's `Picked up JAVA_TOOL_OPTIONS` message that broke Gitpod integration
 
