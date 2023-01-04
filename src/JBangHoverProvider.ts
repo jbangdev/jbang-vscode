@@ -4,7 +4,7 @@ import DocumentationProvider from "./DocumentationProvider";
 import { SUPPORTED_LANGUAGES } from "./JBangUtils";
 import { Dependency } from "./models/Dependency";
 
-const DEPS = "//DEPS "
+const DEPS = "//DEPS ";
 
 export class JBangHoverProvider implements HoverProvider {
 

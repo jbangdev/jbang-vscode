@@ -50,7 +50,7 @@ export class JBangCompletionProvider implements CompletionItemProvider<Completio
             context.subscriptions.push(
                 languages.registerCompletionItemProvider(languageId, this, ":", "/", "-")
             );
-        })
+        });
     }
     
 }

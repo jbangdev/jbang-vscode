@@ -9,9 +9,10 @@ export async function listTemplates(): Promise<JBangTemplate[]> {
         shell: true,
         env: {
             ...process.env,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             "NO_COLOR": "true"
         }
-    })
+    });
     let templates: JBangTemplate[] = [];
     const lines = data.toString().split(/\r?\n/);
     for (let i = 0; i < lines.length; i++) {
@@ -52,5 +53,5 @@ function generateArgs(scriptGenState: ScriptGenState): string[] {
     }
     args.push("--force");
     args.push(scriptGenState.scriptName);
-    return args
+    return args;
 }

@@ -7,6 +7,7 @@ export namespace JBangSettings {
 
 export class JBangConfig {
 
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     static CLEAN_WORKSPACE = 'java.clean.workspace';
 
     oldJavaConfig: WorkspaceConfiguration = this.getJavaConfiguration();
@@ -57,7 +58,7 @@ export class JBangConfig {
         const info =  this.getJBangConfiguration().inspect(configName);
         let scope = ConfigurationTarget.Global;
         if (info?.workspaceValue !== undefined) {
-            scope = ConfigurationTarget.Workspace
+            scope = ConfigurationTarget.Workspace;
         } else if (info?.workspaceFolderValue !== undefined) {
             scope = ConfigurationTarget.WorkspaceFolder;
         }

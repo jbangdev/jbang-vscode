@@ -14,7 +14,7 @@ const DOC_CACHE = new LRUCache<string, MarkdownString>({
     // how long to live in ms
     ttl: 1000 * 60 * 10,// 10 min
     sizeCalculation: (value: MarkdownString, key: string) => {
-        return 1
+        return 1;
     },
     // return stale items before removing from cache?
     allowStale: false,

@@ -38,7 +38,7 @@ export class SourcesCompletion implements CompletionParticipant {
             return [];
         }
         const end = TextHelper.findEndPosition(lineText, position);
-        const range = new Range(start, end)
+        const range = new Range(start, end);
 
         const dirContent = await fs.readdir(targetDir);
         const baseName = path.basename(document.fileName);
@@ -60,7 +60,7 @@ export class SourcesCompletion implements CompletionParticipant {
                 const isDir = (await fs.lstat(path.join(targetDir, name))).isDirectory();
                 let command:Command|undefined;
                 if (isDir) {
-                    command = { command: 'editor.action.triggerSuggest', title: 'Re-trigger completions...' }
+                    command = { command: 'editor.action.triggerSuggest', title: 'Re-trigger completions...' };
                 }
                 return {
                     label: name + (isDir?'/':''),

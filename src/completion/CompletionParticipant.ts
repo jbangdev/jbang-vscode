@@ -1,9 +1,9 @@
-import { CompletionContext, CompletionItem, CompletionList, Position, TextDocument } from "vscode"
-import { CancellationToken } from "vscode-languageclient"
-import { Dependency } from "../models/Dependency"
+import { CompletionContext, CompletionItem, CompletionList, Position, TextDocument } from "vscode";
+import { CancellationToken } from "vscode-languageclient";
+import { Dependency } from "../models/Dependency";
 
 export class JBangCompletionItem extends CompletionItem {
-    dependency?: Dependency
+    dependency?: Dependency;
 }
 
 export interface CompletionParticipant {

@@ -25,12 +25,12 @@ export class DirectivesCompletion implements CompletionParticipant {
 
     async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): Promise<CompletionList | CompletionItem[]> {
         const items: CompletionItem[] = [];
-        if (position.line == 0) {
+        if (position.line === 0) {
             items.push({
                 label: "///usr/bin/env jbang \"$0\" \"$@\" ; exit $?",
                 kind: CompletionItemKind.Text,
                 detail: "JBang header"
-            })
+            });
         }
         const range = new Range(new Position(position.line, 0), position);
         const scanner = new DirectiveScanner();
@@ -93,7 +93,7 @@ export class DirectivesCompletion implements CompletionParticipant {
 
 class DirectiveScanner {
     
-    directives:string[] = []
+    directives:string[] = [];
 
     found(directive: string): boolean {
         return this.directives.includes(directive);
@@ -102,7 +102,7 @@ class DirectiveScanner {
     scan(document: TextDocument) {
         const checkedDirectives = [
             JAVA, JAVAC_OPTIONS, COMPILE_OPTIONS, DESCRIPTION, CDS, GAV, JAVAAGENT, MANIFEST, JAVA_OPTIONS, RUNTIME_OPTIONS, NATIVE_OPTIONS, KOTLIN, GROOVY
-        ]
+        ];
         const lines = document.getText().split(/\r?\n/);
         for (let i = 0; i < lines.length && checkedDirectives.length > 0; i++) {
             const line = lines[i];

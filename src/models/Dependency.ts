@@ -5,7 +5,7 @@ const HOME = os.homedir() ;
 export class Dependency {
 
     public getLocalFile(): string | undefined {
-        if (this.groupId == undefined || this.artifactId === undefined || this.version === undefined) {
+        if (this.groupId === undefined || this.artifactId === undefined || this.version === undefined) {
             return undefined;
         }
         const splitGroupId = this.groupId?.replace(/\./g,'/');
@@ -13,7 +13,7 @@ export class Dependency {
     }
 
     public getRemoteUrl(): string | undefined {
-        if (this.groupId == undefined || this.artifactId === undefined || this.version === undefined) {
+        if (this.groupId === undefined || this.artifactId === undefined || this.version === undefined) {
             return undefined;
         }
         const splitGroupId = this.groupId?.replace(/\./g,'/');

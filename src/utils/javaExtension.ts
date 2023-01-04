@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { commands, extensions, ProgressLocation, window } from "vscode";
 // alias for vscode-java's ExtensionAPI
 export type JavaExtensionAPI = any;

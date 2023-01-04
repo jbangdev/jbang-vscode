@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
-import { Terminal, env } from "vscode";
+import { env, Terminal } from "vscode";
 import { executeCommand } from "./cpUtils";
 
 export enum WindowsShellType {
