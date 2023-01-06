@@ -2,9 +2,10 @@
 
 All notable changes to the **JBang** extension will be documented in this file.
 
-## [0.4.2]  TBD
+## [0.4.2]  06/01/2023
 - Display `Run JBang` menu on `jar` files
 - Fixed JBang header completion
+- Fixed NPE on import
 
 ## [0.4.1]  03/01/2023
 - Ignore Java's `Picked up JAVA_TOOL_OPTIONS` message that broke Gitpod integration
