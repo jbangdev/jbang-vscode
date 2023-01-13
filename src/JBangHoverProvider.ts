@@ -10,7 +10,7 @@ export class JBangHoverProvider implements HoverProvider {
 
     async provideHover(document: TextDocument, position: Position, token: CancellationToken): Promise<Hover|undefined> {
         
-        if (SUPPORTED_LANGUAGES.includes(document.languageId)) {
+        if (!SUPPORTED_LANGUAGES.includes(document.languageId)) {
             return undefined;
         }
         const line = document.lineAt(position);
