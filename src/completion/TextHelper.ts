@@ -4,13 +4,16 @@ export namespace TextHelper {
 
     var DELIMITER = new RegExp(/^[\s,]$/);
 
-    export function isDelimiter(c: string) {
+    export function isDelimiter(c: string): boolean {
         return DELIMITER.test(c);
     }
 
-    export function findStartPosition(lineText: string, position: Position, directive: string): Position {
+    export function findStartPosition(lineText: string, position: Position, directive: string, delimiterFunc?: ((text: string) => boolean) ): Position {
+        if (!delimiterFunc) {
+            delimiterFunc = isDelimiter;
+        }
         for(let i = position.character; i> -1; i--) {
-            if (isDelimiter(lineText.charAt(i))) {
+            if (delimiterFunc(lineText.charAt(i))) {
                 return new Position(position.line, i+1);
             }
         }

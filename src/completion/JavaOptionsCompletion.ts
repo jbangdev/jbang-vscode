@@ -12,7 +12,7 @@ const DIRECTIVES = [COMPILE_OPTIONS, RUNTIME_OPTIONS, JAVA, JAVAC_OPTIONS, JAVA_
 const JAVA_VERSIONS = [19, 17, 11, 8];
 export class JavaOptionsCompletion implements CompletionParticipant {
     applies(lineText: string, position: Position): boolean {
-        return !!DIRECTIVES.find(d => lineText.startsWith(d));
+        return !!DIRECTIVES.find(d => lineText.startsWith(d) && position.character >= d.length);
     }
 
     async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): Promise<CompletionList | CompletionItem[]> {
