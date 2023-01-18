@@ -7,6 +7,7 @@ All notable changes to the **JBang** extension will be documented in this file.
 - Added completion for `//FILES`
 - Display error markers when `//FILES` or `//SOURCES` are invalid
 - Fixed JBang failing if `JAVA_HOME` is set to an invalid location
+- Added 5s request timeout when searching for dependencies on Maven Central
 
 ## [0.4.2]  06/01/2023
 - Display `Run JBang` menu on `jar` files

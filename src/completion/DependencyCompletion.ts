@@ -12,7 +12,8 @@ const MAX_RESULTS = 100;
 const SEARCH_API = `https://search.maven.org/solrsearch/select?rows=${MAX_RESULTS}&wt=json&q=`;
 
 const axiosConfig: AxiosRequestConfig<any> = {
-    httpsAgent: 'jbang-vscode v' + version
+    httpsAgent: 'jbang-vscode v' + version,
+    timeout: 5000
 };
 
 const QUERY_CACHE = new LRUCache<string, CompletionList>({
@@ -46,18 +47,25 @@ export class DependencyCompletion implements CompletionParticipant {
 
         let json: any = QUERY_CACHE.get(currText);
         if (!json) {
-            switch (parts.length) {
-                case 1://has groupid or searches name
-                    json = await searchAll(parts[0]);
-                    break;
-                case 2://has groupid and artifactId
-                    json = await searchArtifactId(parts[0], parts[1]);
-                    break;
-                case 3://has groupid, artifactId and version
-                case 4://has groupid, artifactId, version and classifier
-                    json = await searchVersion(parts[0], parts[1], parts[2]);
-                default:
+            // const start = new Date().getTime();
+            try {
+                switch (parts.length) {
+                    case 1://has groupid or searches name
+                        json = await searchAll(parts[0]);
+                        break;
+                    case 2://has groupid and artifactId
+                        json = await searchArtifactId(parts[0], parts[1]);
+                        break;
+                    case 3://has groupid, artifactId and version
+                    case 4://has groupid, artifactId, version and classifier
+                        json = await searchVersion(parts[0], parts[1], parts[2]);
+                    default:
+                }
+            } catch (e:any) {
+                console.error(`Dependencies search failed: ${e.message?e.message:e}`);
             }
+            // const elapsed = new Date().getTime() - start;
+            // console.log(`Searched dependencies in ${elapsed} ms`);
             if (json) {
                 try {
                     QUERY_CACHE.set(currText, json);
@@ -85,6 +93,7 @@ export class DependencyCompletion implements CompletionParticipant {
             default:
                 result = new CompletionList();
         }
+        //console.log(`Found ${result?.items?.length} items`)
         return result;
     }
 
