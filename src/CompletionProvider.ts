@@ -5,7 +5,7 @@ import { DirectivesCompletion } from "./completion/DirectivesCompletion";
 import { GroovyVersionCompletion } from "./completion/GroovyVersionCompletion";
 import { JavaOptionsCompletion } from "./completion/JavaOptionsCompletion";
 import { KotlinVersionCompletion } from "./completion/KotlinVersionCompletion";
-import { SourcesCompletion } from "./completion/SourcesCompletion";
+import { ResourcesCompletion } from "./completion/ResourcesCompletion";
 import DocumentationProvider from "./DocumentationProvider";
 import { SUPPORTED_LANGUAGES } from "./JBangUtils";
 
@@ -40,7 +40,7 @@ export class JBangCompletionProvider implements CompletionItemProvider<Completio
     public initialize(context: ExtensionContext) {
         this.completionParticipants = [
             new DependencyCompletion(),
-            new SourcesCompletion(),
+            new ResourcesCompletion(),
             new JavaOptionsCompletion(),
             new KotlinVersionCompletion(),
             new GroovyVersionCompletion(),

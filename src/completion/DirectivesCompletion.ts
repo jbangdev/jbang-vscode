@@ -57,7 +57,10 @@ export class DirectivesCompletion implements CompletionParticipant {
         sourcesCompletion.command = retriggerCompletion;
         items.push(sourcesCompletion);
         
-        items.push(getCompletion("//FILES", "Mount files to build", range));
+        const filesCompletion = getCompletion("//FILES", "Mount files to build", range);
+        filesCompletion.command = retriggerCompletion;
+        items.push(filesCompletion);
+
         items.push(getCompletion("//REPOS", "Repositories used by Jbang to resolve dependencies", range));
 
         if (!scanner.found(MANIFEST)) {
