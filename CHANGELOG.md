@@ -2,6 +2,12 @@
 
 All notable changes to the **JBang** extension will be documented in this file.
 
+## [0.5.0]  18/01/2023
+- Automatic source download when using JBang 0.102.0+
+- Added completion for `//FILES`
+- Display error markers when `//FILES` or `//SOURCES` are invalid
+- Fixed JBang failing if `JAVA_HOME` is set to an invalid location
+
 ## [0.4.2]  06/01/2023
 - Display `Run JBang` menu on `jar` files
 - Fixed JBang header completion

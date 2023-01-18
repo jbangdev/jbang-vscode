@@ -19,7 +19,7 @@ This is an early work-in-progress extension for [vscode-java](https://marketplac
 - Modifying JBang directives in a file will update the classpath of the file.
 - Snippets are provided for JBang directives.
 - Autocompletion for dependencies in `//DEPS` 
-- Autocompletion for `//SOURCES` 
+- Autocompletion for `//SOURCES` and `//FILES`
 - Partial autocompletion for `//JAVA_OPTIONS`, `//JAVAC_OPTIONS`, `//RUNTIME_OPTIONS` and `//COMPILE_OPTIONS`
 - Display dependency documentation on completion/hover
 - JBang scripts can be run/debugged from the `Run JBang` or `Debug JBang` codelens, that show on top of the type declaration or main method, if there is one.
