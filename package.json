@@ -2,7 +2,7 @@
 	"name": "jbang-vscode",
 	"displayName": "JBang",
 	"description": "JBang support for VS Code Java",
-	"version": "0.5.0",
+	"version": "0.5.1",
 	"icon": "icons/jbang.png",
 	"publisher": "jbangdev",
 	"license": "MIT",
@@ -113,7 +113,7 @@
 				"command": "jbang.script.debug",
 				"title": "Debug JBang",
 				"category": "JBang",
-				"icon": "icons/jbang.png"
+				"icon": "icons/debug-jbang.png"
 			}
 		],
 		"submenus": [
