@@ -5,7 +5,7 @@ import * as LRUCache from "lru-cache";
 import { MarkdownString } from "vscode";
 import { CancellationToken } from "vscode-languageclient";
 import { version } from "./extension";
-import { Dependency } from "./models/Dependency";
+import { Dependency, getLocalFile, getRemoteMetadata, getRemoteUrl } from "./models/Dependency";
 
 const DOC_CACHE = new LRUCache<string, MarkdownString>({
     max: 500,
@@ -20,17 +20,42 @@ const DOC_CACHE = new LRUCache<string, MarkdownString>({
     allowStale: false,
 });
 
+const LATEST_VERSIONS_CACHE = new LRUCache<string, string>({
+    max: 20,
+    // for use with tracking overall storage size
+    maxSize: 20,
+    // how long to live in ms
+    ttl: 1000 * 60 * 10,// 10 min
+    sizeCalculation: (value: string, key: string) => {
+        return 1;
+    },
+    // return stale items before removing from cache?
+    allowStale: false,
+});
+
 const axiosConfig: AxiosRequestConfig<any> = {
     httpsAgent: 'jbang-vscode v' + version
 };
 
+const NO_DOC = new MarkdownString('');
+
 export class DocumentationProvider {
+
     public async getDocumentation(dependency: Dependency, _token: CancellationToken): Promise<MarkdownString|undefined> {
         const gav = dependency.toString();
         if (DOC_CACHE.has(gav)) {
             return DOC_CACHE.get(gav);
         }
-        const pom = await this.loadPom(dependency);
+        let pom: any;
+        try {
+            pom = await this.loadPom(dependency);
+        } catch (e: any) {
+            console.error(e);
+            if (e?.response?.status > 400) {
+                DOC_CACHE.set(gav, NO_DOC);
+                return NO_DOC;
+            }
+        }
         if (!pom) {
             return undefined;
         }
@@ -49,7 +74,14 @@ export class DocumentationProvider {
     }
     
     private async loadPom(dependency: Dependency): Promise<any> {
-        const filePath = dependency.getLocalFile(); 
+        let realVersion = dependency.version;
+        if (dependency.version === 'LATEST') {
+            realVersion = await findLatestVersion(dependency);
+            if (!realVersion) {
+                return undefined;
+            }
+        }
+        const filePath = getLocalFile(dependency.groupId, dependency.artifactId, realVersion); 
         if (!filePath) {
             return undefined;
         }
@@ -57,21 +89,13 @@ export class DocumentationProvider {
         try {
             xml = await fs.readFile(filePath, "utf8");
         } catch (error) {
-            const pomUrl = dependency.getRemoteUrl();
+            const pomUrl = getRemoteUrl(dependency.groupId, dependency.artifactId, realVersion);
             if (pomUrl) {
-                xml = await getRemotePom(pomUrl);
+                xml = await fetchData(pomUrl);
                 //TODO save xml locally to prevent future remote calls
             }
         }
-        if (xml) {
-            try {
-                const parser = new XMLParser();
-                return parser.parse(xml);
-            } catch (e) {
-                console.error(`Failed to parse XML from\n${xml}`);
-            }
-        }
-        return undefined;
+        return parseXML(xml);
     }
     
     private toMarkdown(xml?: string): string|undefined {
@@ -84,8 +108,53 @@ export class DocumentationProvider {
 
 export default new DocumentationProvider();
 
-async function getRemotePom(uri: string): Promise<string|undefined> {
+async function fetchData(uri: string): Promise<string|undefined> {
     console.log(`Fetching ${uri}`);
     const response = await axios.get(uri, axiosConfig);
     return response.data;
+}
+
+async function findLatestVersion(dependency: Dependency): Promise<string|undefined> {
+    const key = dependency.groupId+":"+dependency.artifactId;
+    if (LATEST_VERSIONS_CACHE.has(key)) {
+        return LATEST_VERSIONS_CACHE.get(key);
+    }
+    let xmlData;
+    try {
+        xmlData = await loadMetadata(dependency);
+    } catch (e: any) {
+        console.error(e);
+    }
+    let latestVersion:string|undefined;
+    if (xmlData) {
+        const xml = parseXML(xmlData);
+        if (xml) {
+            latestVersion = xml?.metadata?.versioning?.latest;
+        }
+    }
+    if (!latestVersion) {
+        latestVersion = '';
+    }
+    LATEST_VERSIONS_CACHE.set(key, latestVersion);
+    return latestVersion;
+}
+
+async function loadMetadata(dependency: Dependency): Promise<string|undefined> {
+    const metadataUrl = getRemoteMetadata(dependency.groupId, dependency.artifactId);
+    if (!metadataUrl) {
+        return undefined;
+    }
+    return fetchData(metadataUrl);
+}
+
+function parseXML(xml?: string): any {
+    if (xml) {
+        try {
+            const parser = new XMLParser();
+            return parser.parse(xml);
+        } catch (e) {
+            console.error(`Failed to parse XML from\n${xml}`);
+        }
+    }
+    return undefined;
 }

@@ -2,6 +2,10 @@
 
 All notable changes to the **JBang** extension will be documented in this file.
 
+## [0.5.1]  TBD
+- Fixed hover failing over LATEST versions
+- Added JBang debug icon
+
 ## [0.5.0]  18/01/2023
 - Automatic source download when using JBang 0.102.0+
 - Added completion for `//FILES`

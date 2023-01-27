@@ -2,27 +2,11 @@ import * as os from 'os';
 
 const HOME = os.homedir() ;
 
+
 export class Dependency {
-
-    public getLocalFile(): string | undefined {
-        if (this.groupId === undefined || this.artifactId === undefined || this.version === undefined) {
-            return undefined;
-        }
-        const splitGroupId = this.groupId?.replace(/\./g,'/');
-        return `${HOME}/.m2/repository/${splitGroupId}/${this.artifactId}/${this.version}/${this.artifactId}-${this.version}.pom`;
-    }
-
-    public getRemoteUrl(): string | undefined {
-        if (this.groupId === undefined || this.artifactId === undefined || this.version === undefined) {
-            return undefined;
-        }
-        const splitGroupId = this.groupId?.replace(/\./g,'/');
-        return `https://repo1.maven.org/maven2/${splitGroupId}/${this.artifactId}/${this.version}/${this.artifactId}-${this.version}.pom`;
-    }
 
     constructor(public groupId?:string, public artifactId?:string, public version?:string, public classifier?:string) {
     }
-
 
     public toString(): string {
         return `${this.groupId}:${this.artifactId}:${this.version}:${this.classifier}`;
@@ -48,4 +32,31 @@ export class Dependency {
         }
         return new Dependency(groupId, artifactId, version, classifier);
     }
+}
+
+const MAVEN_REPO = 'https://repo1.maven.org/maven2';
+
+export function getLocalFile(groupId ?:string, artifactId?:string, version?: string): string | undefined {
+    if (groupId === undefined || artifactId === undefined || version === undefined) {
+        return undefined;
+    }
+    return `${HOME}/.m2/repository/${getSplitGroupId(groupId)}/${artifactId}/${version}/${artifactId}-${version}.pom`;
+}
+
+export function getRemoteUrl(groupId ?:string, artifactId?:string, version?: string): string | undefined {
+    if (groupId === undefined || artifactId === undefined || version === undefined) {
+        return undefined;
+    }
+    return `${MAVEN_REPO}/${getSplitGroupId(groupId)}/${artifactId}/${version}/${artifactId}-${version}.pom`;
+}
+
+export function getRemoteMetadata(groupId ?:string, artifactId?:string): string | undefined {
+    if (groupId === undefined || artifactId === undefined) {
+        return undefined;
+    }
+    return `${MAVEN_REPO}/${getSplitGroupId(groupId)}/${artifactId}/maven-metadata.xml`;
+}
+
+function getSplitGroupId(groupId:string):string {
+    return groupId?.replace(/\./g,'/');
 }
