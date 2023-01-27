@@ -63,11 +63,10 @@ export class DirectivesCompletion implements CompletionParticipant {
 
         items.push(getCompletion("//REPOS", "Repositories used by Jbang to resolve dependencies", range));
 
+        items.push(getCompletion(DESCRIPTION, "Markdown description for the JBang application/script", range));
+
         if (!scanner.found(MANIFEST)) {
             items.push(getCompletion(MANIFEST, "Write entries to META-INF/manifest.mf", range));
-        }
-        if (!scanner.found(DESCRIPTION)) {
-            items.push(getCompletion(DESCRIPTION, "Markdown description for the JBang application/script", range));
         }
         if (!scanner.found(JAVAC_OPTIONS) && !scanner.found(COMPILE_OPTIONS)) {
             items.push(getCompletion(JAVAC_OPTIONS, "Options passed to the Java compiler", range, retriggerCompletion));
