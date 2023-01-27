@@ -31,6 +31,7 @@ This is an early work-in-progress extension for [vscode-java](https://marketplac
 - Install the script as an application available from the path, by right-clicking on the script and selecting the `JBang > install application` menu. Select the application name and whether to generate a native application or not. See https://www.jbang.dev/documentation/guide/latest/install.html
 - Automagically configures JBang-managed JDKs, i.e. no need to configure `java.configuration.runtimes`.
 - Partial support for Kotlin and Groovy scripts: completion for directive and run command are available, but no classpath management when editing the files.
+- Autocompletion for [JBang catalogs](https://www.jbang.dev/documentation/guide/latest/alias_catalogs.html) (i.e. `jbang-catalog.json` files)
 
 ## Preferences
 - `jbang.home`: Specifies the folder path to the JBang directory (not the executable), eg. `~/.sdkman/candidates/jbang/current`. On Windows, backslashes must be escaped, eg `C:\\ProgramData\\chocolatey\\lib\\jbang`. Used by the `JBang: Create a new script` wizard and the `Run JBang` code lens. Useful in case `jbang` is not automatically picked up from the $PATH, for some reason.
