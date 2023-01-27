@@ -29,7 +29,9 @@
 		"onCommand:jbang.script.run",
 		"onCommand:jbang.script.app.install",
 		"onCommand:jbang.script.debug",
-		"workspaceContains:build.jbang"
+		"workspaceContains:build.jbang",
+		"workspaceContains:jbang-catalog.json",
+		"workspaceContains:*/jbang-catalog.json"
 	],
 	"extensionDependencies": [
 		"redhat.java"
@@ -215,7 +217,13 @@
 					"scope": "window"
 				}
 			}
-		}
+		},
+		"jsonValidation": [
+			{
+				"fileMatch": "jbang-catalog.json",
+				"url": "./schemas/jbang-catalog-schema.json"
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
