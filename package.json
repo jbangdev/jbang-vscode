@@ -22,13 +22,8 @@
 	],
 	"activationEvents": [
 		"onLanguage:java",
-		"onLanguage:jbang",
 		"onLanguage:groovy",
 		"onLanguage:kotlin",
-		"onCommand:jbang.script.generate",
-		"onCommand:jbang.script.run",
-		"onCommand:jbang.script.app.install",
-		"onCommand:jbang.script.debug",
 		"workspaceContains:build.jbang",
 		"workspaceContains:jbang-catalog.json",
 		"workspaceContains:*/jbang-catalog.json"

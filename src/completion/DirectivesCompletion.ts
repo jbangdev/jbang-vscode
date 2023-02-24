@@ -16,7 +16,8 @@ const DESCRIPTION = "//DESCRIPTION ";
 const JAVAAGENT = "//JAVAAGENT "; 
 const GROOVY = "//GROOVY ";
 const KOTLIN = "//KOTLIN ";
-
+const MODULE = "//MODULE ";
+const MAIN = "//MAIN ";
 export class DirectivesCompletion implements CompletionParticipant {
 
     applies(lineText: string, position: Position): boolean {
@@ -51,6 +52,12 @@ export class DirectivesCompletion implements CompletionParticipant {
 
         if (!scanner.found(GAV)) {
             items.push(getCompletion(GAV, "Set Group, Artifact and Version", range));
+        }
+        if (!scanner.found(MODULE)) {
+            items.push(getCompletion(MODULE, "Treat resource as a module. Optionally with the given module name.", range));
+        }
+        if (!scanner.found(MAIN)) {
+            items.push(getCompletion(MAIN, "Override the main class", range));
         }
         
         const sourcesCompletion = getCompletion("//SOURCES", "Pattern to include as JBang sources", range);
@@ -104,7 +111,7 @@ class DirectiveScanner {
 
     scan(document: TextDocument) {
         const checkedDirectives = [
-            JAVA, JAVAC_OPTIONS, COMPILE_OPTIONS, DESCRIPTION, CDS, GAV, JAVAAGENT, MANIFEST, JAVA_OPTIONS, RUNTIME_OPTIONS, NATIVE_OPTIONS, KOTLIN, GROOVY
+            JAVA, JAVAC_OPTIONS, COMPILE_OPTIONS, DESCRIPTION, CDS, GAV, JAVAAGENT, MANIFEST, JAVA_OPTIONS, RUNTIME_OPTIONS, NATIVE_OPTIONS, KOTLIN, GROOVY, MAIN, MODULE
         ];
         const lines = document.getText().split(/\r?\n/);
         for (let i = 0; i < lines.length && checkedDirectives.length > 0; i++) {
