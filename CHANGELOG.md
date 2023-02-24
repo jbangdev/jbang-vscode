@@ -2,8 +2,9 @@
 
 All notable changes to the **JBang** extension will be documented in this file.
 
-## [0.6.0]  TBD
+## [0.6.0]  24/02/2023
 - Added autocompletion for [`jbang-catalog.json`](https://www.jbang.dev/documentation/guide/latest/alias_catalogs.html) files.
+- Added completion for `//MODULE` and `//MAIN` directives (require JBang 0.104.0+)
 - Added JBang debug icon
 - Fixed hover failing over LATEST versions
 - Allowed completion for several `//DESCRIPTION` directives
