@@ -1,12 +1,12 @@
 name: Build
 
-on: 
+on:
   push:
-    tags-ignore:
-      - '**'
+    branches:
+      - main
   pull_request:
-      branches:
-        - main
+    branches:
+      - main
 
 jobs:
   build:
@@ -28,32 +28,32 @@ jobs:
       - name: Set Up NodeJS
         uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: "14"
 
       - name: Set Up Java
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: 'maven'
+          java-version: "17"
+          distribution: "temurin"
+          cache: "maven"
 
       - name: Install requirements
-        working-directory: ./jbang-vscode 
+        working-directory: ./jbang-vscode
         run: |
           npm ci
           npm install -g typescript "vsce"
 
       - name: Build server
-        working-directory: ./jbang-vscode 
+        working-directory: ./jbang-vscode
         run: npm run build-ext
-          
+
       - name: Build vsix
-        working-directory: ./jbang-vscode 
+        working-directory: ./jbang-vscode
         run: |
           node ./scripts/create-package-insiders-json.js
           mv ./package.insiders.json ./package.json
-          vsce package --pre-release 
-      
+          vsce package --pre-release
+
       - name: Upload vsix
         uses: actions/upload-artifact@v3
         with:
