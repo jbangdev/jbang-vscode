@@ -2,7 +2,7 @@
 	"name": "jbang-vscode",
 	"displayName": "JBang",
 	"description": "JBang support for VS Code Java",
-	"version": "0.6.0",
+	"version": "0.6.1",
 	"icon": "icons/jbang.png",
 	"publisher": "jbangdev",
 	"license": "MIT",
