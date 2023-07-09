@@ -1,11 +1,11 @@
 import { CancellationToken, CompletionContext, CompletionItem, CompletionItemProvider, CompletionList, ExtensionContext, languages, Position, TextDocument } from "vscode";
 import { CompletionParticipant, EMPTY_LIST, JBangCompletionItem } from "./completion/CompletionParticipant";
-import { RemoteDependencyCompletion } from "./completion/DependencyCompletion";
 import { DirectivesCompletion } from "./completion/DirectivesCompletion";
 import { GroovyVersionCompletion } from "./completion/GroovyVersionCompletion";
 import { JavaOptionsCompletion } from "./completion/JavaOptionsCompletion";
 import { KotlinVersionCompletion } from "./completion/KotlinVersionCompletion";
 import { LocalDependencyCompletion } from "./completion/LocalDependencyCompletion";
+import { RemoteDependencyCompletion } from "./completion/RemoteDependencyCompletion";
 import { ResourcesCompletion } from "./completion/ResourcesCompletion";
 import DocumentationProvider from "./DocumentationProvider";
 import { SUPPORTED_LANGUAGES } from "./JBangUtils";
