@@ -1,10 +1,11 @@
 import { CancellationToken, CompletionContext, CompletionItem, CompletionItemProvider, CompletionList, ExtensionContext, languages, Position, TextDocument } from "vscode";
-import { CompletionParticipant, JBangCompletionItem } from "./completion/CompletionParticipant";
-import { DependencyCompletion } from "./completion/DependencyCompletion";
+import { CompletionParticipant, EMPTY_LIST, JBangCompletionItem } from "./completion/CompletionParticipant";
+import { RemoteDependencyCompletion } from "./completion/DependencyCompletion";
 import { DirectivesCompletion } from "./completion/DirectivesCompletion";
 import { GroovyVersionCompletion } from "./completion/GroovyVersionCompletion";
 import { JavaOptionsCompletion } from "./completion/JavaOptionsCompletion";
 import { KotlinVersionCompletion } from "./completion/KotlinVersionCompletion";
+import { LocalDependencyCompletion } from "./completion/LocalDependencyCompletion";
 import { ResourcesCompletion } from "./completion/ResourcesCompletion";
 import DocumentationProvider from "./DocumentationProvider";
 import { SUPPORTED_LANGUAGES } from "./JBangUtils";
@@ -13,17 +14,27 @@ export class JBangCompletionProvider implements CompletionItemProvider<Completio
 
     private completionParticipants: CompletionParticipant[] = [];
 
-    async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): Promise<CompletionList|JBangCompletionItem[]> {
+    async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): Promise<CompletionList> {
         if (!SUPPORTED_LANGUAGES.includes(document.languageId)) {
-            return [];
+            return EMPTY_LIST;
         }
         const line = document.lineAt(position);
         const lineText = line.text;
-        const participant = this.completionParticipants.find(p => p.applies(lineText, position));
-        if (participant) {
-            return participant.provideCompletionItems(document, position, token, context);
+        const participants = this.completionParticipants.filter(p => p.applies(lineText, position));
+        if (participants) {
+            const promises = participants.map(participant =>
+                participant.provideCompletionItems(document, position, token, context)
+            );
+            const participantCompletions = await Promise.all(promises);
+            const items: CompletionItem[] = [];
+            let isIncomplete = false;
+            participantCompletions.forEach(c => {
+                isIncomplete = isIncomplete || c.isIncomplete!!;
+                items.push(...c.items);
+            });
+            return new CompletionList(items, isIncomplete);
         }
-        return [];
+        return EMPTY_LIST;
     }
 
     async resolveCompletionItem?(ci: CompletionItem, token: CancellationToken): Promise<JBangCompletionItem> {
@@ -39,7 +50,8 @@ export class JBangCompletionProvider implements CompletionItemProvider<Completio
 
     public initialize(context: ExtensionContext) {
         this.completionParticipants = [
-            new DependencyCompletion(),
+            new LocalDependencyCompletion(),
+            new RemoteDependencyCompletion(),
             new ResourcesCompletion(),
             new JavaOptionsCompletion(),
             new KotlinVersionCompletion(),

@@ -5,17 +5,13 @@ import { CompletionParticipant, EMPTY_LIST } from "./CompletionParticipant";
 import { TextHelper } from './TextHelper';
 import path = require('path');
 
-const FILES_PREFIX = "//FILES ";
-const SOURCES_PREFIX = "//SOURCES ";
+const DEPS_PREFIX = "//DEPS ";
 
-export class ResourcesCompletion implements CompletionParticipant {
+export class LocalDependencyCompletion implements CompletionParticipant {
 
     applies(lineText: string, position: Position): boolean {
-        return (lineText.startsWith(FILES_PREFIX) && position.character >= FILES_PREFIX.length)
-        || (lineText.startsWith(SOURCES_PREFIX) && position.character >= SOURCES_PREFIX.length);
+        return (lineText.startsWith(DEPS_PREFIX) && position.character >= DEPS_PREFIX.length);
     }
-
-
 
     async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): Promise<CompletionList> {
         const line = document.lineAt(position);
@@ -26,20 +22,18 @@ export class ResourcesCompletion implements CompletionParticipant {
 
         let prefix: string;
         let delimiterFunc: (text:string) => boolean;
-        if(lineText.startsWith(FILES_PREFIX)) {
-          prefix = FILES_PREFIX;
-          delimiterFunc = isEqualsOrDelim;
-        } else {
-          prefix = SOURCES_PREFIX;
-          delimiterFunc = TextHelper.isDelimiter;
-        }
+        prefix = DEPS_PREFIX;
+        delimiterFunc = TextHelper.isDelimiter;
         let start = TextHelper.findStartPosition(lineText, position, prefix, delimiterFunc) ;
-        const end = TextHelper.findEndPosition(lineText, position);
         const currText = lineText.substring(start.character, position.character).trim();
+        if (currText.includes(":")) {
+          return EMPTY_LIST;
+        }
+        const end = TextHelper.findEndPosition(lineText, position);
         const currDir = path.dirname(document.fileName);
         let targetDir = currDir;
         const isAbsolute = path.isAbsolute(currText);
-        if (isAbsolute && prefix === FILES_PREFIX) {
+        if (isAbsolute && prefix === DEPS_PREFIX) {
           //No completion for absolute files in //FILES, as JBang explicitly forbids it
           return EMPTY_LIST;
         }
@@ -83,7 +77,10 @@ export class ResourcesCompletion implements CompletionParticipant {
 
         let completionItems = fileEntries
           .filter(entry => {
-            return entry.name.startsWith(lastSegment) &&  !(targetDir === currDir && entry.name === fileName);
+            return entry.name.startsWith(lastSegment) && !(targetDir === currDir && entry.name === fileName);
+          })
+          .filter(entry => {
+            return entry.isDirectory() || entry.name.endsWith(".jar");
           })
           .map(entry => {
             const isDir = entry.isDirectory();

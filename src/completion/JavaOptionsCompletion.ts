@@ -1,6 +1,6 @@
 import { CompletionContext, CompletionItem, CompletionList, Position, Range, SnippetString, TextDocument } from "vscode";
 import { CancellationToken, CompletionItemKind } from "vscode-languageclient";
-import { CompletionParticipant } from "./CompletionParticipant";
+import { CompletionParticipant, EMPTY_LIST } from "./CompletionParticipant";
 import { TextHelper } from "./TextHelper";
 
 const JAVAC_OPTIONS = "//JAVAC_OPTIONS ";
@@ -15,13 +15,13 @@ export class JavaOptionsCompletion implements CompletionParticipant {
         return !!DIRECTIVES.find(d => lineText.startsWith(d) && position.character >= d.length);
     }
 
-    async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): Promise<CompletionList | CompletionItem[]> {
+    async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): Promise<CompletionList> {
         const line = document.lineAt(position);
         const lineText = line.text;
         const items:CompletionItem[] = [];
         const directive = DIRECTIVES.find(d => lineText.startsWith(d));
         if (!directive) {
-            return [];
+            return EMPTY_LIST;
         }
         const start = TextHelper.findStartPosition(lineText, position, directive);
         //const currText = lineText.substring(start.character, position.character).trim();
@@ -36,7 +36,7 @@ export class JavaOptionsCompletion implements CompletionParticipant {
                 item.range = range;
                 items.push(item);
             });
-            return items;
+            return new CompletionList(items);
         }
         range = new Range(start, end);
         if (!lineText.includes('--enable-preview')) {
@@ -64,7 +64,7 @@ export class JavaOptionsCompletion implements CompletionParticipant {
                 'the Reflection API can retrieve them.', range));
             }
         }
-        return items;
+        return new CompletionList(items);
     } 
 }
 
