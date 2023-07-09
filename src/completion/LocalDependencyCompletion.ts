@@ -80,7 +80,7 @@ export class LocalDependencyCompletion implements CompletionParticipant {
             return entry.name.startsWith(lastSegment) && !(targetDir === currDir && entry.name === fileName);
           })
           .filter(entry => {
-            return entry.isDirectory() || entry.name.endsWith(".jar");
+            return entry.isDirectory() || entry.name.endsWith(".jar") || entry.name.endsWith(".java");
           })
           .map(entry => {
             const isDir = entry.isDirectory();

@@ -43,11 +43,12 @@ export class RemoteDependencyCompletion implements CompletionParticipant {
         }
         const start = TextHelper.findStartPosition(lineText, position, DEPS_PREFIX);
         const currText = lineText.substring(start.character, position.character).trim();
-        const parts = currText.split(':');
-        if (currText.startsWith('.')) {
-           // local search, we bail
+        if (currText.length === 0 
+            || currText.startsWith('.') // local search, we bail
+            ) {
            return EMPTY_LIST;
         }
+        const parts = currText.split(':');
         let json: any = QUERY_CACHE.get(currText);
         if (!json) {
             // const start = new Date().getTime();
