@@ -25,7 +25,7 @@ export class DirectivesCompletion implements CompletionParticipant {
         return lineText.startsWith('//') || position.character === 0;
     }
 
-    async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): Promise<CompletionList | CompletionItem[]> {
+    async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): Promise<CompletionList> {
         const items: CompletionItem[] = [];
         const range = new Range(new Position(position.line, 0), position);
         if (position.line === 0) {
@@ -100,7 +100,7 @@ export class DirectivesCompletion implements CompletionParticipant {
         if (!scanner.found(PREVIEW)) {
             items.push(getCompletion(PREVIEW, "Enable Java preview features", range));
         }
-        return items;
+        return new CompletionList(items);
     }
 }
 

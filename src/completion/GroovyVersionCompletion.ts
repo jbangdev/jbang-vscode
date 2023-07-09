@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from "axios";
 import { CancellationToken, CompletionContext, CompletionItemKind, CompletionList, Position, Range, TextDocument } from "vscode";
 import { version } from "../extension";
 import { compareVersionsDesc } from "../models/Version";
-import { CompletionParticipant, JBangCompletionItem } from "./CompletionParticipant";
+import { CompletionParticipant, EMPTY_LIST } from "./CompletionParticipant";
 import { TextHelper } from "./TextHelper";
 
 const GROOVY_PREFIX = "//GROOVY ";
@@ -21,18 +21,18 @@ export class GroovyVersionCompletion implements CompletionParticipant {
         return lineText.startsWith(GROOVY_PREFIX);
     }
 
-    async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): Promise<CompletionList | JBangCompletionItem[]> {
+    async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): Promise<CompletionList> {
         const line = document.lineAt(position);
         const lineText = line.text;
         if (!this.applies(lineText, position)) {
-            return [];
+            return EMPTY_LIST;
         }
         if (!VERSIONS || itsBeenAWhile()) {
             VERSIONS = await searchVersions();
             lastUpdate = new Date().getTime();
         }
         if (!VERSIONS.length) {
-            return [];
+            return EMPTY_LIST;
         }
         const start = TextHelper.findStartPosition(lineText, position, GROOVY_PREFIX);
         const end = TextHelper.findEndPosition(lineText, position);

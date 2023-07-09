@@ -4,7 +4,7 @@ import { CancellationToken, CompletionContext, CompletionItem, CompletionItemKin
 import { version } from "../extension";
 import { Dependency } from "../models/Dependency";
 import { compareVersions } from "../models/Version";
-import { CompletionParticipant, JBangCompletionItem } from "./CompletionParticipant";
+import { CompletionParticipant, EMPTY_LIST, JBangCompletionItem } from "./CompletionParticipant";
 import { TextHelper } from "./TextHelper";
 
 const DEPS_PREFIX = "//DEPS ";
@@ -29,22 +29,25 @@ const QUERY_CACHE = new LRUCache<string, CompletionList>({
     allowStale: false,
 });
 
-export class DependencyCompletion implements CompletionParticipant {
+export class RemoteDependencyCompletion implements CompletionParticipant {
 
     applies(lineText: string, _position: Position): boolean {
         return lineText.startsWith(DEPS_PREFIX);
     }
 
-    async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): Promise<CompletionList | JBangCompletionItem[]> {
+    async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): Promise<CompletionList> {
         const line = document.lineAt(position);
         const lineText = line.text;
         if (!this.applies(lineText, position)) {
-            return [];
+            return EMPTY_LIST;
         }
         const start = TextHelper.findStartPosition(lineText, position, DEPS_PREFIX);
         const currText = lineText.substring(start.character, position.character).trim();
         const parts = currText.split(':');
-
+        if (currText.startsWith('.')) {
+           // local search, we bail
+           return EMPTY_LIST;
+        }
         let json: any = QUERY_CACHE.get(currText);
         if (!json) {
             // const start = new Date().getTime();
@@ -76,7 +79,7 @@ export class DependencyCompletion implements CompletionParticipant {
             }
         }
         if (!json?.docs?.length) {
-            return [];
+            return EMPTY_LIST;
         }
         const end = TextHelper.findEndPosition(lineText, position);
         let result: CompletionList;
