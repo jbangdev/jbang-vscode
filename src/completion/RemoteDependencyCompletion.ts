@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
-import * as LRUCache from "lru-cache";
+import { LRUCache } from "lru-cache";
 import { CancellationToken, CompletionContext, CompletionItem, CompletionItemKind, CompletionList, Position, Range, TextDocument } from "vscode";
 import { version } from "../extension";
 import { Dependency } from "../models/Dependency";
