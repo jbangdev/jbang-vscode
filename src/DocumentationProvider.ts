@@ -1,18 +1,19 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { XMLParser } from "fast-xml-parser";
 import * as fs from 'fs/promises';
-import * as LRUCache from "lru-cache";
+import { LRUCache } from "lru-cache";
 import { MarkdownString } from "vscode";
 import { CancellationToken } from "vscode-languageclient";
 import { version } from "./extension";
 import { Dependency, getLocalFile, getRemoteMetadata, getRemoteUrl } from "./models/Dependency";
 
+const cacheTTL = 1000 * 60 * 10; // 10 min
 const DOC_CACHE = new LRUCache<string, MarkdownString>({
     max: 500,
     // for use with tracking overall storage size
     maxSize: 500,
     // how long to live in ms
-    ttl: 1000 * 60 * 10,// 10 min
+    ttl: cacheTTL,
     sizeCalculation: (value: MarkdownString, key: string) => {
         return 1;
     },
@@ -25,7 +26,7 @@ const LATEST_VERSIONS_CACHE = new LRUCache<string, string>({
     // for use with tracking overall storage size
     maxSize: 20,
     // how long to live in ms
-    ttl: 1000 * 60 * 10,// 10 min
+    ttl: cacheTTL,
     sizeCalculation: (value: string, key: string) => {
         return 1;
     },

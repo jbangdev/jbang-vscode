@@ -5,6 +5,7 @@ All notable changes to the **JBang** extension will be documented in this file.
 ## [0.8.0]  TBD
 - Provide completion for local jars in `//DEPS` (requires JBang 0.109.0+)
 - Report resolution errors for local and remote jars in `//DEPS` (requires JBang 0.109.0+)
+- bundle the extension with esbuild
 
 ## [0.7.0]  23/06/2023
 - Update JBang catalog schema (from jbang-idea)
