@@ -41,7 +41,7 @@ jobs:
         working-directory: ./jbang-vscode
         run: |
           npm ci
-          npm install -g typescript "vsce"
+          npm install -g typescript "@vscode/vsce"
 
       - name: Build server
         working-directory: ./jbang-vscode
