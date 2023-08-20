@@ -1,13 +1,13 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { LRUCache } from "lru-cache";
 import { CancellationToken, CompletionContext, CompletionItem, CompletionItemKind, CompletionList, Position, Range, TextDocument } from "vscode";
+import { DEPS_PREFIX } from "../JBangUtils";
 import { version } from "../extension";
 import { Dependency } from "../models/Dependency";
 import { compareVersions } from "../models/Version";
 import { CompletionParticipant, EMPTY_LIST, JBangCompletionItem } from "./CompletionParticipant";
 import { TextHelper } from "./TextHelper";
 
-const DEPS_PREFIX = "//DEPS ";
 const MAX_RESULTS = 100;
 const SEARCH_API = `https://search.maven.org/solrsearch/select?rows=${MAX_RESULTS}&wt=json&q=`;
 

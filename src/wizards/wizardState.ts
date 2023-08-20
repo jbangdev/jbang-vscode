@@ -31,3 +31,7 @@ export interface InstallAppState extends State {
     appName: string;
     native: boolean;
 }
+
+export interface SelectDependencyState extends State {
+    dependency: string;
+}
