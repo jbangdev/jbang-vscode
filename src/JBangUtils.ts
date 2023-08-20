@@ -10,7 +10,9 @@ export function isJBangFile(content: string | string[]): boolean {
     return lines.find(isJBangDirective) !== undefined; 
 }
 
-const KNOWN_DIRECTIVES = ["///usr/bin/env jbang ", "//DEPS ", "//JAVA ", "//GAV ", "//FILES ", "//SOURCES ", "//DESCRIPTION ", "//REPOS ", "//JAVAC_OPTIONS ", "//JAVA_OPTIONS ", "//JAVAAGENT ", "//CDS ", "//KOTLIN ", "//GROOVY ", "//MANIFEST", "//RUNTIME_OPTIONS", "//COMPILE_OPTIONS", "//NATIVE_OPTIONS"];
+export const DEPS_PREFIX = "//DEPS ";
+
+const KNOWN_DIRECTIVES = ["///usr/bin/env jbang ", DEPS_PREFIX, "//JAVA ", "//GAV ", "//FILES ", "//SOURCES ", "//DESCRIPTION ", "//REPOS ", "//JAVAC_OPTIONS ", "//JAVA_OPTIONS ", "//JAVAAGENT ", "//CDS ", "//KOTLIN ", "//GROOVY ", "//MANIFEST", "//RUNTIME_OPTIONS", "//COMPILE_OPTIONS", "//NATIVE_OPTIONS"];
 
 export function isJBangDirective(line: string): boolean {
     //TODO: detect @Grab/@Grape 

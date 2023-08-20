@@ -62,17 +62,17 @@ export function compareOSGiVersions(v1: Version, v2:Version) {
     }
 
     let result = v1.major - v2.major;
-    if (result != 0) {
+    if (result !== 0) {
         return result;
     }
 
     result = v1.minor - v2.minor;
-    if (result != 0) {
+    if (result !== 0) {
         return result;
     }
 
     result = v1.micro - v2.micro;
-    if (result != 0) {
+    if (result !== 0) {
         return result;
     }
     if (v1.qualifier === v2.qualifier) {
