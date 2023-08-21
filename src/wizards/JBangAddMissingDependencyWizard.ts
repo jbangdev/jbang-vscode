@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, CancelTokenSource } from 'axios';
-import { Position, ProgressLocation, QuickPickItem, Range, TextDocument, TextEdit, Uri, window } from "vscode";
+import { Position, ProgressLocation, QuickPickItem, Range, TextDocument, TextEdit, Uri, WorkspaceEdit, window, workspace } from "vscode";
 import { DEPS_PREFIX } from '../JBangUtils';
 import { version } from '../extension';
 import { compareVersions } from '../models/Version';
@@ -94,21 +94,18 @@ export default class JBangAddMissingDependencyWizard {
         if (!state.dependency) {
             return;
         }
-        const editor = window.activeTextEditor;
-        if (editor) {
-            const document = editor.document;
+        const document = await workspace.openTextDocument(this.uri);
+        if (document) {
             const line = findNextDepsLine(document);
             // Define a TextEdit
             const editRange = new Range(new Position(line, 0), new Position(line, 0));
             const textEdit = new TextEdit(editRange, "//DEPS " + state.dependency + '\n');
 
-            // Apply the TextEdit using TextEditorEdit
-            editor.edit(editBuilder => {
-                editBuilder.replace(textEdit.range, textEdit.newText);
-            }).then(success => {
+            const workspaceEdit = new WorkspaceEdit();
+            workspaceEdit.set(this.uri, [textEdit]);
+            return workspace.applyEdit(workspaceEdit).then(success => {
                 if (success) {
-                    // Save the document
-                    document.save();
+                    return document.save();
                 }
             });
         }
