@@ -1,65 +1,30 @@
-import { commands, ExtensionContext, TextEditor, Uri, window } from "vscode";
+import { commands, ExtensionContext, Uri } from "vscode";
 import JBangRunner from "./JBangRunner";
-import { isJBangFile } from "./JBangUtils";
+
+import { getValidScriptUri, handleCommand, showErrorMessage } from "./utils/commandHelper";
 import JBangAddMissingDependencyWizard from "./wizards/JBangAddMissingDependencyWizard";
 import JBangInstallAppWizard from "./wizards/JBangInstallAppWizard";
 import JBangScriptWizard from "./wizards/JBangScriptWizard";
 export const JAVA_EXECUTE_WORKPACE_COMMAND = 'java.execute.workspaceCommand';
 export const JDTLS_JBANG_SYNCHRONIZE_COMMAND = 'jbang/synchronize';
 export const JBANG_ADD_MISSING_DEPENDENCY = 'jbang.add.missing.dependency';
+
 export class CommandManager {
     public async initialize(context: ExtensionContext) {
-        //console.log("CommandManager.initialize");
         context.subscriptions.push(
-            commands.registerCommand('jbang.synchronize', async (uri) => {
-                return this.synchronizeJBangRequest(uri);
-            }),
-            commands.registerCommand('jbang.script.run', async (uri) => {
-                return JBangRunner.runJBang(uri);
-            }),
-            commands.registerCommand('jbang.script.generate', async () => {
-                return JBangScriptWizard.open();
-            }),
-            commands.registerCommand('jbang.script.export.native', async (uri) => {
-                return JBangRunner.exportNative(uri);
-            }),
-            commands.registerCommand('jbang.script.app.install', async (uri) => {
-                if (!uri) {
-                    const activeEditor: TextEditor | undefined = window.activeTextEditor;
-		            if (activeEditor && isJBangFile(activeEditor.document.getText())) {
-                        uri = activeEditor.document.uri;
-                    }
-                }
-                if (!uri) {
-                    window.showErrorMessage("Not a JBang script!");
-                    return;
-                }
-                return JBangInstallAppWizard.open(uri);
-            }),
-            commands.registerCommand(JBANG_ADD_MISSING_DEPENDENCY, async (uri, missingType: string) => {
-                if (!missingType) {
-                    return;
-                }
-                if (!uri) {
-                    const activeEditor: TextEditor | undefined = window.activeTextEditor;
-		            if (activeEditor && isJBangFile(activeEditor.document.getText())) {
-                        uri = activeEditor.document.uri;
-                    }
-                }
-                if (!uri) {
-                    window.showErrorMessage("Not a JBang script!");
-                    return;
-                }
-                return JBangAddMissingDependencyWizard.open(uri, missingType);
-            })
+            commands.registerCommand('jbang.synchronize',this.synchronizeJBangRequest),
+            commands.registerCommand('jbang.script.run', handleCommand.bind(this, JBangRunner.runJBang)),
+            commands.registerCommand('jbang.script.export.native', handleCommand.bind(this, JBangRunner.exportNative)),
+            commands.registerCommand('jbang.script.app.install', handleCommand.bind(this, JBangInstallAppWizard.open)),
+            commands.registerCommand('jbang.script.generate', () => JBangScriptWizard.open()),
+            commands.registerCommand(JBANG_ADD_MISSING_DEPENDENCY, this.handleMissingDependencyCommand.bind(this)),
         );
     }
 
     private async synchronizeJBangRequest(uris?: Uri | Uri[]) {
-        //console.log("CommandManager.synchronize "+uris);
         let resources:string[] = [];
         if (!uris) {
-            const activeFileUri: Uri | undefined = window.activeTextEditor?.document.uri;
+            const activeFileUri = getValidScriptUri();
             if (activeFileUri ) {//&& isJBangFile(activeFileUri.fsPath)
                 resources = [activeFileUri.toString()];
             }
@@ -76,6 +41,17 @@ export class CommandManager {
             return;
         }
         return commands.executeCommand(JAVA_EXECUTE_WORKPACE_COMMAND, JDTLS_JBANG_SYNCHRONIZE_COMMAND, resources);
+    }
+
+    private async handleMissingDependencyCommand(uri: any, missingType: string) {
+        if (!missingType) {
+            return;
+        }
+        const scriptUri = getValidScriptUri(uri);
+        if (scriptUri) {
+            return JBangAddMissingDependencyWizard.open(scriptUri, missingType);
+        }
+        showErrorMessage();
     }
 }
 
