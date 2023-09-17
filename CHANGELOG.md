@@ -2,10 +2,12 @@
 
 All notable changes to the **JBang** extension will be documented in this file.
 
-## [0.8.0]  TBD
-- Provide completion for local jars in `//DEPS` (requires JBang 0.109.0+)
-- Report resolution errors for local and remote jars in `//DEPS` (requires JBang 0.109.0+)
-- bundle the extension with esbuild
+## [0.8.0]  17/09/2023
+- Added code action to find dependency for missing class, on Maven Central
+- Added completion for local `//DEPS` (requires JBang 0.109.0+)
+- Fixed running JBang commands from the command palette
+- Fixed apply dependency change on original file uri, not active editor
+- Bundle the extension with esbuild
 
 ## [0.7.0]  23/06/2023
 - Update JBang catalog schema (from jbang-idea)
