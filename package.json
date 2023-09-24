@@ -251,6 +251,6 @@
 		"fast-xml-parser": "^4.3.1",
 		"lru-cache": "10.0.1",
 		"shelljs": "^0.8.5",
-		"vscode-languageclient": "^8.1.0"
+		"vscode-languageclient": "^9.0.0"
 	}
 }
