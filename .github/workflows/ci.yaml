@@ -28,7 +28,7 @@ jobs:
       - name: Set Up NodeJS
         uses: actions/setup-node@v3
         with:
-          node-version: "14"
+          node-version: "18"
 
       - name: Set Up Java
         uses: actions/setup-java@v3
