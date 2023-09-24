@@ -7,9 +7,10 @@ const JAVAC_OPTIONS = "//JAVAC_OPTIONS ";
 const JAVA_OPTIONS = "//JAVA_OPTIONS ";
 const COMPILE_OPTIONS = "//COMPILE_OPTIONS ";
 const RUNTIME_OPTIONS = "//RUNTIME_OPTIONS ";
+const NATIVE_OPTIONS = "//NATIVE_OPTIONS ";
 const JAVA = "//JAVA ";
-const DIRECTIVES = [COMPILE_OPTIONS, RUNTIME_OPTIONS, JAVA, JAVAC_OPTIONS, JAVA_OPTIONS];
-const JAVA_VERSIONS = [19, 17, 11, 8];
+const DIRECTIVES = [COMPILE_OPTIONS, RUNTIME_OPTIONS, JAVA, JAVAC_OPTIONS, JAVA_OPTIONS, NATIVE_OPTIONS];
+const JAVA_VERSIONS = [21, 17, 11, 8];
 export class JavaOptionsCompletion implements CompletionParticipant {
     applies(lineText: string, position: Position): boolean {
         return !!DIRECTIVES.find(d => lineText.startsWith(d) && position.character >= d.length);
@@ -36,6 +37,16 @@ export class JavaOptionsCompletion implements CompletionParticipant {
                 item.range = range;
                 items.push(item);
             });
+            return new CompletionList(items);
+        }
+        if (directive === NATIVE_OPTIONS) {
+            range = new Range(start, end);
+            if (!lineText.includes('--enable-https')) {
+                items.push(getCompletion('--enable-https', 'Enables HTTPS support', range));
+            }
+            if (!lineText.includes('--enable-http ')) {
+                items.push(getCompletion('--enable-http', 'Enables HTTP support', range));
+            }
             return new CompletionList(items);
         }
         range = new Range(start, end);
