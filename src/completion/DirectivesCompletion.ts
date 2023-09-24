@@ -95,7 +95,7 @@ export class DirectivesCompletion implements CompletionParticipant {
             items.push(getCompletion(CDS, "Activate Class Data Sharing", range));
         }
         if (!scanner.found(NATIVE_OPTIONS)) {
-            items.push(getCompletion(NATIVE_OPTIONS, "Options passed to the native image builder", range));
+            items.push(getCompletion(NATIVE_OPTIONS, "Options passed to the native image builder", range, retriggerCompletion));
         }
         if (!scanner.found(PREVIEW)) {
             items.push(getCompletion(PREVIEW, "Enable Java preview features", range));

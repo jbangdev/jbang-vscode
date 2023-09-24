@@ -5,6 +5,8 @@ All notable changes to the **JBang** extension will be documented in this file.
 ## [0.9.0]  TBD
 - Automatically save document after selecting a result in `//DEPS` completion
 - Save document before running/debugging with JBang
+- Added `//JAVA 21` completion
+- Added `--enable-http` and `--enable-https` completions for `//NATIVE_OPTIONS` directive 
 - Built with Node 18
 
 ## [0.8.0]  17/09/2023
