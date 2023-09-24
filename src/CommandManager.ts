@@ -16,7 +16,7 @@ export class CommandManager {
             commands.registerCommand('jbang.script.run', handleCommand.bind(this, JBangRunner.runJBang)),
             commands.registerCommand('jbang.script.export.native', handleCommand.bind(this, JBangRunner.exportNative)),
             commands.registerCommand('jbang.script.app.install', handleCommand.bind(this, JBangInstallAppWizard.open)),
-            commands.registerCommand('jbang.script.generate', () => JBangScriptWizard.open()),
+            commands.registerCommand('jbang.script.generate', JBangScriptWizard.open),
             commands.registerCommand(JBANG_ADD_MISSING_DEPENDENCY, this.handleMissingDependencyCommand.bind(this)),
         );
     }

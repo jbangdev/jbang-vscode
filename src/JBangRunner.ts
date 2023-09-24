@@ -1,6 +1,7 @@
 import { ExtensionContext, Terminal, Uri, window } from "vscode";
 import { jbang } from "./JBangExec";
 import { ITerminalOptions, terminalCommandRunner } from "./terminal/terminalCommandRunner";
+import { saveIfNeeded } from "./utils/fileUtils";
 
 export class JBangRunner {
 
@@ -16,6 +17,7 @@ export class JBangRunner {
     }
 
     public async runJBang(uri: Uri): Promise<Terminal> {
+        await saveIfNeeded(uri);
         const exec = jbang();
         const command = `${exec} "${uri.fsPath}"`;
         const name = "JBang - " + uri.fsPath.substring(uri.fsPath.lastIndexOf("/") + 1);
