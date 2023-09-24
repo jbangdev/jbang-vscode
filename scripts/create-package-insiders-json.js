@@ -8,7 +8,7 @@ const minor = stableVersion[2];
 
 function prependZero(number) {
     if (number > 99) {
-        throw "Unexpected value to prepend with zero";
+        throw new Exception("Unexpected value to prepend with zero");
     }
     return `${number < 10 ? "0" : ""}${number}`;
 }
