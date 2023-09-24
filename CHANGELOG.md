@@ -2,6 +2,10 @@
 
 All notable changes to the **JBang** extension will be documented in this file.
 
+## [0.9.0]  TBD
+- Save document before running/debugging with JBang
+- Built with Node 18
+
 ## [0.8.0]  17/09/2023
 - Added code action to find dependency for missing class, on Maven Central
 - Added completion for local `//DEPS` (requires JBang 0.109.0+)

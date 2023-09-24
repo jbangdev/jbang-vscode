@@ -1,6 +1,7 @@
 import { commands, debug, DebugConfiguration, ExtensionContext, tasks, Uri, workspace } from "vscode";
 import { JBangTaskProvider } from "./JBangTaskProvider";
 import { handleCommand } from "./utils/commandHelper";
+import { saveIfNeeded } from "./utils/fileUtils";
 
 export const DEBUG_WITH_JBANG_COMMAND_ID = 'jbang.script.debug';
 
@@ -20,6 +21,7 @@ export class JBangDebugger {
             port: 4004,
             preLaunchTask: `jbang: ${JBangTaskProvider.labelProvidedTask}`
         };
+        await saveIfNeeded(uri);
         await debug.startDebugging(workspace.workspaceFolders ? workspace.workspaceFolders[0] : undefined, debugConfiguration);
     }
 
