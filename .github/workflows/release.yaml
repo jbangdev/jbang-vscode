@@ -10,13 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out jbang-vscode
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           path: jbang-vscode
 
       - name: Check out jbang-eclipse
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: jbangdev/jbang-eclipse
           fetch-depth: 0
