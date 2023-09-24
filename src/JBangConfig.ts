@@ -2,6 +2,7 @@ import { commands, ConfigurationTarget, ExtensionContext, window, workspace, Wor
 
 export namespace JBangSettings {
     export const SHOW_TEMPLATE_DESC = 'wizard.templates.showDescriptions';
+    export const SAVE_ON_SELECT_COMPLETION = 'completion.onSelect.autosave';
     export const HOME = 'home';
 }
 
@@ -36,6 +37,10 @@ export class JBangConfig {
 
     public isShowTemplateDescriptions(): boolean {
         return this.getJBangConfiguration().get<boolean>(JBangSettings.SHOW_TEMPLATE_DESC, true);
+    }
+
+    public isSaveOnSelectEnabled(): boolean {
+        return this.getJBangConfiguration().get<boolean>(JBangSettings.SAVE_ON_SELECT_COMPLETION, true);
     }
 
     public getJBangHome(): string|undefined {
