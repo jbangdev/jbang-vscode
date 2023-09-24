@@ -2,12 +2,14 @@ import { commands, ExtensionContext, Uri } from "vscode";
 import JBangRunner from "./JBangRunner";
 
 import { getValidScriptUri, handleCommand, showErrorMessage } from "./utils/commandHelper";
+import { saveIfNeeded } from "./utils/fileUtils";
 import JBangAddMissingDependencyWizard from "./wizards/JBangAddMissingDependencyWizard";
 import JBangInstallAppWizard from "./wizards/JBangInstallAppWizard";
 import JBangScriptWizard from "./wizards/JBangScriptWizard";
 export const JAVA_EXECUTE_WORKPACE_COMMAND = 'java.execute.workspaceCommand';
 export const JDTLS_JBANG_SYNCHRONIZE_COMMAND = 'jbang/synchronize';
 export const JBANG_ADD_MISSING_DEPENDENCY = 'jbang.add.missing.dependency';
+export const JBANG_SAVE_SCRIPT = 'jbang.script.save';
 
 export class CommandManager {
     public async initialize(context: ExtensionContext) {
@@ -17,9 +19,18 @@ export class CommandManager {
             commands.registerCommand('jbang.script.export.native', handleCommand.bind(this, JBangRunner.exportNative)),
             commands.registerCommand('jbang.script.app.install', handleCommand.bind(this, JBangInstallAppWizard.open)),
             commands.registerCommand('jbang.script.generate', JBangScriptWizard.open),
+            commands.registerCommand(JBANG_SAVE_SCRIPT, this.saveScript),
             commands.registerCommand(JBANG_ADD_MISSING_DEPENDENCY, this.handleMissingDependencyCommand.bind(this)),
         );
     }
+
+    private async saveScript(uri?: Uri): Promise<boolean> {
+        if (!uri) {
+            return false;
+        }
+        return saveIfNeeded(uri);
+    }
+
 
     private async synchronizeJBangRequest(uris?: Uri | Uri[]) {
         let resources:string[] = [];

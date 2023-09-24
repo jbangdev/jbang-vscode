@@ -210,6 +210,12 @@
 					"default": false,
 					"markdownDescription": "When set to `true`, each script found in the opened folder will be imported as its own project, with its own classpath. `false` by default. Toggling this setting requires calling the `Java: Clean Java Language Server Workspace` command to take effect.",
 					"scope": "window"
+				},
+				"jbang.completion.onSelect.autosave": {
+					"type": "boolean",
+					"default": true,
+					"markdownDescription": "When set to `true` (the default), automatically save the file after `//DEPS` completion is selected, so the classpath gets updated.",
+					"scope": "window"
 				}
 			}
 		},

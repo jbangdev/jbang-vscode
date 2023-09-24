@@ -1,6 +1,8 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { LRUCache } from "lru-cache";
-import { CancellationToken, CompletionContext, CompletionItem, CompletionItemKind, CompletionList, Position, Range, TextDocument } from "vscode";
+import { CancellationToken, Command, CompletionContext, CompletionItem, CompletionItemKind, CompletionList, Position, Range, TextDocument } from "vscode";
+import { JBANG_SAVE_SCRIPT } from "../CommandManager";
+import JBangConfig from "../JBangConfig";
 import { DEPS_PREFIX } from "../JBangUtils";
 import { version } from "../extension";
 import { Dependency } from "../models/Dependency";
@@ -84,15 +86,18 @@ export class RemoteDependencyCompletion implements CompletionParticipant {
         }
         const end = TextHelper.findEndPosition(lineText, position);
         let result: CompletionList;
+        const saveCommand = JBangConfig.isSaveOnSelectEnabled() ? 
+        { command: JBANG_SAVE_SCRIPT, title: "Save", arguments: [document.uri] } 
+        : undefined;
         switch (parts.length) {
             case 1://has groupid or searches name
             case 2://has groupid and artifactId
-                result = toCompletionList(json, new Range(start, end));
+                result = toCompletionList(json, new Range(start, end), saveCommand);
                 break;
             case 3://has groupid, artifactId and version
             case 4://has groupid, artifactId, version and classifier
                 const versionStart = TextHelper.findVersionPosition(lineText, position);
-                result = toCompletionList(json, new Range(versionStart, end), toVersionCompletionItem);
+                result = toCompletionList(json, new Range(versionStart, end), saveCommand, toVersionCompletionItem);
                 break;
             default:
                 result = new CompletionList();
@@ -103,7 +108,7 @@ export class RemoteDependencyCompletion implements CompletionParticipant {
 
 }
 
-function toCompletionItem(gav: any, index: number, range: Range): JBangCompletionItem {
+function toCompletionItem(gav: any, index: number, range: Range, command?: Command): JBangCompletionItem {
     const version = gav.v ? gav.v : gav.latestVersion;
     const label = `${gav.g}:${gav.a}:${version}`;
     const insertText = label;
@@ -113,17 +118,19 @@ function toCompletionItem(gav: any, index: number, range: Range): JBangCompletio
         insertText,
         sortText: `${index}`,
         range,
-        dependency: Dependency.getDependency(label)
+        dependency: Dependency.getDependency(label),
+        command
     };
 }
-function toVersionCompletionItem(gav: any, index: number, range: Range): CompletionItem {
+function toVersionCompletionItem(gav: any, index: number, range: Range, command?: Command): CompletionItem {
     const label = gav.v;
     const sortText =  `${index}`.padStart(10, "0") ;//`${new Date().getTime() - gav.timestamp}`;
     return {
         label,
         kind: CompletionItemKind.Value,
         sortText,
-        range
+        range,
+        command
     };
 }
 
@@ -163,12 +170,12 @@ async function searchVersion(groupId: string, artifactId: string, version: strin
     return response;
 }
 
-function toCompletionList(response: any, range: Range, mapper: ((gav: any, index: number, range: Range) => CompletionItem) = toCompletionItem): CompletionList {
+function toCompletionList(response: any, range: Range, command?: Command, mapper: ((gav: any, index: number, range: Range, command?: Command) => CompletionItem) = toCompletionItem): CompletionList {
     const result = new CompletionList();
     const items = [];
     for (let index = 0; index < response?.docs?.length; index++) {
         const gav = response?.docs[index];
-        items.push(mapper(gav, index, range));
+        items.push(mapper(gav, index, range, command));
     }
     result.items = items;
     const numFound = (response.numFound !== undefined) ? response.numFound : 0;

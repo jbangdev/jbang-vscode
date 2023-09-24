@@ -3,6 +3,7 @@
 All notable changes to the **JBang** extension will be documented in this file.
 
 ## [0.9.0]  TBD
+- Automatically save document after selecting a result in `//DEPS` completion
 - Save document before running/debugging with JBang
 - Built with Node 18
 
