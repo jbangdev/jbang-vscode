@@ -19,6 +19,8 @@ const KOTLIN = "//KOTLIN ";
 const MODULE = "//MODULE ";
 const MAIN = "//MAIN ";
 const PREVIEW = "//PREVIEW";
+const QUARKUS_DEP = "//DEPS io.quarkus:quarkus"; //pretend it's a directive
+
 export class DirectivesCompletion implements CompletionParticipant {
 
     applies(lineText: string, position: Position): boolean {
@@ -100,6 +102,9 @@ export class DirectivesCompletion implements CompletionParticipant {
         if (!scanner.found(PREVIEW)) {
             items.push(getCompletion(PREVIEW, "Enable Java preview features", range));
         }
+        if (scanner.found(QUARKUS_DEP)) {
+            items.push(getCompletion("//Q:CONFIG ", "Quarkus configuration property", range));
+        }
         return new CompletionList(items);
     }
 }
@@ -115,7 +120,7 @@ class DirectiveScanner {
 
     scan(document: TextDocument) {
         const checkedDirectives = [
-            JAVA, JAVAC_OPTIONS, COMPILE_OPTIONS, DESCRIPTION, CDS, GAV, JAVAAGENT, MANIFEST, JAVA_OPTIONS, RUNTIME_OPTIONS, NATIVE_OPTIONS, KOTLIN, GROOVY, MAIN, MODULE, PREVIEW
+            JAVA, JAVAC_OPTIONS, COMPILE_OPTIONS, DESCRIPTION, CDS, GAV, JAVAAGENT, MANIFEST, JAVA_OPTIONS, RUNTIME_OPTIONS, NATIVE_OPTIONS, KOTLIN, GROOVY, MAIN, MODULE, PREVIEW, QUARKUS_DEP
         ];
         const lines = document.getText().split(/\r?\n/);
         for (let i = 0; i < lines.length && checkedDirectives.length > 0; i++) {
