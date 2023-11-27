@@ -60,15 +60,15 @@ export class DocumentationProvider {
         if (!pom) {
             return undefined;
         }
-        const name = (pom?.project?.name)? pom?.project?.name : pom?.project?.artifactId;
+        const name = (pom?.project?.name)? pom.project.name : pom?.project?.artifactId;
         let description = `**${name}**`;
         if (pom?.project?.description) {
-            description += `\n\n${pom?.project?.description}`;
+            description += `\n\n`;
+            description += this.toMarkdown(pom?.project?.description);
         }
-        const markdown = this.toMarkdown(description);
         let doc:MarkdownString|undefined;
-        if (markdown) {
-            doc = new MarkdownString(markdown);
+        if (description) {
+            doc = new MarkdownString(description);
             DOC_CACHE.set(gav, doc);
         }
         return doc;
@@ -103,7 +103,17 @@ export class DocumentationProvider {
         if (!xml) {
             return undefined;
         }
-        return xml;
+        return this.minimizeIndentation(xml);
+    }
+
+    private minimizeIndentation(inputText: string): string {
+        //Need to minimize indentation, or else the doc looks like crap
+        //See https://github.com/stleary/JSON-java/blob/92991770ca9f5e12d687bd9f6147d10e8baedd2e/pom.xml#L10-L21
+        
+        // Split the input text into lines
+        const lines = inputText.split('\n');
+        const result = lines.map(l => l.trim()).join('\n'); 
+        return result;
     }
 }
 
