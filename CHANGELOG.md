@@ -2,6 +2,12 @@
 
 All notable changes to the **JBang** extension will be documented in this file.
 
+## [0.10.0]  08/12/2023
+- Added `//Q:CONFIG` completion if `//DEPS io.quarkus:quarkus` is found
+- Fixed running JBang installed via scoop on Windows
+- Fixed bad looking documentation on hover on `//DEPS`
+- Updated various dependencies
+
 ## [0.9.0]  25/09/2023
 - Automatically save document after selecting a result in `//DEPS` completion
 - Save document before running/debugging with JBang
