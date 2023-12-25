@@ -55,7 +55,7 @@ jobs:
           vsce package --pre-release
 
       - name: Upload vsix
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: jbang-vscode
           path: jbang-vscode/*.vsix
