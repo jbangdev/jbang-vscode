@@ -1,0 +1,25 @@
+{
+  "name": "jbang",
+  "scopeName": "inline.jbang",
+  "injectionSelector": "L:source.java -comment -string",
+  "patterns": [
+    {
+      "contentName": "meta.embedded.block.jbang",
+      "match": "^(//)(DEPS|JAVA|MAIN|FILES|SOURCES|PREVIEW|MODULE|DESCRIPTION|GAV|COMPILE_OPTIONS|JAVAC_OPTIONS|RUNTIME_OPTIONS|JAVA_OPTIONS|NATIVE_OPTIONS|REPOS|MANIFEST|CDS|KOTLIN|GROOVY|JAVAAGENT)\\s+(.*)$",
+      "captures": {
+        "0":{
+          "name":"directive.jbang"
+        },
+        "1":{
+          "name":"comment.line.double-slash.java"
+        },
+        "2": {
+          "name": "keyword.directive.jbang"
+        },
+        "3": {
+          "name": "string.directive.jbang"
+        }
+      }
+    }
+  ]
+}
