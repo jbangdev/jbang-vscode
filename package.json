@@ -48,8 +48,18 @@
 		"grammars": [
 			{
 				"language": "jbang",
-				"scopeName": "source.jbang",
-				"path": "./language-support/jbang.tmLanguage.json"
+				"scopeName": "source.build.jbang",
+				"path": "./language-support/build.jbang.tmLanguage.json"
+			},
+			{
+				"injectTo": [
+					"source.java"
+				],
+				"scopeName": "inline.jbang",
+				"path": "./language-support/inline-jbang.tmLanguage.json",
+				"embeddedLanguages": {
+					"meta.embedded.block.jbang": "jbang"
+				}
 			}
 		],
 		"javaExtensions": [
