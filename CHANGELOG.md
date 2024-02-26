@@ -2,6 +2,11 @@
 
 All notable changes to the **JBang** extension will be documented in this file.
 
+## [0.11.0]  26/02/2024
+- Added textmate grammar for JBang directives
+- Fixed error reporting for unresolved dependencies
+- Updated various dependencies
+
 ## [0.10.0]  08/12/2023
 - Added `//Q:CONFIG` completion if `//DEPS io.quarkus:quarkus` is found
 - Fixed running JBang installed via scoop on Windows
