@@ -1,6 +1,7 @@
 import * as fs from 'fs/promises';
 import { CompletionContext, CompletionItem, CompletionList, Position, Range, TextDocument } from "vscode";
 import { CancellationToken, CompletionItemKind } from "vscode-languageclient";
+import { DEPS } from '../JBangDirectives';
 import { DEPS_PREFIX } from '../JBangUtils';
 import { CompletionParticipant, EMPTY_LIST } from "./CompletionParticipant";
 import { TextHelper } from './TextHelper';
@@ -9,7 +10,7 @@ import path = require('path');
 export class LocalDependencyCompletion implements CompletionParticipant {
 
     applies(lineText: string, position: Position): boolean {
-        return (lineText.startsWith(DEPS_PREFIX) && position.character >= DEPS_PREFIX.length);
+        return (DEPS.matches(lineText, true) && position.character > DEPS.prefix().length);
     }
 
     async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): Promise<CompletionList> {

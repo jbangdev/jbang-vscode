@@ -1,21 +1,19 @@
 import * as fs from 'fs/promises';
 import { CompletionContext, CompletionItem, CompletionList, Position, Range, TextDocument } from "vscode";
 import { CancellationToken, CompletionItemKind } from "vscode-languageclient";
+import { FILES, FILES_PREFIX, SOURCES } from '../JBangDirectives';
 import { CompletionParticipant, EMPTY_LIST } from "./CompletionParticipant";
 import { TextHelper } from './TextHelper';
 import path = require('path');
 
-const FILES_PREFIX = "//FILES ";
-const SOURCES_PREFIX = "//SOURCES ";
+const RESOURCE_DIRECTIVES = [SOURCES, FILES];
 
 export class ResourcesCompletion implements CompletionParticipant {
 
     applies(lineText: string, position: Position): boolean {
-        return (lineText.startsWith(FILES_PREFIX) && position.character >= FILES_PREFIX.length)
-        || (lineText.startsWith(SOURCES_PREFIX) && position.character >= SOURCES_PREFIX.length);
+      const directive = RESOURCE_DIRECTIVES.find(d => d.matches(lineText));
+      return directive !== undefined && position.character > directive.prefix().length;
     }
-
-
 
     async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): Promise<CompletionList> {
         const line = document.lineAt(position);
@@ -26,11 +24,11 @@ export class ResourcesCompletion implements CompletionParticipant {
 
         let prefix: string;
         let delimiterFunc: (text:string) => boolean;
-        if(lineText.startsWith(FILES_PREFIX)) {
+        if(FILES.matches(lineText)) {
           prefix = FILES_PREFIX;
           delimiterFunc = isEqualsOrDelim;
         } else {
-          prefix = SOURCES_PREFIX;
+          prefix = `${SOURCES.prefix()} `;
           delimiterFunc = TextHelper.isDelimiter;
         }
         let start = TextHelper.findStartPosition(lineText, position, prefix, delimiterFunc) ;

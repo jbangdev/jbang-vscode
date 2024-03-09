@@ -3,6 +3,7 @@ import { LRUCache } from "lru-cache";
 import { CancellationToken, Command, CompletionContext, CompletionItem, CompletionItemKind, CompletionList, Position, Range, TextDocument } from "vscode";
 import { JBANG_SAVE_SCRIPT } from "../CommandManager";
 import JBangConfig from "../JBangConfig";
+import { DEPS } from "../JBangDirectives";
 import { DEPS_PREFIX } from "../JBangUtils";
 import { version } from "../extension";
 import { Dependency } from "../models/Dependency";
@@ -34,7 +35,7 @@ const QUERY_CACHE = new LRUCache<string, CompletionList>({
 export class RemoteDependencyCompletion implements CompletionParticipant {
 
     applies(lineText: string, _position: Position): boolean {
-        return lineText.startsWith(DEPS_PREFIX);
+        return DEPS.matches(lineText, true);
     }
 
     async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): Promise<CompletionList> {

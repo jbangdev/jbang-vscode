@@ -1,11 +1,11 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { CancellationToken, CompletionContext, CompletionItemKind, CompletionList, Position, Range, TextDocument } from "vscode";
+import { KOTLIN } from "../JBangDirectives";
 import { version } from "../extension";
 import { compareVersionsDesc } from "../models/Version";
 import { CompletionParticipant, EMPTY_LIST } from "./CompletionParticipant";
 import { TextHelper } from "./TextHelper";
 
-const KOTLIN_PREFIX = "//KOTLIN ";
 const SEARCH_API = `https://api.github.com/repos/JetBrains/kotlin/releases`;
 const UPDATE_PERIOD = 60 * 60 * 1000; // 1h
 const axiosConfig: AxiosRequestConfig<any> = {
@@ -18,7 +18,7 @@ let lastUpdate = 0;
 export class KotlinVersionCompletion implements CompletionParticipant {
 
     applies(lineText: string, _position: Position): boolean {
-        return lineText.startsWith(KOTLIN_PREFIX);
+        return KOTLIN.matches(lineText, true);
     }
 
     async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): Promise<CompletionList> {
@@ -34,7 +34,7 @@ export class KotlinVersionCompletion implements CompletionParticipant {
         if (!VERSIONS.length) {
             return EMPTY_LIST;
         }
-        const start = TextHelper.findStartPosition(lineText, position, KOTLIN_PREFIX);
+        const start = TextHelper.findStartPosition(lineText, position, `${KOTLIN.prefix() }`);
         const end = TextHelper.findEndPosition(lineText, position);
         let result = toCompletionList(new Range(start, end));
         return result;
