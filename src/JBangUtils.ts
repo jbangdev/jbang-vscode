@@ -1,3 +1,5 @@
+import { DEPS, HEADER_PREFIX, JBANG_DIRECTIVES } from "./JBangDirectives";
+
 export const SUPPORTED_LANGUAGES = ["java", "groovy", "kotlin", "jshell", "jbang"];
 
 export function isJBangFile(content: string | string[]): boolean {
@@ -10,13 +12,13 @@ export function isJBangFile(content: string | string[]): boolean {
     return lines.find(isJBangDirective) !== undefined; 
 }
 
-export const DEPS_PREFIX = "//DEPS ";
-
-const KNOWN_DIRECTIVES = ["///usr/bin/env jbang ", DEPS_PREFIX, "//JAVA ", "//GAV ", "//FILES ", "//SOURCES ", "//DESCRIPTION ", "//REPOS ", "//JAVAC_OPTIONS ", "//JAVA_OPTIONS ", "//JAVAAGENT ", "//CDS ", "//KOTLIN ", "//GROOVY ", "//MANIFEST", "//RUNTIME_OPTIONS", "//COMPILE_OPTIONS", "//NATIVE_OPTIONS"];
+export const DEPS_PREFIX = `${DEPS.prefix()} `;
 
 export function isJBangDirective(line: string): boolean {
+
     //TODO: detect @Grab/@Grape 
-    return KNOWN_DIRECTIVES.find(directive => {
-        return line.startsWith(directive);
-    }) !== undefined;
+    return line.startsWith(HEADER_PREFIX) || 
+        JBANG_DIRECTIVES.find(directive => {
+            return directive.matches(line);
+        }) !== undefined;
 }

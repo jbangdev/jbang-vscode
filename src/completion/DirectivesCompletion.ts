@@ -1,28 +1,14 @@
 import { Command, CompletionContext, CompletionItem, CompletionList, Position, Range, SnippetString, TextDocument } from "vscode";
 import { CancellationToken, CompletionItemKind } from "vscode-languageclient";
+import { CDS, COMPILE_OPTIONS, DEPS, DESCRIPTION, Directive, FILES, GAV, GROOVY, HEADER, JAVA, JAVAAGENT, JAVAC_OPTIONS, JAVA_OPTIONS, KOTLIN, MAIN, MANIFEST, MODULE, NATIVE_OPTIONS, PREVIEW, QUARKUS_CONFIG, REPOS, RUNTIME_OPTIONS, SOURCES } from "../JBangDirectives";
 import { CompletionParticipant } from "./CompletionParticipant";
 
-//TODO extract directives to common class
-const JAVA = "//JAVA ";
-const JAVAC_OPTIONS = "//JAVAC_OPTIONS ";
-const JAVA_OPTIONS = "//JAVA_OPTIONS ";
-const COMPILE_OPTIONS = "//COMPILE_OPTIONS ";
-const RUNTIME_OPTIONS = "//RUNTIME_OPTIONS ";
-const NATIVE_OPTIONS = "//NATIVE_OPTIONS ";
-const MANIFEST = "//MANIFEST ";
-const CDS = "//CDS ";
-const GAV = "//GAV ";
-const DESCRIPTION = "//DESCRIPTION ";
-const JAVAAGENT = "//JAVAAGENT "; 
-const GROOVY = "//GROOVY ";
-const KOTLIN = "//KOTLIN ";
-const MODULE = "//MODULE ";
-const MAIN = "//MAIN ";
-const PREVIEW = "//PREVIEW";
-const QUARKUS_DEP = "//DEPS io.quarkus:quarkus"; //pretend it's a directive
+const retriggerCompletion: Command = { command: 'editor.action.triggerSuggest', title: 'Re-trigger completions...' };
+
+const QUARKUS_DEP = new Directive("DEPS io.quarkus:quarkus",""); //pretend it's a directive
 
 export class DirectivesCompletion implements CompletionParticipant {
-
+    
     applies(lineText: string, position: Position): boolean {
         return lineText.startsWith('//') || position.character === 0;
     }
@@ -32,78 +18,74 @@ export class DirectivesCompletion implements CompletionParticipant {
         const range = new Range(new Position(position.line, 0), position);
         if (position.line === 0) {
             items.push({
-                label: "///usr/bin/env jbang \"$0\" \"$@\" ; exit $?",
+                label: HEADER.name,
                 kind: CompletionItemKind.Text,
-                detail: "JBang header",
+                detail: HEADER.description,
                 range
             });
         }
         const scanner = new DirectiveScanner();
-        const retriggerCompletion = { command: 'editor.action.triggerSuggest', title: 'Re-trigger completions...' };
         scanner.scan(document);
+
         if (!scanner.found(JAVA)) {
-            items.push(getCompletion(JAVA, "JBang Java version to use", range, retriggerCompletion));
+            items.push(getCompletion(JAVA, range));
         }
-        items.push(getCompletion("//DEPS", "Add JBang dependencies", range));
+        items.push(getCompletion(DEPS, range));
         
         if (document.languageId === 'groovy' && !scanner.found(GROOVY)) {
-            items.push(getCompletion(GROOVY, "Groovy version to use", range, retriggerCompletion));
+            items.push(getCompletion(GROOVY, range));
         }
         if (document.languageId === 'kotlin' && !scanner.found(KOTLIN)) {
-            items.push(getCompletion(KOTLIN, "Kotlin version to use", range, retriggerCompletion));
+            items.push(getCompletion(KOTLIN, range));
         }
 
         if (!scanner.found(GAV)) {
-            items.push(getCompletion(GAV, "Set Group, Artifact and Version", range));
+            items.push(getCompletion(GAV, range));
         }
         if (!scanner.found(MODULE)) {
-            items.push(getCompletion(MODULE, "Treat resource as a module. Optionally with the given module name.", range));
+            items.push(getCompletion(MODULE, range));
         }
         if (!scanner.found(MAIN)) {
-            items.push(getCompletion(MAIN, "Override the main class", range));
+            items.push(getCompletion(MAIN, range));
         }
         
-        const sourcesCompletion = getCompletion("//SOURCES", "Pattern to include as JBang sources", range);
-        sourcesCompletion.command = retriggerCompletion;
-        items.push(sourcesCompletion);
+        items.push(getCompletion(SOURCES, range));
         
-        const filesCompletion = getCompletion("//FILES", "Mount files to build", range);
-        filesCompletion.command = retriggerCompletion;
-        items.push(filesCompletion);
+        items.push(getCompletion(FILES, range));
 
-        items.push(getCompletion("//REPOS", "Repositories used by Jbang to resolve dependencies", range));
+        items.push(getCompletion(REPOS, range));
 
-        items.push(getCompletion(DESCRIPTION, "Markdown description for the JBang application/script", range));
+        items.push(getCompletion(DESCRIPTION, range));
 
         if (!scanner.found(MANIFEST)) {
-            items.push(getCompletion(MANIFEST, "Write entries to META-INF/manifest.mf", range));
+            items.push(getCompletion(MANIFEST, range));
         }
         if (!scanner.found(JAVAC_OPTIONS) && !scanner.found(COMPILE_OPTIONS)) {
-            items.push(getCompletion(JAVAC_OPTIONS, "Options passed to the Java compiler", range, retriggerCompletion));
+            items.push(getCompletion(JAVAC_OPTIONS, range));
         }
         if (!scanner.found(JAVA_OPTIONS) && !scanner.found(RUNTIME_OPTIONS)) {
-            items.push(getCompletion(JAVA_OPTIONS, "Options passed to the Java runtime", range, retriggerCompletion));
+            items.push(getCompletion(JAVA_OPTIONS, range));
         }
         if (!scanner.found(COMPILE_OPTIONS) && !scanner.found(JAVAC_OPTIONS)) {
-            items.push(getCompletion(COMPILE_OPTIONS, "Options passed to the compiler", range, retriggerCompletion));
+            items.push(getCompletion(COMPILE_OPTIONS, range));
         }
         if (!scanner.found(RUNTIME_OPTIONS) && !scanner.found(JAVA_OPTIONS)) {
-            items.push(getCompletion(RUNTIME_OPTIONS, "Options passed to the JVM runtime", range, retriggerCompletion));
+            items.push(getCompletion(RUNTIME_OPTIONS, range));
         }
         if (!scanner.found(JAVAAGENT)) {
-            items.push(getCompletion(JAVAAGENT, "Activate agent packaging", range));
+            items.push(getCompletion(JAVAAGENT, range));
         }
         if (!scanner.found(CDS)) {
-            items.push(getCompletion(CDS, "Activate Class Data Sharing", range));
+            items.push(getCompletion(CDS, range));
         }
         if (!scanner.found(NATIVE_OPTIONS)) {
-            items.push(getCompletion(NATIVE_OPTIONS, "Options passed to the native image builder", range, retriggerCompletion));
+            items.push(getCompletion(NATIVE_OPTIONS, range));
         }
         if (!scanner.found(PREVIEW)) {
-            items.push(getCompletion(PREVIEW, "Enable Java preview features", range));
+            items.push(getCompletion(PREVIEW, range));
         }
         if (scanner.found(QUARKUS_DEP)) {
-            items.push(getCompletion("//Q:CONFIG ", "Quarkus configuration property", range));
+            items.push(getCompletion(QUARKUS_CONFIG, range));
         }
         return new CompletionList(items);
     }
@@ -112,9 +94,9 @@ export class DirectivesCompletion implements CompletionParticipant {
 
 class DirectiveScanner {
     
-    directives:string[] = [];
+    directives:Directive[] = [];
 
-    found(directive: string): boolean {
+    found(directive: Directive): boolean {
         return this.directives.includes(directive);
     }
 
@@ -128,7 +110,7 @@ class DirectiveScanner {
             let found;
             for(let j = 0; j < checkedDirectives.length; j++) {
                 const directive = checkedDirectives[j];
-                if (line.startsWith(directive)) {
+                if (directive.matches(line, true)) {
                     found = directive;
                     break;
                 }
@@ -143,12 +125,15 @@ class DirectiveScanner {
         } 
     }
 }
-function getCompletion(directive: string, detail: string, range?: Range, command?: Command): CompletionItem {
-    const item = new CompletionItem(directive.trim(), CompletionItemKind.Text);
-    item.insertText = new SnippetString(directive.trim() + " ${0}");
+function getCompletion(directive: Directive, range?: Range, command?: Command): CompletionItem {
+    const item = new CompletionItem(directive.prefix(), CompletionItemKind.Text);
+    item.insertText = new SnippetString( `${directive.prefix()} \${0}`);
     item.range = range;
+    if (!command && directive.reTriggerCompletion) {
+        command = retriggerCompletion;
+    }
     item.command = command;
-    item.detail = detail;
+    item.detail = directive.description;
     return item;
 }
 

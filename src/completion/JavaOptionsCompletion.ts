@@ -1,36 +1,31 @@
 import { CompletionContext, CompletionItem, CompletionList, Position, Range, SnippetString, TextDocument } from "vscode";
 import { CancellationToken, CompletionItemKind } from "vscode-languageclient";
+import { COMPILE_OPTIONS, JAVA, JAVAC_OPTIONS, JAVA_OPTIONS, NATIVE_OPTIONS, RUNTIME_OPTIONS } from "../JBangDirectives";
 import { CompletionParticipant, EMPTY_LIST } from "./CompletionParticipant";
 import { TextHelper } from "./TextHelper";
 
-const JAVAC_OPTIONS = "//JAVAC_OPTIONS ";
-const JAVA_OPTIONS = "//JAVA_OPTIONS ";
-const COMPILE_OPTIONS = "//COMPILE_OPTIONS ";
-const RUNTIME_OPTIONS = "//RUNTIME_OPTIONS ";
-const NATIVE_OPTIONS = "//NATIVE_OPTIONS ";
-const JAVA = "//JAVA ";
 const DIRECTIVES = [COMPILE_OPTIONS, RUNTIME_OPTIONS, JAVA, JAVAC_OPTIONS, JAVA_OPTIONS, NATIVE_OPTIONS];
 const JAVA_VERSIONS = [21, 17, 11, 8];
 export class JavaOptionsCompletion implements CompletionParticipant {
     applies(lineText: string, position: Position): boolean {
-        return !!DIRECTIVES.find(d => lineText.startsWith(d) && position.character >= d.length);
+        return !!DIRECTIVES.find(d => d.matches(lineText, true) && position.character >= d.prefix().length);
     }
 
     async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): Promise<CompletionList> {
         const line = document.lineAt(position);
         const lineText = line.text;
         const items:CompletionItem[] = [];
-        const directive = DIRECTIVES.find(d => lineText.startsWith(d));
+        const directive = DIRECTIVES.find(d => d.matches(lineText));
         if (!directive) {
             return EMPTY_LIST;
         }
-        const start = TextHelper.findStartPosition(lineText, position, directive);
+        const start = TextHelper.findStartPosition(lineText, position, `${directive.prefix()} `);
         //const currText = lineText.substring(start.character, position.character).trim();
         const end = TextHelper.findEndPosition(lineText, position);
         const javaVersions = getJavaVersions();
         let range: Range;
         if (directive === JAVA) {
-            range = new Range(new Position(position.line, JAVA.length), new Position(position.line, lineText.length));
+            range = new Range(new Position(position.line, JAVA.prefix().length+1), new Position(position.line, lineText.length));
             JAVA_VERSIONS.forEach((v, i) => {
                 const item = new CompletionItem(`${v}`, CompletionItemKind.Value);
                 item.sortText = `${i}`;
