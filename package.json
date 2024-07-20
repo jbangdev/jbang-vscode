@@ -254,7 +254,7 @@
 		"@typescript-eslint/eslint-plugin": "6.13.0",
 		"@typescript-eslint/parser": "6.13.0",
 		"@vscode/test-electron": "2.3.4",
-		"esbuild": "0.20.0",
+		"esbuild": "0.23.0",
 		"eslint": "8.54.0",
 		"glob": "10.4.5",
 		"mocha": "10.2.0",
