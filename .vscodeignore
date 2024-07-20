@@ -11,3 +11,7 @@ vsc-extension-quickstart.md
 **/*.ts
 **/*.vsix
 package.insiders.json
+.tool-versions
+scripts/
+.github/
+renovate.json

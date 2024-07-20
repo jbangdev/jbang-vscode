@@ -1,6 +1,6 @@
 name: Release
 
-on: 
+on:
   push:
     tags:
       - "*.*.*"
@@ -25,7 +25,7 @@ jobs:
       - name: Set Up NodeJS
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
 
       - name: Set Up Java
         uses: actions/setup-java@v4
@@ -35,20 +35,20 @@ jobs:
           cache: 'maven'
 
       - name: Install requirements
-        working-directory: ./jbang-vscode 
+        working-directory: ./jbang-vscode
         run: |
           npm ci
           npm install -g typescript "@vscode/vsce"
 
       - name: Build server
-        working-directory: ./jbang-vscode 
+        working-directory: ./jbang-vscode
         run: npm run build-ext
-          
+
       - name: Build vsix
-        working-directory: ./jbang-vscode 
+        working-directory: ./jbang-vscode
         run: |
           vsce package
-      
+
       - name: Upload to Github Releases
         uses: softprops/action-gh-release@v1
         with:
