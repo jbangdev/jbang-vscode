@@ -263,7 +263,7 @@
 		"typescript": "5.2.2"
 	},
 	"dependencies": {
-		"axios": "1.6.5",
+		"axios": "1.7.4",
 		"fast-xml-parser": "^4.3.1",
 		"lru-cache": "10.1.0",
 		"shelljs": "^0.8.5",
