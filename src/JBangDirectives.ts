@@ -33,7 +33,7 @@ export const PREVIEW = new Directive("PREVIEW","Enable Java preview features", f
 export const SOURCES = new Directive("SOURCES", "Pattern to include as JBang sources", true);
 export const FILES = new Directive("FILES", "Mount files to build", true);
 export const REPOS = new Directive("REPOS", "Repositories used by Jbang to resolve dependencies");
-export const QUARKUS_CONFIG = new Directive("Q:CONFIG ", "Quarkus configuration property");
+export const QUARKUS_CONFIG = new Directive("Q:CONFIG", "Quarkus configuration property");
 
 //Special case
 export const FILES_PREFIX = `${FILES.prefix()} `;
