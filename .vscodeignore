@@ -2,6 +2,8 @@
 node_modules/**
 .vscode-test/**
 src/**
+test/**
+out/test/**
 .gitignore
 .yarnrc
 vsc-extension-quickstart.md
@@ -15,3 +17,4 @@ package.insiders.json
 scripts/
 .github/
 renovate.json
+eslint.config.mjs

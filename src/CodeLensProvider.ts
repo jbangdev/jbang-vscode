@@ -4,11 +4,11 @@ import { isJBangDirective, isJBangFile, SUPPORTED_LANGUAGES } from "./JBangUtils
 
 const typeRegexp = /^.*(class|interface|enum|record)\s+.*$/;
 const singleCommentRegexp = /^\s*(\/\/).*$/;
+const mainMethodRegex = /^\s*(public\s+)?(static\s+)?void\s+main\s*(\(\s*(String\s*\[\]\s*\w+)?\s*\))?/;
 
 export class CodeLensProvider implements CodeLensProvider  {
 
     public initialize(context: ExtensionContext) {
-        //console.log("CodeLensProvider.initialize");
         SUPPORTED_LANGUAGES.forEach(languageId => {
             context.subscriptions.push(
                 languages.registerCodeLensProvider(languageId, this)
@@ -25,9 +25,16 @@ export class CodeLensProvider implements CodeLensProvider  {
         let typePosition: Range | undefined;
         let firstDirectivePosition: Range | undefined;
         let mainPosition: Range | undefined;
+        let hasPackageDeclaration = false;
         const codelenses = [];
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i];
+            if (line.length === 0) {
+                continue;
+            }
+            if (!hasPackageDeclaration && line.startsWith("package ")) {
+                hasPackageDeclaration = true;
+            }
             if (firstDirectivePosition === undefined && isJBangDirective(line)) {
                 firstDirectivePosition = new Range(i, 0, i, line.length);
                 continue;
@@ -40,9 +47,8 @@ export class CodeLensProvider implements CodeLensProvider  {
                 //This is so naive this is ridiculous ;-)
                 typePosition = new Range(i, 0, i, line.length);
             }
-            const mainIdx = line.indexOf("public static void main");//That's super brittle, use regexp
-            if (mainIdx >= 0) {
-                mainPosition = new Range(i, mainIdx, i, line.length);
+            mainPosition = getMainMethodPosition(i, line);
+            if (mainPosition && (!hasPackageDeclaration || (typePosition && mainPosition.start.line > typePosition.start.line))) {
                 break;
             }
         }
@@ -72,16 +78,28 @@ export class CodeLensProvider implements CodeLensProvider  {
                 codelenses.push(new CodeLens(typePosition, executeJBang));
                 codelenses.push(new CodeLens(typePosition, debugJBang));
             }
+
             if (mainPosition) {
                 codelenses.push(new CodeLens(mainPosition, executeJBang));
                 codelenses.push(new CodeLens(mainPosition, debugJBang));
-            }  
+            }
             if (codelenses.length === 0 && firstDirectivePosition) {
                 codelenses.push(new CodeLens(firstDirectivePosition, executeJBang));
             }
-        } 
+        }
         return codelenses;
       }
+}
+
+export function getMainMethodPosition(lineNumber: number, line: string): Range | undefined {
+    const trimmedLine = line.trim();
+    const mainMatch = trimmedLine.match(mainMethodRegex);
+    if (mainMatch) {
+        const start = line.indexOf(trimmedLine);
+        const end = start; // keep it simple
+        return new Range(lineNumber, start, lineNumber, end);
+    }
+    return undefined;
 }
 
 export default new CodeLensProvider();
