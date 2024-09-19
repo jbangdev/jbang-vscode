@@ -8,7 +8,7 @@ const retriggerCompletion: Command = { command: 'editor.action.triggerSuggest', 
 const QUARKUS_DEP = new Directive("DEPS io.quarkus:quarkus",""); //pretend it's a directive
 
 export class DirectivesCompletion implements CompletionParticipant {
-    
+
     applies(lineText: string, position: Position): boolean {
         return lineText.startsWith('//') || position.character === 0;
     }
@@ -31,7 +31,7 @@ export class DirectivesCompletion implements CompletionParticipant {
             items.push(getCompletion(JAVA, range));
         }
         items.push(getCompletion(DEPS, range));
-        
+
         if (document.languageId === 'groovy' && !scanner.found(GROOVY)) {
             items.push(getCompletion(GROOVY, range));
         }
@@ -48,9 +48,9 @@ export class DirectivesCompletion implements CompletionParticipant {
         if (!scanner.found(MAIN)) {
             items.push(getCompletion(MAIN, range));
         }
-        
+
         items.push(getCompletion(SOURCES, range));
-        
+
         items.push(getCompletion(FILES, range));
 
         items.push(getCompletion(REPOS, range));
@@ -93,7 +93,7 @@ export class DirectivesCompletion implements CompletionParticipant {
 
 
 class DirectiveScanner {
-    
+
     directives:Directive[] = [];
 
     found(directive: Directive): boolean {
@@ -101,28 +101,25 @@ class DirectiveScanner {
     }
 
     scan(document: TextDocument) {
-        const checkedDirectives = [
-            JAVA, JAVAC_OPTIONS, COMPILE_OPTIONS, DESCRIPTION, CDS, GAV, JAVAAGENT, MANIFEST, JAVA_OPTIONS, RUNTIME_OPTIONS, NATIVE_OPTIONS, KOTLIN, GROOVY, MAIN, MODULE, PREVIEW, QUARKUS_DEP
-        ];
+        const checkedDirectives = new Set([
+            JAVA, JAVAC_OPTIONS, COMPILE_OPTIONS, DESCRIPTION, CDS, GAV, JAVAAGENT, MANIFEST,
+            JAVA_OPTIONS, RUNTIME_OPTIONS, NATIVE_OPTIONS, KOTLIN, GROOVY, MAIN, MODULE, PREVIEW, QUARKUS_DEP
+        ]);
         const lines = document.getText().split(/\r?\n/);
-        for (let i = 0; i < lines.length && checkedDirectives.length > 0; i++) {
-            const line = lines[i];
-            let found;
-            for(let j = 0; j < checkedDirectives.length; j++) {
-                const directive = checkedDirectives[j];
-                if (directive.matches(line, true)) {
-                    found = directive;
+
+        for (const line of lines) {
+            if (checkedDirectives.size === 0) {
+                break;
+            }
+            for (const directive of checkedDirectives) {
+                const includeSpace = directive !== QUARKUS_DEP;//special case for Quarkus dependencies
+                if (directive.matches(line, includeSpace)) {
+                    this.directives.push(directive);
+                    checkedDirectives.delete(directive);
                     break;
                 }
             }
-            if (found) {
-                this.directives.push(found);
-                const index = checkedDirectives.indexOf(found, 0);
-                if (index > -1) {
-                    checkedDirectives.splice(index, 1);
-                }
-            }
-        } 
+        }
     }
 }
 function getCompletion(directive: Directive, range?: Range, command?: Command): CompletionItem {
