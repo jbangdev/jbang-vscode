@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import { compareVersions } from '../../models/Version';
+import { compareVersions } from '../../src/models/Version';
 
 
 suite("Version comparator test", () => {
@@ -16,7 +16,7 @@ suite("Version comparator test", () => {
         assert.strictEqual(1, compareVersions('6.0.0', '6.0.0.ALPHA1')); //release > alpha
         assert.strictEqual(1, compareVersions('6.0.0.RC1', '6.0.0.ALPHA1')); // rc > alpha
         assert.strictEqual(1, compareVersions('4.10.0-RC1', '4.10.0.alpha-1')); // rc > alpha, regardless of case
-        
+
         const versions = ['4.10.0', '4.10.0-alpha-1', '4.10.0-RC1'];
         const expected = ['4.10.0-alpha-1', '4.10.0-RC1', '4.10.0'];
         const result = versions.sort(compareVersions);
