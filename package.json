@@ -266,7 +266,7 @@
 		"axios": "1.7.9",
 		"fast-xml-parser": "^5.0.0",
 		"lru-cache": "11.0.2",
-		"shelljs": "^0.8.5",
+		"shelljs": "^0.9.0",
 		"vscode-languageclient": "^9.0.1"
 	}
 }
