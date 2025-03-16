@@ -1,16 +1,15 @@
-import axios, { AxiosRequestConfig } from "axios";
 import { XMLParser } from "fast-xml-parser";
 import * as fs from "fs/promises";
 import { LRUCache } from "lru-cache";
 import { MarkdownString } from "vscode";
 import { CancellationToken } from "vscode-languageclient";
-import { version } from "./extension";
 import {
   Dependency,
   getLocalFile,
   getRemoteMetadata,
   getRemoteUrl,
 } from "./models/Dependency";
+import { createFetchOptions } from "./utils/fetchUtils";
 
 const cacheTTL = 1000 * 60 * 10; // 10 min
 const DOC_CACHE = new LRUCache<string, MarkdownString>({
@@ -38,10 +37,6 @@ const LATEST_VERSIONS_CACHE = new LRUCache<string, string>({
   // return stale items before removing from cache?
   allowStale: false,
 });
-
-const axiosConfig: AxiosRequestConfig<any> = {
-  httpsAgent: "jbang-vscode v" + version,
-};
 
 const NO_DOC = new MarkdownString("");
 
@@ -138,8 +133,11 @@ export default new DocumentationProvider();
 
 async function fetchData(uri: string): Promise<string | undefined> {
   console.log(`Fetching ${uri}`);
-  const response = await axios.get(uri, axiosConfig);
-  return response.data;
+  const response = await fetch(uri, createFetchOptions());
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  return response.text();
 }
 
 async function findLatestVersion(

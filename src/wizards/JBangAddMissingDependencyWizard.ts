@@ -1,4 +1,3 @@
-import axios, { AxiosRequestConfig, CancelTokenSource } from "axios";
 import {
   Position,
   ProgressLocation,
@@ -11,16 +10,12 @@ import {
   window,
   workspace,
 } from "vscode";
+import { HEADER_PREFIX } from "../JBangDirectives";
 import { DEPS_PREFIX } from "../JBangUtils";
-import { version } from "../extension";
 import { compareVersions } from "../models/Version";
+import { createFetchOptions } from "../utils/fetchUtils";
 import { MultiStepInput, QuickPickParameters } from "./multiStepsUtils";
 import { SelectDependencyState } from "./wizardState";
-
-const axiosConfig: AxiosRequestConfig<any> = {
-  httpsAgent: "jbang-vscode v" + version,
-  timeout: 30000,
-};
 
 export default class JBangAddMissingDependencyWizard {
   constructor(private uri: Uri, private dependencies: string[]) {}
@@ -33,14 +28,14 @@ export default class JBangAddMissingDependencyWizard {
         cancellable: true,
       },
       async (_progress, token) => {
-        const cancelTokenSource = axios.CancelToken.source();
+        const controller = new AbortController();
         token.onCancellationRequested(() => {
-          cancelTokenSource.cancel();
+          controller.abort();
         });
 
         const results = await JBangAddMissingDependencyWizard.searchClass(
           missingType,
-          cancelTokenSource
+          controller.signal
         );
         if (!results || token.isCancellationRequested) {
           //Search was cancelled
@@ -80,7 +75,7 @@ export default class JBangAddMissingDependencyWizard {
 
   private static async searchClass(
     missingClass: string,
-    cancelTokenSource: CancelTokenSource
+    signal: AbortSignal
   ): Promise<any> {
     if (missingClass.endsWith(".*")) {
       //Star import, we only have a package to deal with
@@ -90,17 +85,21 @@ export default class JBangAddMissingDependencyWizard {
     const searchQuery = `https://search.maven.org/solrsearch/select?&rows=200&wt=json&q=${searchType}:${missingClass}`;
 
     try {
-      const response = await axios.get(searchQuery, {
-        ...axiosConfig,
-        cancelToken: cancelTokenSource.token,
+      const response = await fetch(searchQuery, {
+        ...createFetchOptions(),
+        signal,
       });
-      return response?.data?.response;
-    } catch (error) {
-      if (!axios.isCancel(error)) {
-        throw error;
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+      const data = (await response.json()) as any;
+      return data?.response;
+    } catch (error: any) {
+      if (error.name === "AbortError") {
+        return undefined;
+      }
+      throw error;
     }
-    return undefined;
   }
 
   private async run() {
@@ -201,7 +200,7 @@ function findNextDepsLine(document: TextDocument): number {
   let lastDepsIndex = 0;
   for (let index = 0; index < Math.min(lines.length, 100); index++) {
     const line = lines[index];
-    if (line.startsWith(DEPS_PREFIX)) {
+    if (line.startsWith(DEPS_PREFIX) || line.startsWith(HEADER_PREFIX)) {
       lastDepsIndex = index;
     }
   }

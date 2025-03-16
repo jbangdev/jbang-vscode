@@ -34,6 +34,7 @@ import {
   RUNTIME_OPTIONS,
   SOURCES,
 } from "../JBangDirectives";
+import { isGroovy, isKotlin } from "../JBangUtils";
 import { CompletionParticipant } from "./CompletionParticipant";
 
 const retriggerCompletion: Command = {
@@ -72,10 +73,10 @@ export class DirectivesCompletion implements CompletionParticipant {
     }
     items.push(getCompletion(DEPS, range));
 
-    if (document.languageId === "groovy" && !scanner.found(GROOVY)) {
+    if (isGroovy(document) && !scanner.found(GROOVY)) {
       items.push(getCompletion(GROOVY, range));
     }
-    if (document.languageId === "kotlin" && !scanner.found(KOTLIN)) {
+    if (isKotlin(document) && !scanner.found(KOTLIN)) {
       items.push(getCompletion(KOTLIN, range));
     }
 

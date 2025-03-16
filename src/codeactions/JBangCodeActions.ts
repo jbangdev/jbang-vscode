@@ -14,7 +14,7 @@ import {
   languages,
 } from "vscode";
 import { JBANG_ADD_MISSING_DEPENDENCY } from "../CommandManager";
-import { SUPPORTED_LANGUAGES, isJBangFile } from "../JBangUtils";
+import { isJBangFile, isJBangSupported } from "../JBangUtils";
 
 const UNRESOLVED_TYPE = "Java(16777218)";
 const UNRESOLVED_IMPORT = "268435846";
@@ -36,12 +36,17 @@ export class JBangCodeActions implements CodeActionProvider {
     context: CodeActionContext,
     token: CancellationToken
   ): ProviderResult<(CodeAction | Command)[]> {
-    if (!SUPPORTED_LANGUAGES.includes(document.languageId)) {
+    if (!isJBangSupported(document)) {
       return [];
     }
-    const unresolvedTypes = context.diagnostics.filter(
-      (d) => "Java" === d.source && UNRESOLVED_IMPORT === d.code
-    );
+    const unresolvedTypes = context.diagnostics.filter((d: any) => {
+      console.log(d);
+      return (
+        "Java" === d.source &&
+        (UNRESOLVED_IMPORT === d.code ||
+          UNRESOLVED_IMPORT === d?.data?.ecjProblemId)
+      );
+    });
 
     if (
       unresolvedTypes.length === 0 ||
@@ -50,19 +55,23 @@ export class JBangCodeActions implements CodeActionProvider {
       return [];
     }
 
-    return unresolvedTypes
+    const codeActions = unresolvedTypes
       .map((d) => {
         const ca = this.createCommandCodeAction(d, document);
         return ca;
       })
       .filter((ca): ca is CodeAction => ca !== undefined);
+    return codeActions;
   }
 
   private createCommandCodeAction(
     diagnostic: Diagnostic,
     document: TextDocument
   ): CodeAction | undefined {
-    const regex = /import (.*) cannot be resolved/;
+    const regex =
+      UNRESOLVED_IMPORT === diagnostic.code
+        ? /import (.*) cannot be resolved/
+        : /package (.*) does not exist/;
     const match = diagnostic.message.match(regex);
     if (match && match[1]) {
       const importLine = document.lineAt(diagnostic.range.start.line).text;

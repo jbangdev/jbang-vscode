@@ -1,4 +1,3 @@
-import axios, { AxiosRequestConfig } from "axios";
 import { LRUCache } from "lru-cache";
 import {
   CancellationToken,
@@ -15,9 +14,9 @@ import { JBANG_SAVE_SCRIPT } from "../CommandManager";
 import JBangConfig from "../JBangConfig";
 import { DEPS } from "../JBangDirectives";
 import { DEPS_PREFIX } from "../JBangUtils";
-import { version } from "../extension";
 import { Dependency } from "../models/Dependency";
 import { compareVersions } from "../models/Version";
+import { createFetchOptions } from "../utils/fetchUtils";
 import {
   CompletionParticipant,
   EMPTY_LIST,
@@ -27,11 +26,6 @@ import { TextHelper } from "./TextHelper";
 
 const MAX_RESULTS = 100;
 const SEARCH_API = `https://search.maven.org/solrsearch/select?rows=${MAX_RESULTS}&wt=json&q=`;
-
-const axiosConfig: AxiosRequestConfig<any> = {
-  httpsAgent: "jbang-vscode v" + version,
-  timeout: 5000,
-};
 
 const QUERY_CACHE = new LRUCache<string, CompletionList>({
   max: 500,
@@ -175,8 +169,12 @@ function toVersionCompletionItem(
 async function searchAll(name: string): Promise<any> {
   const searchQuery = `${SEARCH_API}${name}*+OR+a:${name}*+OR+g:${name}*`;
   console.log(searchQuery);
-  const response = await axios.get(searchQuery, axiosConfig);
-  return response?.data?.response;
+  const response = await fetch(searchQuery, createFetchOptions());
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  const data = (await response.json()) as any;
+  return data?.response;
 }
 
 async function searchArtifactId(
@@ -189,8 +187,12 @@ async function searchArtifactId(
   }
   const searchQuery = SEARCH_API + queryString;
   console.log(searchQuery);
-  const response = await axios.get(searchQuery, axiosConfig);
-  return response.data?.response;
+  const response = await fetch(searchQuery, createFetchOptions());
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  const data = (await response.json()) as any;
+  return data?.response;
 }
 
 async function searchVersion(
@@ -205,15 +207,20 @@ async function searchVersion(
   }
   searchQuery += "&core=gav";
   console.log(searchQuery);
-  const response = (await axios.get(searchQuery, axiosConfig))?.data?.response;
+  const response = await fetch(searchQuery, createFetchOptions());
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  const data = (await response.json()) as any;
+  const result = data?.response;
   // Apparently there's no way to ask solrsearch to return versions sorted by version desc,
   // so we do it manually
-  if (response?.docs) {
+  if (result?.docs) {
     //Sort by decreasing version
-    const sortedVersions = response.docs.sort(compareArtifactVersions);
-    response.docs = sortedVersions;
+    const sortedVersions = result.docs.sort(compareArtifactVersions);
+    result.docs = sortedVersions;
   }
-  return response;
+  return result;
 }
 
 function toCompletionList(

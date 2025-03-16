@@ -10,7 +10,7 @@ import {
 import { TextHelper } from "./completion/TextHelper";
 import DocumentationProvider from "./DocumentationProvider";
 import { DEPS, JBANG_DIRECTIVES } from "./JBangDirectives";
-import { SUPPORTED_LANGUAGES } from "./JBangUtils";
+import { isJBangSupported, SUPPORTED_LANGUAGES } from "./JBangUtils";
 import { Dependency } from "./models/Dependency";
 
 export class JBangHoverProvider implements HoverProvider {
@@ -19,7 +19,7 @@ export class JBangHoverProvider implements HoverProvider {
     position: Position,
     token: CancellationToken
   ): Promise<Hover | undefined> {
-    if (!SUPPORTED_LANGUAGES.includes(document.languageId)) {
+    if (!isJBangSupported(document)) {
       return undefined;
     }
     const line = document.lineAt(position);

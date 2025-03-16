@@ -22,7 +22,7 @@ import { LocalDependencyCompletion } from "./completion/LocalDependencyCompletio
 import { RemoteDependencyCompletion } from "./completion/RemoteDependencyCompletion";
 import { ResourcesCompletion } from "./completion/ResourcesCompletion";
 import DocumentationProvider from "./DocumentationProvider";
-import { SUPPORTED_LANGUAGES } from "./JBangUtils";
+import { isJBangSupported, SUPPORTED_LANGUAGES } from "./JBangUtils";
 
 export class JBangCompletionProvider
   implements CompletionItemProvider<CompletionItem>
@@ -35,7 +35,7 @@ export class JBangCompletionProvider
     token: CancellationToken,
     context: CompletionContext
   ): Promise<CompletionList> {
-    if (!SUPPORTED_LANGUAGES.includes(document.languageId)) {
+    if (!isJBangSupported(document)) {
       return EMPTY_LIST;
     }
     const line = document.lineAt(position);
