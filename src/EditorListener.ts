@@ -1,5 +1,5 @@
 import { commands, ExtensionContext, TextEditor, window } from "vscode";
-import { isJBangFile, SUPPORTED_LANGUAGES } from "./JBangUtils";
+import { isJBangFile, isJBangSupported } from "./JBangUtils";
 
 export class EditorListener {
   public async initialize(context: ExtensionContext): Promise<void> {
@@ -14,11 +14,7 @@ export class EditorListener {
 
   checkJBangFileContext(editor?: TextEditor) {
     //If not a java file, we bail
-    if (
-      !editor ||
-      !editor.document ||
-      !SUPPORTED_LANGUAGES.includes(editor.document.languageId)
-    ) {
+    if (!editor || !editor.document || !isJBangSupported(editor.document)) {
       return this.setJBangFileContext(false);
     }
     if (editor.document.fileName.endsWith("build.jbang")) {

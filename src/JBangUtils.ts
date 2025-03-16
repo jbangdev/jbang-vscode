@@ -1,3 +1,4 @@
+import { TextDocument } from "vscode";
 import { DEPS, HEADER_PREFIX, JBANG_DIRECTIVES } from "./JBangDirectives";
 
 export const SUPPORTED_LANGUAGES = [
@@ -27,5 +28,27 @@ export function isJBangDirective(line: string): boolean {
     JBANG_DIRECTIVES.find((directive) => {
       return directive.matches(line);
     }) !== undefined
+  );
+}
+
+export function isGroovy(document: TextDocument): boolean {
+  return (
+    document.languageId === "groovy" || document.fileName.endsWith(".groovy")
+  );
+}
+
+export function isKotlin(document: TextDocument): boolean {
+  return (
+    document.languageId === "kotlin" ||
+    document.fileName.endsWith(".kt") ||
+    document.fileName.endsWith(".kts")
+  );
+}
+
+export function isJBangSupported(document: TextDocument): boolean {
+  return (
+    SUPPORTED_LANGUAGES.includes(document.languageId) ||
+    isGroovy(document) ||
+    isKotlin(document)
   );
 }

@@ -1,271 +1,270 @@
 {
-	"name": "jbang-vscode",
-	"displayName": "JBang",
-	"description": "JBang support for VS Code Java",
-	"version": "0.11.0",
-	"icon": "icons/jbang.png",
-	"publisher": "jbangdev",
-	"license": "MIT",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/jbangdev/jbang-vscode"
-	},
-	"engines": {
-		"vscode": "^1.97.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"keywords": [
-		"JBang",
-		"Java"
-	],
-	"activationEvents": [
-		"onLanguage:java",
-		"onLanguage:groovy",
-		"onLanguage:kotlin",
-		"workspaceContains:build.jbang",
-		"workspaceContains:jbang-catalog.json",
-		"workspaceContains:*/jbang-catalog.json"
-	],
-	"extensionDependencies": [
-		"redhat.java"
-	],
-	"main": "./out/src/extension.js",
-	"contributes": {
-		"languages": [
-			{
-				"id": "jbang",
-				"extensions": [
-					".jbang"
-				],
-				"aliases": [
-					"JBang"
-				],
-				"configuration": "./language-support/language-configuration.json"
-			}
-		],
-		"grammars": [
-			{
-				"language": "jbang",
-				"scopeName": "source.build.jbang",
-				"path": "./language-support/build.jbang.tmLanguage.json"
-			},
-			{
-				"injectTo": [
-					"source.java"
-				],
-				"scopeName": "inline.jbang",
-				"path": "./language-support/inline-jbang.tmLanguage.json",
-				"embeddedLanguages": {
-					"meta.embedded.block.jbang": "jbang"
-				}
-			}
-		],
-		"javaExtensions": [
-			"./jars/dev.jbang.eclipse.core.jar",
-			"./jars/dev.jbang.eclipse.ls.jar"
-		],
-		"javaBuildFilePatterns": [
-			"^build\\.jbang$"
-		],
-		"problemMatchers": [
-			{
-				"name": "jbang.debug.problemMatcher",
-				"label": "Problem Matcher to determine when a JBang application is ready to debug.",
-				"owner": "jbang",
-				"pattern": {
-					"regexp": "^.*$"
-				},
-				"severity": "error",
-				"background": {
-					"activeOnStart": true,
-					"beginsPattern": "^.*$",
-					"endsPattern": "^Listening for transport dt_socket at address: (.*)$"
-				}
-			}
-		],
-		"commands": [
-			{
-				"command": "jbang.synchronize",
-				"title": "Synchronize JBang",
-				"category": "JBang",
-				"icon": "icons/jbang.png"
-			},
-			{
-				"command": "jbang.script.generate",
-				"title": "Create a new script",
-				"category": "JBang",
-				"icon": "icons/jbang.png"
-			},
-			{
-				"command": "jbang.script.export.native",
-				"title": "Export as native binary",
-				"category": "JBang",
-				"icon": "icons/jbang.png"
-			},
-			{
-				"command": "jbang.script.app.install",
-				"title": "Install application",
-				"category": "JBang",
-				"icon": "icons/jbang.png"
-			},
-			{
-				"command": "jbang.script.run",
-				"title": "Run JBang",
-				"category": "JBang",
-				"icon": "icons/jbang.png"
-			},
-			{
-				"command": "jbang.script.debug",
-				"title": "Debug JBang",
-				"category": "JBang",
-				"icon": "icons/debug-jbang.png"
-			}
-		],
-		"submenus": [
-			{
-				"id": "jbang",
-				"label": "JBang",
-				"icon": "icons/jbang.png"
-			}
-		],
-		"menus": {
-			"commandPalette": [
-				{
-					"command": "jbang.synchronize",
-					"when": "isJBangFile"
-				},
-				{
-					"command": "jbang.script.export.native",
-					"when": "isJBangFile"
-				}
-			],
-			"editor/title/run": [
-				{
-					"command": "jbang.script.run",
-					"when": "isJBangFile",
-					"group": "1_jbangexecute@1"
-				},
-				{
-					"command": "jbang.script.debug",
-					"when": "resourceExtname == .java && isJBangFile",
-					"group": "1_jbangexecute@2"
-				}
-			],
-			"explorer/context": [
-				{
-					"submenu": "jbang",
-					"when": "isJBangFile || resourceExtname == .jar",
-					"group": "1_jbangactions"
-				}
-			],
-			"editor/context": [
-				{
-					"submenu": "jbang",
-					"when": "isJBangFile",
-					"group": "1_jbangactions"
-				}
-			],
-			"jbang": [
-				{
-					"command": "jbang.synchronize",
-					"when": "resourceExtname == .java && isJBangFile",
-					"group": "1_jbangactions@1"
-				},
-				{
-					"command": "jbang.script.export.native",
-					"when": "isJBangFile",
-					"group": "1_jbangactions@2"
-				},
-				{
-					"command": "jbang.script.app.install",
-					"when": "isJBangFile",
-					"group": "1_jbangactions@3"
-				},
-				{
-					"command": "jbang.script.run",
-					"when": "isJBangFile || resourceExtname == .jar",
-					"group": "2_jbangexecute@1"
-				},
-				{
-					"command": "jbang.script.debug",
-					"when": "resourceExtname == .java && isJBangFile",
-					"group": "2_jbangexecute@2"
-				}
-			]
-		},
-		"configuration": {
-			"title": "JBang",
-			"properties": {
-				"jbang.home": {
-					"type": [
-						"string",
-						"null"
-					],
-					"default": null,
-					"markdownDescription": "Specifies the folder path to the JBang directory (not the executable), eg. `~/.sdkman/candidates/jbang/current`.\n\nOn Windows, backslashes must be escaped, eg. `C:\\\\ProgramData\\\\chocolatey\\\\lib\\\\jbang`.\n\nUsed by the `JBang: Create a new script` wizard and the `Run JBang` code lens. Useful in case `jbang` is not automatically picked up from the $PATH, for some reason.",
-					"description": "Specifies the folder path to the JBang directory (not the executable), eg. '~/.sdkman/candidates/jbang/current'.\n\nOn Windows, backslashes must be escaped, eg. 'C:\\\\ProgramData\\\\chocolatey\\\\lib\\\\jbang'.\n\nUsed by the 'JBang: Create a new script' wizard and the 'Run JBang' code lens. Useful in case 'jbang' is not automatically picked up from the $PATH, for some reason.",
-					"scope": "machine-overridable"
-				},
-				"jbang.wizard.templates.showDescriptions": {
-					"type": "boolean",
-					"default": true,
-					"markdownDescription": "When set to `true` (the default), shows JBang template descriptions in the `JBang: Create a new script` wizard, else hides them.",
-					"description": "When set to 'true' (the default), shows JBang template descriptions in the 'JBang: Create a new script' wizard, else hides them.",
-					"scope": "window"
-				},
-				"java.import.jbang.projectPerScript": {
-					"type": "boolean",
-					"default": false,
-					"markdownDescription": "When set to `true`, each script found in the opened folder will be imported as its own project, with its own classpath. `false` by default. Toggling this setting requires calling the `Java: Clean Java Language Server Workspace` command to take effect.",
-					"scope": "window"
-				},
-				"jbang.completion.onSelect.autosave": {
-					"type": "boolean",
-					"default": true,
-					"markdownDescription": "When set to `true` (the default), automatically save the file after `//DEPS` completion is selected, so the classpath gets updated.",
-					"scope": "window"
-				}
-			}
-		},
-		"jsonValidation": [
-			{
-				"fileMatch": "jbang-catalog.json",
-				"url": "./schemas/jbang-catalog-schema.json"
-			}
-		]
-	},
-	"scripts": {
-		"vscode:prepublish": "npm run checkTypes && npm run -S esbuild-base -- --minify",
-		"esbuild-base": "rimraf out && esbuild ./src/extension.ts ./test/runTest.ts ./test/**/*.ts --bundle --outdir=out --external:vscode --format=cjs --platform=node",
-		"build": "npm run -S esbuild-base -- --sourcemap",
-		"checkTypes": "tsc -p . -noEmit",
-		"watch": "npm run -S esbuild-base -- --sourcemap --watch",
-		"build-ext": "node scripts/build-jbang-eclipse.js",
-		"pretest": "npm run build && npm run lint",
-		"lint": "eslint src/**/*.ts",
-		"test": "node ./out/test/runTest.js"
-	},
-	"devDependencies": {
-		"@types/mocha": "10.0.10",
-		"@types/node": "20.14.11",
-		"@types/vscode": "1.97.0",
-		"@typescript-eslint/eslint-plugin": "8.23.0",
-		"@typescript-eslint/parser": "8.23.0",
-		"@vscode/test-electron": "2.4.1",
-		"esbuild": "0.25.0",
-		"eslint": "9.20.0",
-		"glob": "11.0.1",
-		"mocha": "11.1.0",
-		"rimraf": "^6.0.1",
-		"typescript": "5.7.3"
-	},
-	"dependencies": {
-		"axios": "1.7.9",
-		"fast-xml-parser": "^5.0.0",
-		"lru-cache": "11.0.2",
-		"shelljs": "^0.9.0",
-		"vscode-languageclient": "^9.0.1"
-	}
+  "name": "jbang-vscode",
+  "displayName": "JBang",
+  "description": "JBang support for VS Code Java",
+  "version": "0.11.0",
+  "icon": "icons/jbang.png",
+  "publisher": "jbangdev",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jbangdev/jbang-vscode"
+  },
+  "engines": {
+    "vscode": "^1.97.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "JBang",
+    "Java"
+  ],
+  "activationEvents": [
+    "onLanguage:java",
+    "onLanguage:groovy",
+    "onLanguage:kotlin",
+    "workspaceContains:build.jbang",
+    "workspaceContains:jbang-catalog.json",
+    "workspaceContains:*/jbang-catalog.json"
+  ],
+  "extensionDependencies": [
+    "redhat.java"
+  ],
+  "main": "./out/src/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "jbang",
+        "extensions": [
+          ".jbang"
+        ],
+        "aliases": [
+          "JBang"
+        ],
+        "configuration": "./language-support/language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "jbang",
+        "scopeName": "source.build.jbang",
+        "path": "./language-support/build.jbang.tmLanguage.json"
+      },
+      {
+        "injectTo": [
+          "source.java"
+        ],
+        "scopeName": "inline.jbang",
+        "path": "./language-support/inline-jbang.tmLanguage.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.jbang": "jbang"
+        }
+      }
+    ],
+    "javaExtensions": [
+      "./jars/dev.jbang.eclipse.core.jar",
+      "./jars/dev.jbang.eclipse.ls.jar"
+    ],
+    "javaBuildFilePatterns": [
+      "^build\\.jbang$"
+    ],
+    "problemMatchers": [
+      {
+        "name": "jbang.debug.problemMatcher",
+        "label": "Problem Matcher to determine when a JBang application is ready to debug.",
+        "owner": "jbang",
+        "pattern": {
+          "regexp": "^.*$"
+        },
+        "severity": "error",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^.*$",
+          "endsPattern": "^Listening for transport dt_socket at address: (.*)$"
+        }
+      }
+    ],
+    "commands": [
+      {
+        "command": "jbang.synchronize",
+        "title": "Synchronize JBang",
+        "category": "JBang",
+        "icon": "icons/jbang.png"
+      },
+      {
+        "command": "jbang.script.generate",
+        "title": "Create a new script",
+        "category": "JBang",
+        "icon": "icons/jbang.png"
+      },
+      {
+        "command": "jbang.script.export.native",
+        "title": "Export as native binary",
+        "category": "JBang",
+        "icon": "icons/jbang.png"
+      },
+      {
+        "command": "jbang.script.app.install",
+        "title": "Install application",
+        "category": "JBang",
+        "icon": "icons/jbang.png"
+      },
+      {
+        "command": "jbang.script.run",
+        "title": "Run JBang",
+        "category": "JBang",
+        "icon": "icons/jbang.png"
+      },
+      {
+        "command": "jbang.script.debug",
+        "title": "Debug JBang",
+        "category": "JBang",
+        "icon": "icons/debug-jbang.png"
+      }
+    ],
+    "submenus": [
+      {
+        "id": "jbang",
+        "label": "JBang",
+        "icon": "icons/jbang.png"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "jbang.synchronize",
+          "when": "isJBangFile"
+        },
+        {
+          "command": "jbang.script.export.native",
+          "when": "isJBangFile"
+        }
+      ],
+      "editor/title/run": [
+        {
+          "command": "jbang.script.run",
+          "when": "isJBangFile",
+          "group": "1_jbangexecute@1"
+        },
+        {
+          "command": "jbang.script.debug",
+          "when": "resourceExtname == .java && isJBangFile",
+          "group": "1_jbangexecute@2"
+        }
+      ],
+      "explorer/context": [
+        {
+          "submenu": "jbang",
+          "when": "isJBangFile || resourceExtname == .jar",
+          "group": "1_jbangactions"
+        }
+      ],
+      "editor/context": [
+        {
+          "submenu": "jbang",
+          "when": "isJBangFile",
+          "group": "1_jbangactions"
+        }
+      ],
+      "jbang": [
+        {
+          "command": "jbang.synchronize",
+          "when": "resourceExtname == .java && isJBangFile",
+          "group": "1_jbangactions@1"
+        },
+        {
+          "command": "jbang.script.export.native",
+          "when": "isJBangFile",
+          "group": "1_jbangactions@2"
+        },
+        {
+          "command": "jbang.script.app.install",
+          "when": "isJBangFile",
+          "group": "1_jbangactions@3"
+        },
+        {
+          "command": "jbang.script.run",
+          "when": "isJBangFile || resourceExtname == .jar",
+          "group": "2_jbangexecute@1"
+        },
+        {
+          "command": "jbang.script.debug",
+          "when": "resourceExtname == .java && isJBangFile",
+          "group": "2_jbangexecute@2"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "JBang",
+      "properties": {
+        "jbang.home": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null,
+          "markdownDescription": "Specifies the folder path to the JBang directory (not the executable), eg. `~/.sdkman/candidates/jbang/current`.\n\nOn Windows, backslashes must be escaped, eg. `C:\\\\ProgramData\\\\chocolatey\\\\lib\\\\jbang`.\n\nUsed by the `JBang: Create a new script` wizard and the `Run JBang` code lens. Useful in case `jbang` is not automatically picked up from the $PATH, for some reason.",
+          "description": "Specifies the folder path to the JBang directory (not the executable), eg. '~/.sdkman/candidates/jbang/current'.\n\nOn Windows, backslashes must be escaped, eg. 'C:\\\\ProgramData\\\\chocolatey\\\\lib\\\\jbang'.\n\nUsed by the 'JBang: Create a new script' wizard and the 'Run JBang' code lens. Useful in case 'jbang' is not automatically picked up from the $PATH, for some reason.",
+          "scope": "machine-overridable"
+        },
+        "jbang.wizard.templates.showDescriptions": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "When set to `true` (the default), shows JBang template descriptions in the `JBang: Create a new script` wizard, else hides them.",
+          "description": "When set to 'true' (the default), shows JBang template descriptions in the 'JBang: Create a new script' wizard, else hides them.",
+          "scope": "window"
+        },
+        "java.import.jbang.projectPerScript": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "When set to `true`, each script found in the opened folder will be imported as its own project, with its own classpath. `false` by default. Toggling this setting requires calling the `Java: Clean Java Language Server Workspace` command to take effect.",
+          "scope": "window"
+        },
+        "jbang.completion.onSelect.autosave": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "When set to `true` (the default), automatically save the file after `//DEPS` completion is selected, so the classpath gets updated.",
+          "scope": "window"
+        }
+      }
+    },
+    "jsonValidation": [
+      {
+        "fileMatch": "jbang-catalog.json",
+        "url": "./schemas/jbang-catalog-schema.json"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run checkTypes && npm run -S esbuild-base -- --minify",
+    "esbuild-base": "rimraf out && esbuild ./src/extension.ts ./test/runTest.ts ./test/**/*.ts --bundle --outdir=out --external:vscode --format=cjs --platform=node",
+    "build": "npm run -S esbuild-base -- --sourcemap",
+    "checkTypes": "tsc -p . -noEmit",
+    "watch": "npm run -S esbuild-base -- --sourcemap --watch",
+    "build-ext": "node scripts/build-jbang-eclipse.js",
+    "pretest": "npm run build && npm run lint",
+    "lint": "eslint src/**/*.ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/mocha": "10.0.10",
+    "@types/node": "20.14.11",
+    "@types/vscode": "1.97.0",
+    "@typescript-eslint/eslint-plugin": "8.23.0",
+    "@typescript-eslint/parser": "8.23.0",
+    "@vscode/test-electron": "2.4.1",
+    "esbuild": "0.25.0",
+    "eslint": "9.20.0",
+    "glob": "11.0.1",
+    "mocha": "11.1.0",
+    "rimraf": "^6.0.1",
+    "typescript": "5.7.3"
+  },
+  "dependencies": {
+    "fast-xml-parser": "^5.0.9",
+    "lru-cache": "11.0.2",
+    "shelljs": "^0.9.1",
+    "vscode-languageclient": "^9.0.1"
+  }
 }
