@@ -7,10 +7,21 @@
 // Reference:
 // https://github.com/microsoft/vscode-extension-samples/blob/master/quickinput-sample/src/multiStepInput.ts
 // -------------------------------------------------------
-import { ConfigurationChangeEvent, Disposable, InputBox, QuickInput, QuickInputButton, QuickInputButtons, QuickPick, QuickPickItem, window, workspace } from 'vscode';
+import {
+  ConfigurationChangeEvent,
+  Disposable,
+  InputBox,
+  QuickInput,
+  QuickInputButton,
+  QuickInputButtons,
+  QuickPick,
+  QuickPickItem,
+  window,
+  workspace,
+} from "vscode";
 
 class InputFlowAction {
-  private constructor() { }
+  private constructor() {}
   static back = new InputFlowAction();
   static cancel = new InputFlowAction();
 }
@@ -49,7 +60,6 @@ export interface ConfigChangeCallback {
 }
 
 export class MultiStepInput {
-
   static async run(start: InputStep) {
     const input = new MultiStepInput();
     return input.stepThrough(start);
@@ -92,11 +102,26 @@ export class MultiStepInput {
     }
   }
 
-  async showQuickPick<T extends QuickPickItem, P extends QuickPickParameters<T>>({ title, step, totalSteps, items, activeItem, placeholder, buttons, configChanges}: P) {
+  async showQuickPick<
+    T extends QuickPickItem,
+    P extends QuickPickParameters<T>
+  >({
+    title,
+    step,
+    totalSteps,
+    items,
+    activeItem,
+    placeholder,
+    buttons,
+    configChanges,
+  }: P) {
     const disposables: Disposable[] = [];
-    const displaySteps: boolean = typeof step !== 'undefined' && typeof totalSteps !== 'undefined';
+    const displaySteps: boolean =
+      typeof step !== "undefined" && typeof totalSteps !== "undefined";
 
-    return await new Promise<undefined |T | (P extends { buttons: (infer I)[] } ? I : never)>((resolve, reject) => {
+    return await new Promise<
+      undefined | T | (P extends { buttons: (infer I)[] } ? I : never)
+    >((resolve, reject) => {
       const input: QuickPick<T> = window.createQuickPick<T>();
       input.title = title;
 
@@ -114,13 +139,16 @@ export class MultiStepInput {
 
       input.buttons = [
         ...(this.steps.length > 1 ? [QuickInputButtons.Back] : []),
-        ...(buttons || [])
+        ...(buttons || []),
       ];
       input.ignoreFocusOut = true;
       disposables.push(
         input.onDidTriggerButton((item: QuickInputButton) => {
-          disposables.forEach(d => d.dispose());
-          if (buttons && buttons.includes(item as QuickInputButtonWithCallback)) {
+          disposables.forEach((d) => d.dispose());
+          if (
+            buttons &&
+            buttons.includes(item as QuickInputButtonWithCallback)
+          ) {
             (item as QuickInputButtonWithCallback).callback();
             resolve(undefined);
           } else if (item === QuickInputButtons.Back) {
@@ -129,29 +157,39 @@ export class MultiStepInput {
             resolve(<any>item);
           }
         }),
-        input.onDidChangeSelection(items => {
-          disposables.forEach(d => d.dispose());
+        input.onDidChangeSelection((items) => {
+          disposables.forEach((d) => d.dispose());
           resolve(items[0]);
         }),
         input.onDidHide(() => {
           input.dispose();
-          disposables.forEach(d => d.dispose());
+          disposables.forEach((d) => d.dispose());
         })
       );
 
       if (configChanges) {
-        disposables.push(workspace.onDidChangeConfiguration((event: ConfigurationChangeEvent) => {
-          const configNames: string[] = configChanges.map((configChange: ConfigChangeCallback) => configChange.configName);
-          const configName: string|undefined = configNames.find((name: string) => event.affectsConfiguration(name));
-          if (!configName) {return;}
+        disposables.push(
+          workspace.onDidChangeConfiguration(
+            (event: ConfigurationChangeEvent) => {
+              const configNames: string[] = configChanges.map(
+                (configChange: ConfigChangeCallback) => configChange.configName
+              );
+              const configName: string | undefined = configNames.find(
+                (name: string) => event.affectsConfiguration(name)
+              );
+              if (!configName) {
+                return;
+              }
 
-          configChanges.forEach((configChange: ConfigChangeCallback) => {
-            if (configChange.configName === configName) {
-              configChange.callback();
-              resolve(undefined);
+              configChanges.forEach((configChange: ConfigChangeCallback) => {
+                if (configChange.configName === configName) {
+                  configChange.callback();
+                  resolve(undefined);
+                }
+              });
             }
-          });
-        }));
+          )
+        );
       }
 
       this.current = input;
@@ -159,11 +197,23 @@ export class MultiStepInput {
     });
   }
 
-  async showInputBox<P extends InputBoxParameters>({ title, step, totalSteps, value, prompt, validate, buttons, configChanges }: P) {
+  async showInputBox<P extends InputBoxParameters>({
+    title,
+    step,
+    totalSteps,
+    value,
+    prompt,
+    validate,
+    buttons,
+    configChanges,
+  }: P) {
     const disposables: Disposable[] = [];
-    const displaySteps: boolean = typeof step !== 'undefined' && typeof totalSteps !== 'undefined';
+    const displaySteps: boolean =
+      typeof step !== "undefined" && typeof totalSteps !== "undefined";
 
-    return await new Promise<undefined | string | (P extends { buttons: (infer I)[] } ? I : never)>(async (resolve, reject) => {
+    return await new Promise<
+      undefined | string | (P extends { buttons: (infer I)[] } ? I : never)
+    >(async (resolve, reject) => {
       const input: InputBox = window.createInputBox();
       input.title = title;
 
@@ -176,7 +226,7 @@ export class MultiStepInput {
 
       input.buttons = [
         ...(this.steps.length > 1 ? [QuickInputButtons.Back] : []),
-        ...(buttons || [])
+        ...(buttons || []),
       ];
       input.ignoreFocusOut = true;
       const validationMessage = await validate(input.value);
@@ -185,8 +235,11 @@ export class MultiStepInput {
       }
       disposables.push(
         input.onDidTriggerButton((item: QuickInputButton) => {
-          disposables.forEach(d => d.dispose());
-          if (buttons && buttons.includes(item as QuickInputButtonWithCallback)) {
+          disposables.forEach((d) => d.dispose());
+          if (
+            buttons &&
+            buttons.includes(item as QuickInputButtonWithCallback)
+          ) {
             (item as QuickInputButtonWithCallback).callback();
             resolve(undefined);
           } else if (item === QuickInputButtons.Back) {
@@ -205,7 +258,7 @@ export class MultiStepInput {
           input.enabled = true;
           input.busy = false;
         }),
-        input.onDidChangeValue(async text => {
+        input.onDidChangeValue(async (text) => {
           const current = validate(text);
           const validating = current;
           const validationMessage = await current;
@@ -215,23 +268,33 @@ export class MultiStepInput {
         }),
         input.onDidHide(() => {
           input.dispose();
-          disposables.forEach(d => d.dispose());
+          disposables.forEach((d) => d.dispose());
         })
       );
 
       if (configChanges) {
-        disposables.push(workspace.onDidChangeConfiguration((event: ConfigurationChangeEvent) => {
-          const configNames: string[] = configChanges.map((configChange: ConfigChangeCallback) => configChange.configName);
-          const configName: string|undefined = configNames.find((name: string) => event.affectsConfiguration(name));
-          if (!configName) {return;}
+        disposables.push(
+          workspace.onDidChangeConfiguration(
+            (event: ConfigurationChangeEvent) => {
+              const configNames: string[] = configChanges.map(
+                (configChange: ConfigChangeCallback) => configChange.configName
+              );
+              const configName: string | undefined = configNames.find(
+                (name: string) => event.affectsConfiguration(name)
+              );
+              if (!configName) {
+                return;
+              }
 
-          configChanges.forEach((configChange: ConfigChangeCallback) => {
-            if (configChange.configName === configName) {
-              configChange.callback();
-              resolve(undefined);
+              configChanges.forEach((configChange: ConfigChangeCallback) => {
+                if (configChange.configName === configName) {
+                  configChange.callback();
+                  resolve(undefined);
+                }
+              });
             }
-          });
-        }));
+          )
+        );
       }
 
       this.current = input;
