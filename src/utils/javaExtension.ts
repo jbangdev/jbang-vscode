@@ -5,14 +5,14 @@ export type JavaExtensionAPI = any;
 export const JAVA_EXTENSION_ID = "redhat.java";
 
 export async function getJavaExtensionAPI(): Promise<JavaExtensionAPI> {
-    const vscodeJava = extensions.getExtension(JAVA_EXTENSION_ID);
-    if (!vscodeJava) {
-      return Promise.resolve(undefined);
-    }
-  
-    const api = await vscodeJava.activate();
-    return Promise.resolve(api);
+  const vscodeJava = extensions.getExtension(JAVA_EXTENSION_ID);
+  if (!vscodeJava) {
+    return Promise.resolve(undefined);
   }
+
+  const api = await vscodeJava.activate();
+  return Promise.resolve(api);
+}
 
 export enum ServerMode {
   STANDARD = "Standard",
@@ -35,23 +35,34 @@ export async function requestStandardMode(opName: string): Promise<boolean> {
   }
   const api = await getJavaExtensionAPI();
   if (api && api.serverMode === ServerMode.LIGHTWEIGHT) {
-    const answer = await window.showInformationMessage(`${opName} requires the Java language server to run in Standard mode. ` +
-      "Do you want to switch it to Standard mode now?", "Yes", "Cancel");
+    const answer = await window.showInformationMessage(
+      `${opName} requires the Java language server to run in Standard mode. ` +
+        "Do you want to switch it to Standard mode now?",
+      "Yes",
+      "Cancel"
+    );
     if (answer === "Yes") {
-      return window.withProgress<boolean>({ location: ProgressLocation.Window }, async (progress) => {
-        if (api.serverMode === ServerMode.STANDARD) {
-          return true;
-        }
-        progress.report({ message: "Switching to Standard mode..." });
-        return new Promise<boolean>((resolve) => {
-          api.onDidServerModeChange((mode: string) => {
-            if (mode === ServerMode.STANDARD) {
-              resolve(true);
-            }
+      return window.withProgress<boolean>(
+        { location: ProgressLocation.Window },
+        async (progress) => {
+          if (api.serverMode === ServerMode.STANDARD) {
+            return true;
+          }
+          progress.report({ message: "Switching to Standard mode..." });
+          return new Promise<boolean>((resolve) => {
+            api.onDidServerModeChange((mode: string) => {
+              if (mode === ServerMode.STANDARD) {
+                resolve(true);
+              }
+            });
+            commands.executeCommand(
+              "java.server.mode.switch",
+              ServerMode.STANDARD,
+              true
+            );
           });
-          commands.executeCommand("java.server.mode.switch", ServerMode.STANDARD, true);
-        });
-      });
+        }
+      );
     }
     return false;
   } else if (api && api.serverMode === ServerMode.HYBRID) {
@@ -89,10 +100,13 @@ export async function waitForStandardMode(): Promise<void> {
  * @param action A function to perform that requires standard mode
  * @param actionDescription Human legible description of what is trying to be accomplished
  */
-export function runWithStandardMode(action: () => void, actionDescription: string) {
+export function runWithStandardMode(
+  action: () => void,
+  actionDescription: string
+) {
   requestStandardMode(actionDescription).then((isStandardMode) => {
     if (isStandardMode) {
-        action();
+      action();
     }
   });
 }

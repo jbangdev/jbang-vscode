@@ -14,24 +14,23 @@
 import { Uri } from "vscode";
 
 export interface State {
-    totalSteps: number;
+  totalSteps: number;
 }
 
 /**
  * Class representing data required to generate project
  */
 export interface ScriptGenState extends State {
-    scriptName: string;
-    template: string;
-    targetDir: Uri;
+  scriptName: string;
+  template: string;
+  targetDir: Uri;
 }
 
-
 export interface InstallAppState extends State {
-    appName: string;
-    native: boolean;
+  appName: string;
+  native: boolean;
 }
 
 export interface SelectDependencyState extends State {
-    dependency: string;
+  dependency: string;
 }
