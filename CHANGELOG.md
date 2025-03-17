@@ -2,6 +2,15 @@
 
 All notable changes to the **JBang** extension will be documented in this file.
 
+## [0.12.0] 17/03/2025
+- Added support for pasting Maven XML dependency snippets as JBang `//DEPS` (requires VS Code 1.97+)
+- Added Quarkus'`Q:CONFIG` syntax highlighting and completion
+- Added support for codelenses on instance main method
+- Added documentation on hover over JBang directives
+- Fixed Java value validation in JBang catalogs
+- Replaced axios with fetch for http requests
+- Updated various dependencies
+
 ## [0.11.0]  26/02/2024
 - Added textmate grammar for JBang directives
 - Fixed error reporting for unresolved dependencies
@@ -17,7 +26,7 @@ All notable changes to the **JBang** extension will be documented in this file.
 - Automatically save document after selecting a result in `//DEPS` completion
 - Save document before running/debugging with JBang
 - Added `//JAVA 21` completion
-- Added `--enable-http` and `--enable-https` completions for `//NATIVE_OPTIONS` directive 
+- Added `--enable-http` and `--enable-https` completions for `//NATIVE_OPTIONS` directive
 - Built with Node 18
 
 ## [0.8.0]  17/09/2023
@@ -64,7 +73,7 @@ All notable changes to the **JBang** extension will be documented in this file.
 - Display `Debug JBang` codelens for Java files
 - Add new `JBang: install application` command
 - Fixed script detection in nested folders
-- Fixed Chocolatey's JBang support 
+- Fixed Chocolatey's JBang support
 
 ## [0.3.0]  29/10/2022
 - Automagically configures JBang-managed JDKs, i.e. no need to configure `java.configuration.runtimes`.
@@ -75,9 +84,9 @@ All notable changes to the **JBang** extension will be documented in this file.
 - If you open a folder containing JBang scripts, the first JBang script found will be used to configure a "Project"'s classpath. When configuring the `java.import.jbang.projectPerScript` setting to `true`, each script in the folder will be assigned a specific classpath. Toggling this setting requires calling the `Java: Clean Java Language Server Workspace` command to take effect.
 - Modifying JBang directives in a file will update the classpath of the file.
 - Snippets are provided for JBang directives.
-- Autocompletion for dependencies in `//DEPS` 
-- Autocompletion for `//SOURCES` 
-- Partial autocompletion for `//JAVA_OPTIONS` and `//JAVAC_OPTIONS` 
+- Autocompletion for dependencies in `//DEPS`
+- Autocompletion for `//SOURCES`
+- Partial autocompletion for `//JAVA_OPTIONS` and `//JAVAC_OPTIONS`
 - Display dependency documentation on completion/hover
 - JBang scripts can be run from the `Run JBang` codelens, that shows on top of the type declaration or main method, if there is one.
 - If a (.java) script is included in a Maven or Gradle project's hierarchy, right-clicking on the script and selecting `JBang > Synchronize JBang` will add the script's parent folder to the project's source path and the JBang dependencies will be added to the project's classpath.
