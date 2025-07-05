@@ -1,0 +1,3 @@
+* xref:jbang-vscode:ROOT:index.adoc[]
+* xref:jbang-vscode:ROOT:installation.adoc[]
+* xref:jbang-vscode:ROOT:usage.adoc[]
