@@ -1,0 +1,5 @@
+name: jbang-vscode
+title: JBang VSCode Extension
+version: latest
+nav:
+  - modules/ROOT/nav.adoc
