@@ -19,7 +19,7 @@ This page describes how to use the JBang extension for Visual Studio Code to wor
 == Dependency Management
 
 * When you edit `//DEPS` lines, the classpath is automatically updated for the script.
-* To synchronize dependencies with a Maven or Gradle project, right-click the script and select `JBang > Synchronize JBang`.
+* To synchronize dependencies explicitly, right-click the script and select `JBang > Synchronize JBang`.
 
 == Script Templates
 
@@ -27,10 +27,9 @@ This page describes how to use the JBang extension for Visual Studio Code to wor
 
 == Advanced Usage
 
-* **Export as Native Binary**: Right-click a script and select `JBang > Export as native binary` (requires GraalVM with native-image).
 * **Install as Application**: Right-click a script and select `JBang > install application` to add it to your PATH.
 
 == Tips
 
 * If completions or classpath updates do not work as expected, try running `Java: Clean Java Language Server Workspace` from the command palette and reload the window.
-* For more information, see the [project README](https://github.com/jbangdev/jbang-vscode#readme) or the [JBang documentation](https://www.jbang.dev/documentation/).
+* For more information, see the link:https://github.com/jbangdev/jbang-vscode#readme[project README] or the link:https://www.jbang.dev/documentation/[JBang documentation].

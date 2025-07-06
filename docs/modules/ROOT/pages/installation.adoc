@@ -13,7 +13,7 @@ To install the JBang extension for Visual Studio Code:
   * Open Visual Studio Code
   * Go to the Extensions view (`Ctrl+Shift+X` or `Cmd+Shift+X`)
   * Search for `jbang`
-  * Click **Install** on the "JBang for Visual Studio Code" extension
+  * Click **Install** on the "JBang support for VS Code" extension
 
 Alternatively, you can install from the link:https://marketplace.visualstudio.com/items?itemName=jbangdev.jbang-vscode[Visual Studio Marketplace] or by downloading the latest `.vsix` release from link:https://github.com/jbangdev/jbang-vscode/releases[GitHub Releases] and using the `Extensions: Install from VSIX...` command.
 
