@@ -1,0 +1,20 @@
+= Installation
+:icons: font
+
+toc::[]
+
+To install the JBang extension for Visual Studio Code:
+
+. **Install Prerequisites**
+  * link:https://www.jbang.dev/download/[JBang] (ensure it is available in your PATH, or set the `jbang.home` setting in VS Code)
+  * link:https://marketplace.visualstudio.com/items?itemName=redhat.java[Language Support for Java]
+
+. **Install the JBang Extension**
+  * Open Visual Studio Code
+  * Go to the Extensions view (`Ctrl+Shift+X` or `Cmd+Shift+X`)
+  * Search for `jbang`
+  * Click **Install** on the "JBang support for VS Code" extension
+
+Alternatively, you can install from the link:https://marketplace.visualstudio.com/items?itemName=jbangdev.jbang-vscode[Visual Studio Marketplace] or by downloading the latest `.vsix` release from link:https://github.com/jbangdev/jbang-vscode/releases[GitHub Releases] and using the `Extensions: Install from VSIX...` command.
+
+Once installed, you can open or create a JBang script and start using the features described in the documentation.
