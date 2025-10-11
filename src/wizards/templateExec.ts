@@ -5,26 +5,32 @@ import { JBangTemplate } from "./JBangTemplate";
 import { ScriptGenState } from "./wizardState";
 
 export async function listTemplates(): Promise<JBangTemplate[]> {
-  const data = await executeCommand(jbang(), ["template", "list"], {
-    shell: true,
-    env: {
-      ...process.env,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      NO_COLOR: "true",
-    },
-  });
-  let templates: JBangTemplate[] = [];
-  const lines = data.toString().split(/\r?\n/);
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    if (line.indexOf("=") > 0) {
-      const template = line.split("=");
-      templates.push({
-        label: template[0],
-        description: template[1],
-      });
+  const data = await executeCommand(
+    jbang(),
+    ["template", "list", "--format=json"],
+    {
+      shell: true,
+      env: {
+        ...process.env,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        NO_COLOR: "true",
+      },
     }
+  );
+
+  let templates: JBangTemplate[] = [];
+  try {
+    const jsonOutput = JSON.parse(data.toString());
+    templates = jsonOutput.map(
+      (template: { name: string; description: string }) => ({
+        label: template.name,
+        description: template.description,
+      })
+    );
+  } catch (error) {
+    console.error("Failed to parse template list JSON:", error);
   }
+
   return templates;
 }
 

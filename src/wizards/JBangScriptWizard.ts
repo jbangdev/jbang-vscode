@@ -7,15 +7,9 @@ import {
   window,
   workspace,
 } from "vscode";
-import { Assets } from "../Assets";
-import JBangConfig, { JBangSettings } from "../JBangConfig";
 import { runWithStandardMode } from "../utils/javaExtension";
 import { JBangTemplate } from "./JBangTemplate";
-import {
-  MultiStepInput,
-  QuickInputButtonWithCallback,
-  QuickPickParameters,
-} from "./multiStepsUtils";
+import { MultiStepInput, QuickPickParameters } from "./multiStepsUtils";
 import { generateScript, listTemplates } from "./templateExec";
 import { ScriptGenState } from "./wizardState";
 import path = require("path");
@@ -32,12 +26,7 @@ const NO_TEMPLATE = {
 const DEFAULT_TOTAL_STEPS = 3;
 
 export default class JBangScriptWizard {
-  private showDescription: boolean;
   private templates: JBangTemplate[] | undefined;
-
-  constructor() {
-    this.showDescription = JBangConfig.isShowTemplateDescriptions();
-  }
 
   public static async open() {
     const wizard = new JBangScriptWizard();
@@ -98,14 +87,7 @@ export default class JBangScriptWizard {
         totalSteps: state.totalSteps,
         items: templates,
         placeholder: "Select a template",
-        buttons: [this.getInfoButton()],
-        configChanges: [
-          {
-            configName: "jbang." + JBangSettings.SHOW_TEMPLATE_DESC,
-            callback: () =>
-              (this.showDescription = JBangConfig.isShowTemplateDescriptions()),
-          },
-        ],
+        buttons: [],
       });
 
       if (selectedTemplate) {
@@ -125,7 +107,7 @@ export default class JBangScriptWizard {
   private asItem(template: JBangTemplate): QuickPickItem {
     return {
       label: template.label,
-      description: this.showDescription ? template.description : undefined,
+      detail: template.description,
     };
   }
 
@@ -134,19 +116,6 @@ export default class JBangScriptWizard {
       this.templates = await listTemplates();
     }
     return this.templates;
-  }
-
-  private getInfoButton(): QuickInputButtonWithCallback {
-    const darkThemeIcon = Assets.get("buttons/info_dark_theme.svg");
-    const lightThemeIcon = Assets.get("/buttons/info_light_theme.svg");
-    return {
-      iconPath: { light: lightThemeIcon, dark: darkThemeIcon },
-      tooltip: "Toggle template descriptions",
-      callback: () => {
-        this.showDescription = !this.showDescription;
-        JBangConfig.setShowTemplateDescriptions(this.showDescription);
-      },
-    } as QuickInputButtonWithCallback;
   }
 
   private async inputCustomTemplate(

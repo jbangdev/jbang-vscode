@@ -8,7 +8,6 @@ import {
 } from "vscode";
 
 export namespace JBangSettings {
-  export const SHOW_TEMPLATE_DESC = "wizard.templates.showDescriptions";
   export const SAVE_ON_SELECT_COMPLETION = "completion.onSelect.autosave";
   export const HOME = "home";
 }
@@ -47,13 +46,6 @@ export class JBangConfig {
     );
   }
 
-  public isShowTemplateDescriptions(): boolean {
-    return this.getJBangConfiguration().get<boolean>(
-      JBangSettings.SHOW_TEMPLATE_DESC,
-      true
-    );
-  }
-
   public isSaveOnSelectEnabled(): boolean {
     return this.getJBangConfiguration().get<boolean>(
       JBangSettings.SAVE_ON_SELECT_COMPLETION,
@@ -73,10 +65,6 @@ export class JBangConfig {
 
   public getJavaConfiguration(): WorkspaceConfiguration {
     return workspace.getConfiguration("java");
-  }
-
-  public setShowTemplateDescriptions(value: boolean): Thenable<void> {
-    return this.setJBangConfig(JBangSettings.SHOW_TEMPLATE_DESC, value);
   }
 
   public setJBangConfig<T>(configName: string, value: T): Thenable<void> {

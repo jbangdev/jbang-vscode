@@ -29,6 +29,10 @@ function mvnw() {
   return platform() === 'win32' ? 'mvnw.cmd' : './mvnw';
 }
 
-exec(`${mvnw()} clean verify -DskipTests`, { cwd: jbangEclipseDir, stdio: 'inherit' });
+// Build Maven command with color support if running in a TTY
+const colorFlag = process.stdout.isTTY ? '-Dstyle.color=always' : '';
+const mvnCommand = `${mvnw()} clean verify -DskipTests ${colorFlag}`.trim();
+
+exec(mvnCommand, { cwd: jbangEclipseDir, stdio: 'inherit' });
 copy(jbangEclipseCore);
 copy(jbangEclipseLS);
