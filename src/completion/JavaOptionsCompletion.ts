@@ -27,7 +27,7 @@ const DIRECTIVES = [
   JAVA_OPTIONS,
   NATIVE_OPTIONS,
 ];
-const JAVA_VERSIONS = [21, 17, 11, 8];
+const JAVA_VERSIONS = [25, 21, 17, 11, 8];
 export class JavaOptionsCompletion implements CompletionParticipant {
   applies(lineText: string, position: Position): boolean {
     return !!DIRECTIVES.find(
