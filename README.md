@@ -18,7 +18,7 @@ This is an early work-in-progress extension for [vscode-java](https://marketplac
 - If you open a folder containing JBang scripts, the first JBang script found will be used to configure a "Project"'s classpath. When configuring the `java.import.jbang.projectPerScript` setting to `true`, each script in the folder will be assigned a specific classpath. Toggling this setting requires calling the `Java: Clean Java Language Server Workspace` command to take effect.
 - Modifying JBang directives in a file will update the classpath of the file.
 - Snippets are provided for JBang directives.
-- Autocompletion for dependencies in `//DEPS` 
+- Autocompletion for dependencies in `//DEPS`
 - Autocompletion for `//SOURCES` and `//FILES`
 - Partial autocompletion for `//JAVA_OPTIONS`, `//JAVAC_OPTIONS`, `//RUNTIME_OPTIONS` and `//COMPILE_OPTIONS`
 - Display dependency documentation on completion/hover
@@ -49,10 +49,10 @@ Continuous Integration builds can be installed from the Visual Studio Marketplac
   * [Visual Studio Code](https://code.visualstudio.com/) or compatible editors
   * [Language Support for Java](https://marketplace.visualstudio.com/items?itemName=redhat.java)
   * [Node.js 14+](https://nodejs.org/en/)
-  * [JDK 17+](https://adoptium.net/en-GB/temurin/releases/)
+  * [JDK 21+](https://adoptium.net/en-GB/temurin/releases/)
 
 ### Setup
-**Step 1.** Fork and clone this repository  
+**Step 1.** Fork and clone this repository
 
 **Step 2.** Fork and clone the [jbangdev/jbang-eclipse repository](https://github.com/jbangdev/jbang-eclipse), which contains the JBang/Eclipse core plugin and its jdt.ls extension
 
@@ -62,22 +62,22 @@ Continuous Integration builds can be installed from the Visual Studio Marketplac
 YOUR_FOLDER/
          ├──── jbang-vscode/
          ├──── jbang-eclipse/
-```  
+```
 **Step 3.** Navigate into `jbang-vscode/`
 ```bash
 $ cd jbang-vscode/
-```  
+```
 **Step 4.** Install npm dependencies
 ```bash
 $ npm ci
-```  
+```
 
 **Step 5.** Build the JBang/Eclipse integration plugin and its jdt.ls extension
 ```bash
 $ npm run build-ext
 ```
 
-This script places the built jars in `jbang-vscode/jars/`.  
+This script places the built jars in `jbang-vscode/jars/`.
 
 **Step 6.** Build the VS Code extension
 ```bash
