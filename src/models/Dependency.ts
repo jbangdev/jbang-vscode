@@ -84,6 +84,23 @@ export function getRemoteMetadata(
   )}/${artifactId}/maven-metadata.xml`;
 }
 
+export function getRemoteRepositoriesFile(
+  groupId?: string,
+  artifactId?: string,
+  version?: string
+): string | undefined {
+  if (
+    groupId === undefined ||
+    artifactId === undefined ||
+    version === undefined
+  ) {
+    return undefined;
+  }
+  return `${HOME}/.m2/repository/${getSplitGroupId(
+    groupId
+  )}/${artifactId}/${version}/_remote.repositories`;
+}
+
 function getSplitGroupId(groupId: string): string {
   return groupId?.replace(/\./g, "/");
 }
