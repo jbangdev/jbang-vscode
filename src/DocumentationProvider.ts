@@ -7,6 +7,7 @@ import {
   Dependency,
   getLocalFile,
   getRemoteMetadata,
+  getRemoteRepositoriesFile,
   getRemoteUrl,
 } from "./models/Dependency";
 import { createFetchOptions } from "./utils/fetchUtils";
@@ -43,7 +44,8 @@ const NO_DOC = new MarkdownString("");
 export class DocumentationProvider {
   public async getDocumentation(
     dependency: Dependency,
-    _token: CancellationToken
+    _token: CancellationToken,
+    repos?: Map<string, string>
   ): Promise<MarkdownString | undefined> {
     const gav = dependency.toString();
     if (DOC_CACHE.has(gav)) {
@@ -59,17 +61,23 @@ export class DocumentationProvider {
         return NO_DOC;
       }
     }
-    if (!pom) {
-      return undefined;
-    }
     const name = pom?.project?.name
       ? pom.project.name
-      : pom?.project?.artifactId;
+      : pom?.project?.artifactId
+      ? pom.project.artifactId
+      : dependency.artifactId;
     let description = `**${name}**`;
     if (pom?.project?.description) {
       description += `\n\n`;
       description += this.toMarkdown(pom?.project?.description);
     }
+
+    // Add repository hyperlink if available
+    const repoUrl = await this.getRepositoryUrl(dependency, repos);
+    if (repoUrl) {
+      description += `\n\n[View in Maven Repository](${repoUrl})`;
+    }
+
     let doc: MarkdownString | undefined;
     if (description) {
       doc = new MarkdownString(description);
@@ -109,6 +117,114 @@ export class DocumentationProvider {
       }
     }
     return parseXML(xml);
+  }
+
+  private async getRepositoryUrl(
+    dependency: Dependency,
+    repos?: Map<string, string>
+  ): Promise<string | undefined> {
+    if (!repos || repos.size === 0) {
+      return undefined;
+    }
+
+    let realVersion = dependency.version;
+    if (dependency.version === "LATEST") {
+      realVersion = await findLatestVersion(dependency);
+      if (!realVersion) {
+        return undefined;
+      }
+    }
+
+    if (!dependency.groupId || !dependency.artifactId || !realVersion) {
+      return undefined;
+    }
+
+    // Try to read _remote.repositories file
+    const remoteReposPath = getRemoteRepositoriesFile(
+      dependency.groupId,
+      dependency.artifactId,
+      realVersion
+    );
+
+    if (!remoteReposPath) {
+      return undefined;
+    }
+
+    try {
+      const remoteReposContent = await fs.readFile(remoteReposPath, "utf8");
+      const repoIds = this.extractRepositoryIds(remoteReposContent, dependency.artifactId, realVersion);
+
+      // Find the first repository ID that exists in our repository map
+      for (const repoId of repoIds) {
+        if (repos.has(repoId)) {
+          const repoUrl = repos.get(repoId)!;
+          // Build the repository URL for the artifact
+          let url: string;
+          if (repoId === 'jitpack') {
+            url = this.buildJitPackUrl(repoUrl, dependency);
+          } else {
+            // Standard Maven repository structure
+            const artifactPath = `${dependency.groupId?.replace(/\./g, "/")}/${dependency.artifactId}`;
+            url = `${repoUrl.replace(/\/$/, "")}/${artifactPath}`;
+          }
+          return url;
+        }
+      }
+    } catch (error) {
+      // File doesn't exist or can't be read, that's ok
+      console.debug(`Could not read _remote.repositories file: ${remoteReposPath}`);
+    }
+
+    return undefined;
+  }
+
+  private buildJitPackUrl(repoUrl: string, dependency: Dependency): string {
+    const gitHostMappings: { [prefix: string]: string } = {
+      'com.github.': '',
+      'org.bitbucket.': '',
+      'com.gitlab.': '',
+      'com.gitee.': '',
+      'com.azure.': ''
+    };
+
+    let gitPath = '';
+    const groupId = dependency.groupId || '';
+
+    // Find the first matching prefix and replace it
+    for (const [prefix, replacement] of Object.entries(gitHostMappings)) {
+      if (groupId.startsWith(prefix)) {
+        gitPath = groupId.replace(prefix, replacement);
+        break;
+      }
+    }
+
+    // Fallback: use the last part of the groupId if no mapping found
+    if (!gitPath) {
+      gitPath = groupId.split('.').pop() || '';
+    }
+
+    return `${repoUrl}#${gitPath}/${dependency.artifactId}`;
+  }
+
+  private extractRepositoryIds(
+    remoteReposContent: string,
+    artifactId: string,
+    version: string
+  ): string[] {
+    const repoIds = new Set<string>();
+    const lines = remoteReposContent.split("\n");
+
+    for (const line of lines) {
+      if (line.includes(`${artifactId}-${version}.jar>`) || line.includes(`${artifactId}-${version}.pom>`)) {
+        // Extract repository ID from line like: artifact-version.jar>repo-id=
+        const match = line.match(/.*>([^=]+)=$/);
+        if (match) {
+          repoIds.add(match[1]);
+        }
+      }
+    }
+
+    return Array.from(repoIds);
   }
 
   private toMarkdown(xml?: string): string | undefined {
