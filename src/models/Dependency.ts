@@ -1,4 +1,5 @@
 import * as os from "os";
+import * as path from "path";
 
 const HOME = os.homedir();
 
@@ -50,9 +51,15 @@ export function getLocalFile(
   ) {
     return undefined;
   }
-  return `${HOME}/.m2/repository/${getSplitGroupId(
-    groupId
-  )}/${artifactId}/${version}/${artifactId}-${version}.pom`;
+  return path.join(
+    HOME,
+    ".m2",
+    "repository",
+    getSplitGroupId(groupId),
+    artifactId,
+    version,
+    `${artifactId}-${version}.pom`
+  );
 }
 
 export function getRemoteUrl(
@@ -96,9 +103,15 @@ export function getRemoteRepositoriesFile(
   ) {
     return undefined;
   }
-  return `${HOME}/.m2/repository/${getSplitGroupId(
-    groupId
-  )}/${artifactId}/${version}/_remote.repositories`;
+  return path.join(
+    HOME,
+    ".m2",
+    "repository",
+    getSplitGroupId(groupId),
+    artifactId,
+    version,
+    "_remote.repositories"
+  );
 }
 
 function getSplitGroupId(groupId: string): string {
