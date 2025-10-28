@@ -82,9 +82,8 @@ export class DocumentationProvider {
     if (description) {
       doc = new MarkdownString(description);
       if (repoUrl) {
-      }
         //Only cache once the dependency has been resolved
-      DOC_CACHE.set(gav, doc);
+        DOC_CACHE.set(gav, doc);
       }
     }
     return doc;
@@ -156,7 +155,11 @@ export class DocumentationProvider {
 
     try {
       const remoteReposContent = await fs.readFile(remoteReposPath, "utf8");
-      const repoIds = this.extractRepositoryIds(remoteReposContent, dependency.artifactId, realVersion);
+      const repoIds = this.extractRepositoryIds(
+        remoteReposContent,
+        dependency.artifactId,
+        realVersion
+      );
 
       // Find the first repository ID that exists in our repository map
       for (const repoId of repoIds) {
@@ -164,11 +167,13 @@ export class DocumentationProvider {
           const repoUrl = repos.get(repoId)!;
           // Build the repository URL for the artifact
           let url: string;
-          if (repoId === 'jitpack') {
+          if (repoId === "jitpack") {
             url = this.buildJitPackUrl(repoUrl, dependency);
           } else {
             // Standard Maven repository structure
-            const artifactPath = `${dependency.groupId?.replace(/\./g, "/")}/${dependency.artifactId}`;
+            const artifactPath = `${dependency.groupId?.replace(/\./g, "/")}/${
+              dependency.artifactId
+            }`;
             url = `${repoUrl.replace(/\/$/, "")}/${artifactPath}`;
           }
           return url;
@@ -176,7 +181,9 @@ export class DocumentationProvider {
       }
     } catch (error) {
       // File doesn't exist or can't be read, that's ok
-      console.debug(`Could not read _remote.repositories file: ${remoteReposPath}`);
+      console.debug(
+        `Could not read _remote.repositories file: ${remoteReposPath}`
+      );
     }
 
     return undefined;
@@ -184,15 +191,15 @@ export class DocumentationProvider {
 
   private buildJitPackUrl(repoUrl: string, dependency: Dependency): string {
     const gitHostMappings: { [prefix: string]: string } = {
-      'com.github.': '',
-      'org.bitbucket.': '',
-      'com.gitlab.': '',
-      'com.gitee.': '',
-      'com.azure.': ''
+      "com.github.": "",
+      "org.bitbucket.": "",
+      "com.gitlab.": "",
+      "com.gitee.": "",
+      "com.azure.": "",
     };
 
-    let gitPath = '';
-    const groupId = dependency.groupId || '';
+    let gitPath = "";
+    const groupId = dependency.groupId || "";
 
     // Find the first matching prefix and replace it
     for (const [prefix, replacement] of Object.entries(gitHostMappings)) {
@@ -204,7 +211,7 @@ export class DocumentationProvider {
 
     // Fallback: use the last part of the groupId if no mapping found
     if (!gitPath) {
-      gitPath = groupId.split('.').pop() || '';
+      gitPath = groupId.split(".").pop() || "";
     }
 
     return `${repoUrl}#${gitPath}/${dependency.artifactId}`;
@@ -219,7 +226,10 @@ export class DocumentationProvider {
     const lines = remoteReposContent.split("\n");
 
     for (const line of lines) {
-      if (line.includes(`${artifactId}-${version}.jar>`) || line.includes(`${artifactId}-${version}.pom>`)) {
+      if (
+        line.includes(`${artifactId}-${version}.jar>`) ||
+        line.includes(`${artifactId}-${version}.pom>`)
+      ) {
         // Extract repository ID from line like: artifact-version.jar>repo-id=
         const match = line.match(/.*>([^=]+)=$/);
         if (match) {
