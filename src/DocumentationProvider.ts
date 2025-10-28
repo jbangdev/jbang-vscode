@@ -81,7 +81,11 @@ export class DocumentationProvider {
     let doc: MarkdownString | undefined;
     if (description) {
       doc = new MarkdownString(description);
+      if (repoUrl) {
+      }
+        //Only cache once the dependency has been resolved
       DOC_CACHE.set(gav, doc);
+      }
     }
     return doc;
   }
