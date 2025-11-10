@@ -263,7 +263,7 @@
   },
   "dependencies": {
     "fast-xml-parser": "^5.0.9",
-    "lru-cache": "11.1.0",
+    "lru-cache": "11.2.2",
     "shelljs": "^0.9.1",
     "vscode-languageclient": "^9.0.1"
   }
