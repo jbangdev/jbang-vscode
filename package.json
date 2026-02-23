@@ -43,6 +43,12 @@
           "JBang"
         ],
         "configuration": "./language-support/language-configuration.json"
+      },
+      {
+        "id": "jsonc",
+        "filenames": [
+          "jbang-catalog.json"
+        ]
       }
     ],
     "grammars": [
