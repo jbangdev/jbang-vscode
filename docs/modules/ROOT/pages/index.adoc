@@ -37,7 +37,6 @@ image:deps-completions.png[]
 == Preferences
 
 * `jbang.home`: Path to JBang installation (if not in PATH)
-* `jbang.wizard.templates.showDescriptions`: Show template descriptions in the script wizard
 * `java.import.jbang.projectPerScript`: Import each script as its own project (requires workspace clean to take effect)
 * `jbang.completion.onSelect.autosave`: Auto-save after selecting a dependency completion
 
