@@ -1,0 +1,132 @@
+name: Publish
+
+# Both the pre-release build (every push to main) and the stable release (tag push)
+# are published from this single workflow file, because each extension can have
+# exactly one trusted publisher per registry, and a trusted publisher is bound to
+# a workflow file name.
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "*.*.*"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # create the GitHub releases
+    steps:
+      - name: Check out jbang-vscode
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 0
+          path: jbang-vscode
+
+      - name: Check out jbang-eclipse
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          repository: jbangdev/jbang-eclipse
+          fetch-depth: 0
+          path: jbang-eclipse
+
+      - name: Set Up NodeJS
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+
+      - name: Set Up Java
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Install requirements
+        working-directory: ./jbang-vscode
+        run: |
+          npm ci
+          npm install -g typescript "@vscode/vsce"
+
+      - name: Build server
+        working-directory: ./jbang-vscode
+        run: npm run build-ext
+
+      - name: Build vsix
+        working-directory: ./jbang-vscode
+        run: |
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            vsce package
+          else
+            node ./scripts/create-package-insiders-json.js
+            mv ./package.insiders.json ./package.json
+            vsce package --pre-release
+          fi
+
+      - name: Upload vsix
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: jbang-vscode
+          path: jbang-vscode/*.vsix
+
+      - name: Upload latest vsix
+        if: github.ref == 'refs/heads/main'
+        uses: marvinpinto/action-automatic-releases@d68defdd11f9dcc7f52f35c1b7c236ee7513bcc1 # latest
+        with:
+          repo_token: "${{secrets.GITHUB_TOKEN}}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "Development Build"
+          files: |
+            jbang-vscode/*.vsix
+
+      - name: Upload to Github Releases
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
+        with:
+          files: |
+            jbang-vscode/*.vsix
+
+  # Publishes the vsix built above to both registries with Trusted Publishing (OIDC),
+  # so no long-lived access token is stored in the repository.
+  # The `id-token: write` permission is only granted to this job.
+  # Requires a trusted publisher registered for jbangdev/jbang-vscode,
+  # workflow publish.yaml, on:
+  #   - https://marketplace.visualstudio.com/manage
+  #   - https://open-vsx.org/user-settings/trusted-publishers
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Set Up NodeJS
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+
+      - name: Download vsix
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: jbang-vscode
+          path: vsix
+
+      - name: Publish to VSCode Marketplace
+        run: |
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            npx --yes @vscode/vsce publish --oidc --packagePath vsix/*.vsix
+          else
+            npx --yes @vscode/vsce publish --oidc --pre-release --packagePath vsix/*.vsix
+          fi
+
+      - name: Publish to Open VSX Marketplace
+        run: |
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            npx --yes ovsx publish --trusted-publishing vsix/*.vsix
+          else
+            npx --yes ovsx publish --trusted-publishing --pre-release vsix/*.vsix
+          fi
