@@ -1,12 +1,12 @@
 name: Build
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
+
+permissions:
+  contents: read
 
 jobs:
   build:
@@ -28,7 +28,7 @@ jobs:
       - name: Set Up NodeJS
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          node-version: "20"
+          node-version: "22"
 
       - name: Set Up Java
         uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5
@@ -59,30 +59,3 @@ jobs:
         with:
           name: jbang-vscode
           path: jbang-vscode/*.vsix
-
-      - name: Upload latest vsix
-        if: github.ref == 'refs/heads/main'
-        uses: marvinpinto/action-automatic-releases@d68defdd11f9dcc7f52f35c1b7c236ee7513bcc1 # latest
-        with:
-          repo_token: "${{secrets.GITHUB_TOKEN}}"
-          automatic_release_tag: "latest"
-          prerelease: true
-          title: "Development Build"
-          files: |
-            jbang-vscode/*.vsix
-
-      - name: Publish to Open VSX Marketplace
-        if: github.ref == 'refs/heads/main'
-        working-directory: ./jbang-vscode
-        run: |
-          npx ovsx publish --pre-release -p $OVSX_TOKEN
-        env:
-          OVSX_TOKEN: ${{ secrets.OPENVSX_MARKETPLACE_TOKEN }}
-
-      - name: Publish to VSCode Marketplace
-        if: github.ref == 'refs/heads/main'
-        working-directory: ./jbang-vscode
-        run: |
-          npx vsce publish --pre-release -p $VSCE_TOKEN
-        env:
-          VSCE_TOKEN: ${{ secrets.VSCODE_MARKETPLACE_TOKEN }}
